@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.expensetracker.ui.home.HomeFragment"
+        android:label="Home" />
+
+    <fragment
+        android:id="@+id/budgetFragment"
+        android:name="com.example.expensetracker.ui.budget.BudgetFragment"
+        android:label="Budget" />
+
+    <fragment
+        android:id="@+id/statisticsFragment"
+        android:name="com.example.expensetracker.ui.statistics.StatisticsFragment"
+        android:label="Statistics" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.expensetracker.ui.settings.SettingsFragment"
+        android:label="Settings" />
+
+    <fragment
+        android:id="@+id/transactionHistoryFragment"
+        android:name="com.example.expensetracker.ui.alltransactions.TransactionHistoryFragment"
+        android:label="TransactionHistoryFragment" />
+
+</navigation>

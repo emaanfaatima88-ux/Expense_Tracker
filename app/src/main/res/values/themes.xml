@@ -1,0 +1,22 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.ExpenseTracker" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+    <style name="ShapeAppearance.RoundedFAB" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">18dp</item>
+    </style>
+    <style name="Theme.ExpenseTracker" parent="Base.Theme.ExpenseTracker" />
+    <style name="BottomNavStyle" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="backgroundTint">#FFFFFF</item>
+        <item name="itemActiveIndicatorStyle">@style/ActiveIndicatorStyle</item>
+    </style>
+
+    <style name="ActiveIndicatorStyle" parent="@style/Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#1A7B5EA7</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>
+    </style>
+
+</resources>
