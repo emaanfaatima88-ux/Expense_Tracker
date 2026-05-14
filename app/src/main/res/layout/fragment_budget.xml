@@ -10,19 +10,28 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:orientation="vertical">
 
         <!-- TITLE -->
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Monthly Budget"
-            android:textColor="#1C1C1E"
-            android:textSize="26sp"
-            android:textStyle="bold"/>
+            android:orientation="horizontal"
+            android:padding="18dp"
+            android:background="@drawable/bg_header_gradient"
+            android:gravity="center_vertical">
 
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Monthly Budget"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:layout_marginStart="16dp"/>
+
+        </LinearLayout>
         <!-- EMPTY STATE -->
 
         <LinearLayout
@@ -31,6 +40,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:gravity="center"
+            android:layout_marginHorizontal="20dp"
             android:orientation="vertical">
 
             <TextView

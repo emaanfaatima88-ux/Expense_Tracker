@@ -13,9 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="18dp">
-
-        <!-- TITLE -->
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -24,25 +21,7 @@
             android:textSize="28sp"
             android:textColor="#111111"/>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Customize your experience"
-            android:textSize="13sp"
-            android:textColor="#777777"
-            android:layout_marginTop="2dp"/>
 
-        <!-- APPEARANCE -->
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="APPEARANCE"
-            android:textStyle="bold"
-            android:textSize="12sp"
-            android:textColor="#777777"
-            android:layout_marginTop="28dp"
-            android:layout_marginBottom="10dp"/>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -52,48 +31,7 @@
 
             app:strokeWidth="0dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:padding="18dp">
 
-                <ImageView
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@android:drawable/ic_menu_day"
-                    android:background="#FFF3E0"
-                    android:padding="8dp"/>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:layout_marginStart="14dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Dark Mode"
-                        android:textStyle="bold"
-                        android:textSize="16sp"
-                        android:textColor="#111111"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Toggle dark theme"
-                        android:textSize="12sp"
-                        android:textColor="#777777"/>
-                </LinearLayout>
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/switchDarkMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
         <TextView
@@ -148,7 +86,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@android:drawable/ic_menu_delete"
-                    android:background="#FFEBEE"
+
                     android:padding="8dp"/>
 
                 <LinearLayout
@@ -203,7 +141,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:src="@android:drawable/stat_sys_download_done"/>
+                    android:src="@drawable/ic_export"/>
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>

@@ -8,7 +8,7 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">18dp</item>
     </style>
-    <style name="Theme.ExpenseTracker" parent="Base.Theme.ExpenseTracker" />
+    <style name="Theme.ExpenseTracker" parent="Theme.Material3.Light.NoActionBar"/>
     <style name="BottomNavStyle" parent="Widget.MaterialComponents.BottomNavigationView">
         <item name="backgroundTint">#FFFFFF</item>
         <item name="itemActiveIndicatorStyle">@style/ActiveIndicatorStyle</item>

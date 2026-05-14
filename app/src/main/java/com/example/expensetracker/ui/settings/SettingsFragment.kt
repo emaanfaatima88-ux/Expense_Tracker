@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.expensetracker.databinding.FragmentSettingsBinding
@@ -77,23 +76,6 @@ class SettingsFragment : Fragment() {
                 .show()
         }
 
-        // DARK MODE
-
-        binding.switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
-
-            if (isChecked) {
-
-                AppCompatDelegate.setDefaultNightMode(
-                    AppCompatDelegate.MODE_NIGHT_YES
-                )
-
-            } else {
-
-                AppCompatDelegate.setDefaultNightMode(
-                    AppCompatDelegate.MODE_NIGHT_NO
-                )
-            }
-        }
 
         // EXPORT PDF
 
