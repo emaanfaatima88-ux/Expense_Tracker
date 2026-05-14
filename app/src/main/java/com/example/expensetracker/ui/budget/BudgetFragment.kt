@@ -41,6 +41,8 @@ class BudgetFragment : Fragment() {
                 false
             )
 
+        setupClicks()
+
         observeBudget()
 
         setupClicks()
