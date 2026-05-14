@@ -104,12 +104,21 @@ class HomeFragment : Fragment() {
                 ) {
 
                     val position =
-                        viewHolder.adapterPosition
+                        viewHolder.bindingAdapterPosition
 
-                    val expense =
-                        expenseAdapter.currentList[position]
+                    if (position != RecyclerView.NO_POSITION) {
 
-                    expenseViewModel.deleteExpense(expense)
+                        val currentList =
+                            expenseAdapter.currentList
+
+                        if (position < currentList.size) {
+
+                            val expense =
+                                currentList[position]
+
+                            expenseViewModel.deleteExpense(expense)
+                        }
+                    }
                 }
             }
 
@@ -128,7 +137,7 @@ class HomeFragment : Fragment() {
 
             // SHOW ONLY RECENT 10
             expenseAdapter.setData(
-                expenses.take(10)
+                expenses.take(10).toMutableList()
             )
 
             binding.txtTransactionCount.text =
@@ -148,7 +157,7 @@ class HomeFragment : Fragment() {
             binding.txtTotalExpense.text =
                 "Rs. %.0f".format(total)
 
-            val dailyAverage = total / 30
+            val dailyAverage = total.toDouble() / 30
 
             binding.txtDailyAvg.text =
                 "Rs. %.0f".format(dailyAverage)

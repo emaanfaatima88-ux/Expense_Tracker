@@ -3,6 +3,7 @@ package com.example.expensetracker.di
 import android.content.Context
 import androidx.room.Room
 import com.example.expensetracker.data.local.ExpenseDatabase
+import com.example.expensetracker.data.local.dao.BudgetDao
 import com.example.expensetracker.data.local.dao.ExpenseDao
 import com.example.expensetracker.data.repository.ExpenseRepositoryImpl
 import com.example.expensetracker.domain.repository.ExpenseRepository
@@ -30,7 +31,9 @@ abstract class AppModule {
                 context,
                 ExpenseDatabase::class.java,
                 "expense_database"
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
         }
 
         @Provides
@@ -40,6 +43,15 @@ abstract class AppModule {
         ): ExpenseDao {
 
             return database.expenseDao()
+        }
+
+        @Provides
+        @Singleton
+        fun provideBudgetDao(
+            database: ExpenseDatabase
+        ): BudgetDao {
+
+            return database.budgetDao()
         }
     }
 
