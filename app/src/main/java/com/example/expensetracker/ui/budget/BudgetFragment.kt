@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetracker.databinding.FragmentBudgetBinding
+import com.example.expensetracker.utils.CurrencyManager
 import com.example.expensetracker.viewmodel.BudgetViewModel
 import com.example.expensetracker.viewmodel.ExpenseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
