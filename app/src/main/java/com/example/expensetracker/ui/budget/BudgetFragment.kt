@@ -59,6 +59,27 @@ class BudgetFragment : Fragment() {
 
             showBudgetDialog()
         }
+        binding.recyclerSwipeBudget.setOnLongClickListener {
+
+            MaterialAlertDialogBuilder(requireContext())
+
+                .setTitle("Delete Budget")
+
+                .setMessage(
+                    "Do you want to remove monthly budget?"
+                )
+
+                .setPositiveButton("Delete") { _, _ ->
+
+                    budgetViewModel.deleteBudget()
+                }
+
+                .setNegativeButton("Cancel", null)
+
+                .show()
+
+            true
+        }
     }
 
     private fun showBudgetDialog() {
