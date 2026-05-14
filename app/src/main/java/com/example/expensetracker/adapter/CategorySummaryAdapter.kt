@@ -1,11 +1,12 @@
 package com.example.expensetracker.adapter
 
 import android.content.res.ColorStateList
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetracker.databinding.ItemCategorySummaryBinding
 import com.example.expensetracker.ui.statistics.CategorySummary
+import com.example.expensetracker.utils.CurrencyManager
 
 class CategorySummaryAdapter :
     RecyclerView.Adapter<CategorySummaryAdapter.ViewHolder>() {
@@ -41,8 +42,17 @@ class CategorySummaryAdapter :
         holder.binding.txtCategory.text =
             item.category
 
+        val currencyManager =
+            CurrencyManager(holder.itemView.context)
+
+        val currency =
+            currencyManager.getCurrencySymbol()
+
+        val formattedAmount =
+            String.format("%,.0f", item.total)
+
         holder.binding.txtAmount.text =
-            "Rs. %, .0f".format(item.total)
+            "$currency $formattedAmount"
 
         holder.binding.viewColor.backgroundTintList =
             ColorStateList.valueOf(item.color)

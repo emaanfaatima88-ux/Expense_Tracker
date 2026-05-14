@@ -7,15 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.expensetracker.adapter.CategorySummaryAdapter
 import com.example.expensetracker.databinding.FragmentStatisticsBinding
+import com.example.expensetracker.utils.CurrencyManager
+import com.example.expensetracker.utils.ExpenseCategoryHelper
 import com.example.expensetracker.viewmodel.ExpenseViewModel
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.expensetracker.adapter.CategorySummaryAdapter
-import com.example.expensetracker.utils.ExpenseCategoryHelper
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -26,7 +27,9 @@ class StatisticsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val expenseViewModel: ExpenseViewModel by viewModels()
+
     private lateinit var categoryAdapter: CategorySummaryAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -107,6 +110,7 @@ class StatisticsFragment : Fragment() {
             }
         }
     }
+
     private fun setupRecyclerView() {
 
         categoryAdapter = CategorySummaryAdapter()
@@ -119,7 +123,14 @@ class StatisticsFragment : Fragment() {
                 LinearLayoutManager(requireContext())
         }
     }
+
     private fun observeExpenses() {
+
+        val currencyManager =
+            CurrencyManager(requireContext())
+
+        val currencySymbol =
+            currencyManager.getCurrencySymbol()
 
         expenseViewModel.allExpenses.observe(
             viewLifecycleOwner
@@ -132,8 +143,6 @@ class StatisticsFragment : Fragment() {
 
             val summaryList =
                 ArrayList<CategorySummary>()
-
-
 
             categoryMap.forEach { (category, expenseList) ->
 
@@ -157,7 +166,8 @@ class StatisticsFragment : Fragment() {
                     CategorySummary(
                         category,
                         total,
-                        color
+                        color,
+                        currencySymbol
                     )
                 )
             }
@@ -174,15 +184,18 @@ class StatisticsFragment : Fragment() {
 
             dataSet.selectionShift = 8f
 
-            val pieData = PieData(dataSet)
+            val pieData =
+                PieData(dataSet)
 
-            binding.pieChart.data = pieData
+            binding.pieChart.data =
+                pieData
 
             binding.pieChart.invalidate()
 
             categoryAdapter.setData(summaryList)
         }
     }
+
     override fun onDestroyView() {
 
         super.onDestroyView()

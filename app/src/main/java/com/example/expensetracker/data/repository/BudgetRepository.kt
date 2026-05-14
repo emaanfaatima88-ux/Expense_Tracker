@@ -17,7 +17,10 @@ class BudgetRepository @Inject constructor(
             budgetEntity
         )
     }
+    suspend fun deleteBudget() {
 
+        budgetDao.deleteBudget()
+    }
     fun getBudget() =
         budgetDao.getBudget()
 }

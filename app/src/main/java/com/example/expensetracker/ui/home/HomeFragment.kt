@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expensetracker.R
 import com.example.expensetracker.adapter.ExpenseAdapter
 import com.example.expensetracker.databinding.FragmentHomeBinding
+import com.example.expensetracker.utils.CurrencyManager
 import com.example.expensetracker.ui.addexpense.AddExpenseBottomSheet
 import com.example.expensetracker.viewmodel.ExpenseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -131,14 +132,39 @@ class HomeFragment : Fragment() {
     }
     private fun observeExpenses() {
 
+        val currencyManager =
+            CurrencyManager(requireContext())
+
+        val currencySymbol =
+            currencyManager.getCurrencySymbol()
+
         expenseViewModel.allExpenses.observe(
             viewLifecycleOwner
         ) { expenses ->
 
             // SHOW ONLY RECENT 10
+
             expenseAdapter.setData(
                 expenses.take(10).toMutableList()
             )
+
+            if (expenses.isEmpty()) {
+
+                binding.layoutEmptyState.visibility =
+                    View.VISIBLE
+
+                binding.recyclerViewExpenses.visibility =
+                    View.GONE
+            }
+
+            else {
+
+                binding.layoutEmptyState.visibility =
+                    View.GONE
+
+                binding.recyclerViewExpenses.visibility =
+                    View.VISIBLE
+            }
 
             binding.txtTransactionCount.text =
                 expenses.size.toString()
@@ -155,12 +181,13 @@ class HomeFragment : Fragment() {
         ) { total ->
 
             binding.txtTotalExpense.text =
-                "Rs. %.0f".format(total)
+                "$currencySymbol %.0f".format(total)
 
-            val dailyAverage = total.toDouble() / 30
+            val dailyAverage =
+                total / 30
 
             binding.txtDailyAvg.text =
-                "Rs. %.0f".format(dailyAverage)
+                "$currencySymbol %.0f".format(dailyAverage)
         }
     }
 

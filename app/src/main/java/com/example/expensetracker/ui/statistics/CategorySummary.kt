@@ -6,5 +6,7 @@ data class CategorySummary(
 
     val total: Double,
 
-    val color: Int
+    val color: Int,
+
+    val currencySymbol: String
 )

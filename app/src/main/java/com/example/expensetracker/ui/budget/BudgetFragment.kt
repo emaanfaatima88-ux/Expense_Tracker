@@ -34,19 +34,15 @@ class BudgetFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding =
-            FragmentBudgetBinding.inflate(
-                inflater,
-                container,
-                false
-            )
+        _binding = FragmentBudgetBinding.inflate(
+            inflater,
+            container,
+            false
+        )
 
         setupClicks()
 
         observeBudget()
-
-        setupClicks()
-
         return binding.root
     }
 
@@ -104,7 +100,10 @@ class BudgetFragment : Fragment() {
                 val budgetAmount =
                     amount.toDoubleOrNull()
 
-                if (budgetAmount != null) {
+                if (
+                    budgetAmount != null &&
+                    budgetAmount > 0
+                ) {
 
                     budgetViewModel.saveBudget(
                         budgetAmount
@@ -119,6 +118,12 @@ class BudgetFragment : Fragment() {
 
     private fun observeBudget() {
 
+        val currencyManager =
+            CurrencyManager(requireContext())
+
+        val currencySymbol =
+            currencyManager.getCurrencySymbol()
+
         budgetViewModel.budget.observe(
             viewLifecycleOwner
         ) { budget ->
@@ -130,46 +135,78 @@ class BudgetFragment : Fragment() {
 
                 binding.layoutBudgetContent.visibility =
                     View.GONE
+
+                return@observe
             }
 
-            else {
+            binding.layoutEmptyState.visibility =
+                View.GONE
 
-                binding.layoutEmptyState.visibility =
-                    View.GONE
+            binding.layoutBudgetContent.visibility =
+                View.VISIBLE
 
-                binding.layoutBudgetContent.visibility =
-                    View.VISIBLE
+            val monthlyBudget =
+                budget.monthlyBudget
 
-                val monthlyBudget =
-                    budget.monthlyBudget
+            binding.txtMonthlyBudget.text =
+                "$currencySymbol %.0f".format(monthlyBudget)
 
-                binding.txtMonthlyBudget.text =
-                    "Rs. %.0f".format(monthlyBudget)
+            expenseViewModel.totalExpense.observe(
+                viewLifecycleOwner
+            ) { totalSpent ->
 
-                expenseViewModel.totalExpense.observe(
-                    viewLifecycleOwner
-                ) { totalSpent ->
+                binding.txtSpent.text =
+                    "$currencySymbol %.0f".format(totalSpent)
 
-                    binding.txtSpent.text =
-                        "Rs. %.0f".format(totalSpent)
+                val remaining =
+                    monthlyBudget - totalSpent
 
-                    val remaining =
-                        monthlyBudget - totalSpent
+                binding.txtRemaining.text =
+                    "$currencySymbol %.0f".format(remaining)
 
-                    binding.txtRemaining.text =
-                        "Rs. %.0f".format(remaining)
+                val progress = if (monthlyBudget > 0) {
 
-                    val progress = if (monthlyBudget > 0) {
+                    ((totalSpent / monthlyBudget) * 100).toInt()
 
-                        ((totalSpent / monthlyBudget) * 100).toInt()
+                } else {
 
-                    } else {
+                    0
+                }
 
-                        0
+                binding.progressBudget.progress =
+                    progress.coerceAtMost(100)
+
+                when {
+
+                    progress < 70 -> {
+
+                        binding.txtRemaining.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                android.R.color.holo_green_dark
+                            )
+                        )
                     }
 
-                    binding.progressBudget.progress =
-                        progress.coerceIn(0, 100)
+                    progress in 70..89 -> {
+
+                        binding.txtRemaining.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                android.R.color.holo_orange_dark
+                            )
+                        )
+                    }
+
+                    else -> {
+
+                        binding.txtRemaining.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                android.R.color.holo_red_dark
+                            )
+                        )
+                    }
                 }
             }
         }

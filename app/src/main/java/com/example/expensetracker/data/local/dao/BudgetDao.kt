@@ -14,7 +14,8 @@ interface BudgetDao {
     suspend fun insertBudget(
         budgetEntity: BudgetEntity
     )
-
+    @Query("DELETE FROM budget_table")
+    suspend fun deleteBudget()
     @Query("SELECT * FROM budget_table LIMIT 1")
     fun getBudget(): LiveData<BudgetEntity?>
 }

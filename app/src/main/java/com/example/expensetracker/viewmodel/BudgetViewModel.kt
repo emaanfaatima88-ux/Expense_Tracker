@@ -18,7 +18,13 @@ class BudgetViewModel @Inject constructor(
 
     val budget: LiveData<BudgetEntity?> =
         repository.getBudget()
+    fun deleteBudget() {
 
+        viewModelScope.launch {
+
+            repository.deleteBudget()
+        }
+    }
     fun saveBudget(
         amount: Double
     ) {

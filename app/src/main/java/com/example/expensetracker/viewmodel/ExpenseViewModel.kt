@@ -6,6 +6,7 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.example.expensetracker.data.local.entity.ExpenseEntity
+import com.example.expensetracker.domain.usecase.DeleteAllExpensesUseCase
 import com.example.expensetracker.domain.usecase.DeleteExpenseUseCase
 import com.example.expensetracker.domain.usecase.GetAllExpensesUseCase
 import com.example.expensetracker.domain.usecase.InsertExpenseUseCase
@@ -23,7 +24,9 @@ class ExpenseViewModel @Inject constructor(
 
     private val getAllExpensesUseCase: GetAllExpensesUseCase,
 
-    private val updateExpenseUseCase: UpdateExpenseUseCase
+    private val updateExpenseUseCase: UpdateExpenseUseCase,
+
+    private val deleteAllExpensesUseCase: DeleteAllExpensesUseCase
 
 ) : ViewModel() {
 
@@ -50,6 +53,13 @@ class ExpenseViewModel @Inject constructor(
             updateExpenseUseCase(expense)
         }
     }
+    fun deleteAllExpenses() {
+
+        viewModelScope.launch {
+
+            deleteAllExpensesUseCase()
+        }
+    }
     fun deleteExpense(expense: ExpenseEntity) {
 
         viewModelScope.launch {
@@ -57,4 +67,5 @@ class ExpenseViewModel @Inject constructor(
             deleteExpenseUseCase(expense)
         }
     }
+
 }

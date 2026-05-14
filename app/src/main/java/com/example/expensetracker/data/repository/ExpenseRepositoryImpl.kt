@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class ExpenseRepositoryImpl @Inject constructor(
+
     private val expenseDao: ExpenseDao
+
 ) : ExpenseRepository {
 
     override suspend fun insertExpense(expense: ExpenseEntity) {
@@ -22,7 +24,10 @@ class ExpenseRepositoryImpl @Inject constructor(
         expenseDao.updateExpense(expense)
     }
 
-    override fun getAllExpenses(): Flow<List<ExpenseEntity>> {
-        return expenseDao.getAllExpenses()
+    override suspend fun deleteAllExpenses() {
+        expenseDao.deleteAllExpenses()
     }
+
+    override fun getAllExpenses() =
+        expenseDao.getAllExpenses()
 }

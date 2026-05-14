@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetracker.data.local.entity.ExpenseEntity
 import com.example.expensetracker.databinding.ItemExpenseBinding
+import com.example.expensetracker.utils.CurrencyManager
 import com.example.expensetracker.utils.ExpenseCategoryHelper
 
 class ExpenseAdapter(
@@ -16,8 +17,10 @@ class ExpenseAdapter(
 ) : RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
 
     private var expenseList = emptyList<ExpenseEntity>()
+
     val currentList: List<ExpenseEntity>
         get() = expenseList
+
     inner class ExpenseViewHolder(
         val binding: ItemExpenseBinding
     ) : RecyclerView.ViewHolder(binding.root)
@@ -41,7 +44,14 @@ class ExpenseAdapter(
         position: Int
     ) {
 
-        val currentExpense = expenseList[position]
+        val currentExpense =
+            expenseList[position]
+
+        val currencyManager =
+            CurrencyManager(holder.itemView.context)
+
+        val currencySymbol =
+            currencyManager.getCurrencySymbol()
 
         holder.binding.txtTitle.text =
             currentExpense.title
@@ -53,7 +63,7 @@ class ExpenseAdapter(
             String.format("%,.0f", currentExpense.amount)
 
         holder.binding.txtAmount.text =
-            "Rs. $formatted"
+            "$currencySymbol $formatted"
 
         holder.binding.txtDate.text =
             currentExpense.date
@@ -81,14 +91,10 @@ class ExpenseAdapter(
             else
                 View.VISIBLE
 
-        // CLICK LISTENER
-
         holder.itemView.setOnClickListener {
 
             onItemClick(currentExpense)
         }
-
-        // LONG CLICK LISTENER
 
         holder.itemView.setOnLongClickListener {
 
@@ -98,7 +104,8 @@ class ExpenseAdapter(
         }
     }
 
-    override fun getItemCount() = expenseList.size
+    override fun getItemCount() =
+        expenseList.size
 
     fun setData(expenses: List<ExpenseEntity>) {
 
