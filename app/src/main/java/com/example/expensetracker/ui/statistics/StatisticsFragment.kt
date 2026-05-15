@@ -138,6 +138,22 @@ class StatisticsFragment : Fragment() {
         expenseViewModel.allExpenses.observe(
             viewLifecycleOwner
         ) { expenses ->
+            if (expenses.isEmpty()) {
+
+                binding.layoutEmptyState.visibility =
+                    View.VISIBLE
+
+                binding.statisticsContent.visibility =
+                    View.GONE
+
+                return@observe
+            }
+
+            binding.layoutEmptyState.visibility =
+                View.GONE
+
+            binding.statisticsContent.visibility =
+                View.VISIBLE
 
             val categoryMap =
                 expenses.groupBy { it.category }

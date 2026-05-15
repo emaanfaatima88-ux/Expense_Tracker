@@ -86,6 +86,13 @@ class BudgetFragment : Fragment() {
 
         input.hint = "Enter Monthly Budget"
 
+        // SHOW NUMERIC KEYBOARD
+        input.inputType =
+            android.text.InputType.TYPE_CLASS_NUMBER or
+                    android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
+
+        input.requestFocus()
+
         MaterialAlertDialogBuilder(requireContext())
 
             .setTitle("Monthly Budget")
@@ -95,7 +102,7 @@ class BudgetFragment : Fragment() {
             .setPositiveButton("Save") { _, _ ->
 
                 val amount =
-                    input.text.toString()
+                    input.text.toString().trim()
 
                 val budgetAmount =
                     amount.toDoubleOrNull()
@@ -108,6 +115,14 @@ class BudgetFragment : Fragment() {
                     budgetViewModel.saveBudget(
                         budgetAmount
                     )
+
+                } else {
+
+                    android.widget.Toast.makeText(
+                        requireContext(),
+                        "Enter valid amount",
+                        android.widget.Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
 

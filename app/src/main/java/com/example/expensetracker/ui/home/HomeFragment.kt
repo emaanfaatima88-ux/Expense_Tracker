@@ -78,7 +78,7 @@ class HomeFragment : Fragment() {
 
             setHasFixedSize(false)
 
-            isNestedScrollingEnabled = false
+            isNestedScrollingEnabled = true
 
             itemAnimator = null
         }

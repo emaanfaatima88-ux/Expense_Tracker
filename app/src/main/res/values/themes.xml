@@ -18,5 +18,24 @@
         <item name="android:color">#1A7B5EA7</item>
         <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.Full</item>
     </style>
+    <style name="Theme.ExpenseTracker.Splash"
+        parent="Theme.SplashScreen">
 
+        <item name="windowSplashScreenBackground">
+            #683BB7
+        </item>
+
+        <item name="windowSplashScreenAnimatedIcon">
+            @drawable/ic_splash
+        </item>
+
+        <item name="windowSplashScreenIconBackgroundColor">
+            @android:color/transparent
+        </item>
+
+        <item name="postSplashScreenTheme">
+            @style/Theme.ExpenseTracker
+        </item>
+
+    </style>
 </resources>
