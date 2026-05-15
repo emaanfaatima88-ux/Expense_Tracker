@@ -315,11 +315,12 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="100dp"
-                android:background="#FFFFFF"
+                android:background="@drawable/bg_recycler_rounded"
                 android:clipToPadding="false"
                 android:nestedScrollingEnabled="false"
                 android:paddingTop="6dp"
                 android:paddingBottom="6dp"
+                android:paddingLeft="10dp"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
         </LinearLayout>

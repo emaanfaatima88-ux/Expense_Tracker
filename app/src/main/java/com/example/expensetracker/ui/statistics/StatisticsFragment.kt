@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expensetracker.adapter.CategorySummaryAdapter
 import com.example.expensetracker.databinding.FragmentStatisticsBinding
 import com.example.expensetracker.utils.CurrencyManager
-import com.example.expensetracker.utils.ExpenseCategoryHelper
 import com.example.expensetracker.viewmodel.ExpenseViewModel
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.data.PieData
@@ -84,7 +83,7 @@ class StatisticsFragment : Fragment() {
                 16f,
                 16f,
                 16f,
-                16f
+                24f
             )
 
             legend.apply {
@@ -106,6 +105,10 @@ class StatisticsFragment : Fragment() {
 
                 isWordWrapEnabled = true
 
+                xEntrySpace = 10f
+
+                yEntrySpace = 8f
+
                 form = Legend.LegendForm.CIRCLE
             }
         }
@@ -114,7 +117,7 @@ class StatisticsFragment : Fragment() {
     private fun setupRecyclerView() {
 
         categoryAdapter = CategorySummaryAdapter()
-
+        binding.recyclerCategorySummary.isNestedScrollingEnabled = false
         binding.recyclerCategorySummary.apply {
 
             adapter = categoryAdapter
@@ -139,7 +142,8 @@ class StatisticsFragment : Fragment() {
             val categoryMap =
                 expenses.groupBy { it.category }
 
-            val entries = ArrayList<PieEntry>()
+            val entries =
+                ArrayList<PieEntry>()
 
             val summaryList =
                 ArrayList<CategorySummary>()
@@ -149,10 +153,25 @@ class StatisticsFragment : Fragment() {
                 val total =
                     expenseList.sumOf { it.amount }
 
+                val predefinedColors = listOf(
+
+                    "#FF6384",
+                    "#36A2EB",
+                    "#FFCE56",
+                    "#4BC0C0",
+                    "#9966FF",
+                    "#FF9F40",
+                    "#8BC34A",
+                    "#E91E63",
+                    "#009688",
+                    "#673AB7"
+                )
+
                 val color =
                     Color.parseColor(
-                        ExpenseCategoryHelper
-                            .getCategoryColor(category)
+                        predefinedColors[
+                            summaryList.size % predefinedColors.size
+                        ]
                     )
 
                 entries.add(
