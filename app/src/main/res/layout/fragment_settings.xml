@@ -94,6 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="18dp"
+                app:cardBackgroundColor="@color/white"
                 app:cardElevation="2dp">
 
                 <LinearLayout
@@ -143,6 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="18dp"
                 app:cardElevation="2dp">
 
@@ -165,6 +167,7 @@
                     <ImageView
                         android:layout_width="24dp"
                         android:layout_height="24dp"
+
                         android:src="@drawable/ic_export"/>
 
                 </LinearLayout>
@@ -187,6 +190,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="18dp"
+                app:cardBackgroundColor="@color/white"
                 app:cardElevation="2dp">
 
                 <LinearLayout
