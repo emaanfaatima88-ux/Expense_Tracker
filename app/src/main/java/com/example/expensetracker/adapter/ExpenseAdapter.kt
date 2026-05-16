@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetracker.data.local.entity.ExpenseEntity
 import com.example.expensetracker.databinding.ItemExpenseBinding
 import com.example.expensetracker.utils.CurrencyManager
+import com.example.expensetracker.utils.AmountFormatter
 import com.example.expensetracker.utils.ExpenseCategoryHelper
 
 class ExpenseAdapter(
@@ -59,11 +60,12 @@ class ExpenseAdapter(
         holder.binding.txtCategory.text =
             currentExpense.category
 
-        val formatted =
-            String.format("%,.0f", currentExpense.amount)
-
         holder.binding.txtAmount.text =
-            "$currencySymbol $formatted"
+            "$currencySymbol ${
+                AmountFormatter.formatAmount(
+                    currentExpense.amount
+                )
+            }"
 
         holder.binding.txtDate.text =
             currentExpense.date

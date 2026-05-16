@@ -14,6 +14,7 @@ import com.example.expensetracker.databinding.FragmentHomeBinding
 import com.example.expensetracker.utils.CurrencyManager
 import com.example.expensetracker.ui.addexpense.AddExpenseBottomSheet
 import com.example.expensetracker.viewmodel.ExpenseViewModel
+import com.example.expensetracker.utils.AmountFormatter
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -106,7 +107,7 @@ class HomeFragment : Fragment() {
 
                     val position =
                         viewHolder.bindingAdapterPosition
-
+//Get expense at swiped position
                     if (position != RecyclerView.NO_POSITION) {
 
                         val currentList =
@@ -125,13 +126,13 @@ class HomeFragment : Fragment() {
 
         val itemTouchHelper =
             ItemTouchHelper(swipeGesture)
-
+//Connects swipe behavior to RecyclerView
         itemTouchHelper.attachToRecyclerView(
             binding.recyclerViewExpenses
         )
     }
     private fun observeExpenses() {
-
+//Gets selected currency settings
         val currencyManager =
             CurrencyManager(requireContext())
 
@@ -149,52 +150,55 @@ class HomeFragment : Fragment() {
             )
 
             if (expenses.isEmpty()) {
-
+//show empty state if no expenses
                 binding.layoutEmptyState.visibility =
                     View.VISIBLE
-
+//hide recycler view if no expenses
                 binding.recyclerViewExpenses.visibility =
                     View.GONE
             }
 
             else {
-
+//hide empty state if expenses exist
                 binding.layoutEmptyState.visibility =
                     View.GONE
-
+//show recycler view if expenses exist
                 binding.recyclerViewExpenses.visibility =
                     View.VISIBLE
             }
 
             binding.txtTransactionCount.text =
                 expenses.size.toString()
-
+//Get distinct categories and count them
             binding.txtCategoryCount.text =
                 expenses.map { it.category }
                     .distinct()
                     .size
                     .toString()
         }
-
+//Observe total expense and update UI accordingly
         expenseViewModel.totalExpense.observe(
             viewLifecycleOwner
         ) { total ->
 
             binding.txtTotalExpense.text =
-                "$currencySymbol %.0f".format(total)
+                "$currencySymbol ${
+                    AmountFormatter.formatAmount(total)
+                }"
 
             val dailyAverage =
                 total / 30
 
             binding.txtDailyAvg.text =
-                "$currencySymbol %.0f".format(dailyAverage)
+                "$currencySymbol ${
+                    AmountFormatter.formatAmount(dailyAverage)
+                }"
         }
     }
 
     private fun setupClickListeners() {
-
         binding.txtSeeAll.setOnClickListener {
-
+//Navigate to transaction history
             findNavController().navigate(
                 R.id.transactionHistoryFragment
             )

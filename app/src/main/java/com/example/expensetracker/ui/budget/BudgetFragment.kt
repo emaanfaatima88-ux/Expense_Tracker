@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import android.text.InputFilter
+import com.example.expensetracker.utils.AmountFormatter
 import com.example.expensetracker.databinding.FragmentBudgetBinding
 import com.example.expensetracker.utils.CurrencyManager
 import com.example.expensetracker.viewmodel.BudgetViewModel
@@ -85,12 +87,13 @@ class BudgetFragment : Fragment() {
         val input = TextInputEditText(requireContext())
 
         input.hint = "Enter Monthly Budget"
-
+        input.filters =
+            arrayOf(InputFilter.LengthFilter(12))
         // SHOW NUMERIC KEYBOARD
         input.inputType =
             android.text.InputType.TYPE_CLASS_NUMBER or
                     android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL
-
+//SHOW KEYBOARD
         input.requestFocus()
 
         MaterialAlertDialogBuilder(requireContext())
@@ -144,10 +147,10 @@ class BudgetFragment : Fragment() {
         ) { budget ->
 
             if (budget == null) {
-
+//SHOW EMPTY STATE IF NO BUDGET
                 binding.layoutEmptyState.visibility =
                     View.VISIBLE
-
+//HIDE BUDGET CONTENT IF NO BUDGET
                 binding.layoutBudgetContent.visibility =
                     View.GONE
 
@@ -164,20 +167,26 @@ class BudgetFragment : Fragment() {
                 budget.monthlyBudget
 
             binding.txtMonthlyBudget.text =
-                "$currencySymbol %.0f".format(monthlyBudget)
+                "$currencySymbol ${
+                    AmountFormatter.formatAmount(monthlyBudget)
+                }"
 
             expenseViewModel.totalExpense.observe(
                 viewLifecycleOwner
             ) { totalSpent ->
 
                 binding.txtSpent.text =
-                    "$currencySymbol %.0f".format(totalSpent)
+                    "$currencySymbol ${
+                        AmountFormatter.formatAmount(totalSpent)
+                    }"
 
                 val remaining =
                     monthlyBudget - totalSpent
 
                 binding.txtRemaining.text =
-                    "$currencySymbol %.0f".format(remaining)
+                    "$currencySymbol ${
+                        AmountFormatter.formatAmount(remaining)
+                    }"
 
                 val progress = if (monthlyBudget > 0) {
 

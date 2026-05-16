@@ -7,14 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetracker.adapter.ExpenseAdapter
+import com.example.expensetracker.data.local.entity.ExpenseEntity
 import com.example.expensetracker.databinding.FragmentTransactionHistoryBinding
 import com.example.expensetracker.ui.addexpense.AddExpenseBottomSheet
 import com.example.expensetracker.viewmodel.ExpenseViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -27,6 +28,21 @@ class TransactionHistoryFragment : Fragment() {
     private lateinit var expenseAdapter: ExpenseAdapter
 
     private val expenseViewModel: ExpenseViewModel by viewModels()
+
+    private var allExpensesList =
+        emptyList<ExpenseEntity>()
+
+    private val categoryList = listOf(
+
+        "All",
+        "Food",
+        "Bills",
+        "Shopping",
+        "Transport",
+        "Health",
+        "Transport",
+        "Others"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,8 +58,12 @@ class TransactionHistoryFragment : Fragment() {
             )
 
         setupRecyclerView()
+
         setupSwipeToDelete()
+
         observeExpenses()
+
+        setupFilter()
 
         setupBackButton()
 
@@ -82,6 +102,7 @@ class TransactionHistoryFragment : Fragment() {
             itemAnimator = null
         }
     }
+
     private fun setupSwipeToDelete() {
 
         val swipeGesture =
@@ -120,13 +141,89 @@ class TransactionHistoryFragment : Fragment() {
             binding.recyclerViewAllTransactions
         )
     }
+
     private fun observeExpenses() {
 
         expenseViewModel.allExpenses.observe(
             viewLifecycleOwner
         ) { expenses ->
 
+            allExpensesList = expenses
+
             expenseAdapter.setData(expenses)
+
+            if (expenses.isEmpty()) {
+
+                binding.txtNoResult.visibility =
+                    View.VISIBLE
+
+                binding.recyclerViewAllTransactions.visibility =
+                    View.GONE
+
+            } else {
+
+                binding.txtNoResult.visibility =
+                    View.GONE
+
+                binding.recyclerViewAllTransactions.visibility =
+                    View.VISIBLE
+            }
+        }
+    }
+
+    private fun setupFilter() {
+
+        binding.btnFilter.setOnClickListener {
+
+            MaterialAlertDialogBuilder(requireContext())
+
+                .setTitle("Select Category")
+
+                .setItems(
+                    categoryList.toTypedArray()
+                ) { _, which ->
+
+                    val selectedCategory =
+                        categoryList[which]
+
+                    val filteredList = if (
+                        selectedCategory == "All"
+                    ) {
+
+                        allExpensesList
+
+                    } else {
+
+                        allExpensesList.filter {
+
+                            it.category.equals(
+                                selectedCategory,
+                                ignoreCase = true
+                            )
+                        }
+                    }
+
+                    expenseAdapter.setData(filteredList)
+
+                    if (filteredList.isEmpty()) {
+
+                        binding.txtNoResult.visibility =
+                            View.VISIBLE
+
+                        binding.recyclerViewAllTransactions.visibility =
+                            View.GONE
+
+                    } else {
+
+                        binding.txtNoResult.visibility =
+                            View.GONE
+
+                        binding.recyclerViewAllTransactions.visibility =
+                            View.VISIBLE
+                    }
+                }
+
+                .show()
         }
     }
 

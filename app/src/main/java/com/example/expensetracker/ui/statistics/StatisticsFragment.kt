@@ -56,7 +56,7 @@ class StatisticsFragment : Fragment() {
         binding.pieChart.apply {
 
             description.isEnabled = false
-
+                //Makes donut-style chart.
             isDrawHoleEnabled = true
 
             setHoleColor(Color.WHITE)
@@ -78,14 +78,14 @@ class StatisticsFragment : Fragment() {
             animateY(1000)
 
             setUsePercentValues(false)
-
+            setMinAngleForSlices(5f)
             setExtraOffsets(
                 16f,
                 16f,
                 16f,
                 24f
             )
-
+//Shows category labels/colors
             legend.apply {
 
                 isEnabled = true
@@ -93,7 +93,7 @@ class StatisticsFragment : Fragment() {
                 textSize = 12f
 
                 textColor = Color.DKGRAY
-
+//items arranged horizontally
                 orientation =
                     Legend.LegendOrientation.HORIZONTAL
 

@@ -25,16 +25,33 @@
             android:src="@drawable/baseline_arrow_back_ios_new_24"/>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="All Transactions"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
             android:layout_marginStart="16dp"/>
 
+        <ImageView
+            android:id="@+id/btnFilter"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_filter"
+            app:tint="#FFFFFF"/>
     </LinearLayout>
-
+    <TextView
+        android:id="@+id/txtNoResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="40dp"
+        android:text="No Expenses Found"
+        android:textColor="#8E8E93"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="gone"/>
     <!-- RecyclerView -->
 
     <androidx.recyclerview.widget.RecyclerView

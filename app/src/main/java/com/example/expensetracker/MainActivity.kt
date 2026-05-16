@@ -20,13 +20,13 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+//Setup bottom navigation view
         val navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
                     as NavHostFragment
-
+//Gets the nav controller from the nav host
         val navController = navHostFragment.navController
-
+//Connects the nav controller to the bottom navigation view
         binding.bottomNavigationView.setupWithNavController(navController)
 
         binding.fabAddExpense.setOnClickListener {

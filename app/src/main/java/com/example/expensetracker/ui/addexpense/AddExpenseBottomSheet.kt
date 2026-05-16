@@ -12,6 +12,7 @@ import com.example.expensetracker.data.local.entity.ExpenseEntity
 import com.example.expensetracker.databinding.BottomSheetAddExpenseBinding
 import com.example.expensetracker.viewmodel.ExpenseViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import android.text.InputFilter
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -47,7 +48,8 @@ class AddExpenseBottomSheet(
         setupOldExpenseData()
 
         setupDatePicker()
-
+        binding.etAmount.filters =
+            arrayOf(InputFilter.LengthFilter(12))
         saveExpense()
 
         return binding.root

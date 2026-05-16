@@ -12,7 +12,7 @@ import com.example.expensetracker.data.local.entity.ExpenseEntity
         ExpenseEntity::class,
         BudgetEntity::class
     ],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class ExpenseDatabase : RoomDatabase() {
