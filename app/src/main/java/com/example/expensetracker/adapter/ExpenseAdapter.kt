@@ -113,6 +113,7 @@ class ExpenseAdapter(
 
         expenseList = expenses
 
+        this.expenseList = expenses.toList()
         notifyDataSetChanged()
     }
 }

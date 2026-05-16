@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetracker.adapter.ExpenseAdapter
+import android.text.Editable
+import android.text.TextWatcher
 import com.example.expensetracker.data.local.entity.ExpenseEntity
 import com.example.expensetracker.databinding.FragmentTransactionHistoryBinding
 import com.example.expensetracker.ui.addexpense.AddExpenseBottomSheet
@@ -64,7 +66,13 @@ class TransactionHistoryFragment : Fragment() {
         observeExpenses()
 
         setupFilter()
+        observeExpenses()
 
+        setupFilter()
+
+        setupSearch()
+
+        setupBackButton()
         setupBackButton()
 
         return binding.root
@@ -91,7 +99,7 @@ class TransactionHistoryFragment : Fragment() {
         binding.recyclerViewAllTransactions.apply {
 
             adapter = expenseAdapter
-
+            setItemViewCacheSize(20)
             layoutManager =
                 LinearLayoutManager(requireContext())
 
@@ -226,7 +234,68 @@ class TransactionHistoryFragment : Fragment() {
                 .show()
         }
     }
+    private fun setupSearch() {
 
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+
+            override fun onTextChanged(
+                s: CharSequence?,
+                start: Int,
+                before: Int,
+                count: Int
+            ) {
+
+                val searchText =
+                    s.toString().trim()
+
+                val filteredList =
+                    if (searchText.isEmpty()) {
+
+                        allExpensesList
+
+                    } else {
+
+                        allExpensesList.filter {
+
+                            it.title.contains(
+                                searchText,
+                                ignoreCase = true
+                            )
+                        }
+                    }
+
+                expenseAdapter.setData(filteredList)
+
+                if (filteredList.isEmpty()) {
+
+                    binding.txtNoResult.visibility =
+                        View.VISIBLE
+
+                    binding.recyclerViewAllTransactions.visibility =
+                        View.GONE
+
+                } else {
+
+                    binding.txtNoResult.visibility =
+                        View.GONE
+
+                    binding.recyclerViewAllTransactions.visibility =
+                        View.VISIBLE
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+            }
+        })
+    }
     private fun setupBackButton() {
 
         binding.btnBack.setOnClickListener {
