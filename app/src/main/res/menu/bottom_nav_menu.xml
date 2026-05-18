@@ -11,12 +11,6 @@
         android:icon="@drawable/ic_budget"
         android:title="Budget"/>
 
-    <!-- Empty center slot — FAB sits here -->
-    <item
-        android:id="@+id/placeholder"
-        android:icon="@android:color/transparent"
-        android:title=""
-        android:enabled="false"/>
 
     <item
         android:id="@+id/statisticsFragment"

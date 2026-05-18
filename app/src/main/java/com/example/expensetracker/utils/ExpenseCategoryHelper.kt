@@ -19,10 +19,10 @@ object ExpenseCategoryHelper {
     fun getCategoryColor(category: String): String {
 
         return when (category.lowercase()) {
-            "food"      -> "#D97A2B"   // warm orange tint
-            "shopping"  -> "#E03F4F"   // soft purple tint
-            "transport" -> "#0D0B61"   // calm blue tint
-            "health"    -> "#5B7E3C"   // fresh green tint
+            "food"      -> "#fcebe2"   // warm orange tint
+            "shopping"  -> "#f2e6f1"   // soft purple tint
+            "transport" -> "#ebeef2"   // calm blue tint
+            "health"    -> "#e9f3e8"   // fresh green tint
             "bills"     -> "#FF61F8"   // amber tint
             "others"    -> "#e5de00"   // iOS system gray
             else        -> "#8A5F71"   // iOS system gray
