@@ -3,13 +3,12 @@ package com.example.expensetracker.adapter
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetracker.data.local.entity.ExpenseEntity
 import com.example.expensetracker.databinding.ItemExpenseBinding
-import com.example.expensetracker.utils.CurrencyManager
 import com.example.expensetracker.utils.AmountFormatter
+import com.example.expensetracker.utils.CurrencyManager
 import com.example.expensetracker.utils.ExpenseCategoryHelper
 
 class ExpenseAdapter(
@@ -17,7 +16,8 @@ class ExpenseAdapter(
     private val onLongClick: (ExpenseEntity) -> Unit
 ) : RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
 
-    private var expenseList = emptyList<ExpenseEntity>()
+    private var expenseList =
+        emptyList<ExpenseEntity>()
 
     val currentList: List<ExpenseEntity>
         get() = expenseList
@@ -31,11 +31,12 @@ class ExpenseAdapter(
         viewType: Int
     ): ExpenseViewHolder {
 
-        val binding = ItemExpenseBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+        val binding =
+            ItemExpenseBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
 
         return ExpenseViewHolder(binding)
     }
@@ -58,17 +59,14 @@ class ExpenseAdapter(
             currentExpense.title
 
         holder.binding.txtCategory.text =
-            currentExpense.category
+            "${currentExpense.category}  ·  ${currentExpense.date}"
 
         holder.binding.txtAmount.text =
-            "$currencySymbol ${
+            "- $currencySymbol ${
                 AmountFormatter.formatAmount(
                     currentExpense.amount
                 )
             }"
-
-        holder.binding.txtDate.text =
-            currentExpense.date
 
         holder.binding.imgCategory.setImageResource(
             ExpenseCategoryHelper.getCategoryIcon(
@@ -81,17 +79,13 @@ class ExpenseAdapter(
                 currentExpense.category
             )
 
-        (holder.binding.imgCategory.parent as? View)
-            ?.backgroundTintList =
+        val parentCard =
+            holder.binding.imgCategory.parent as ViewGroup
+
+        parentCard.backgroundTintList =
             ColorStateList.valueOf(
                 Color.parseColor(bgHex)
             )
-
-        holder.binding.itemDivider.visibility =
-            if (position == itemCount - 1)
-                View.INVISIBLE
-            else
-                View.VISIBLE
 
         holder.itemView.setOnClickListener {
 
@@ -106,14 +100,17 @@ class ExpenseAdapter(
         }
     }
 
-    override fun getItemCount() =
-        expenseList.size
+    override fun getItemCount(): Int {
 
-    fun setData(expenses: List<ExpenseEntity>) {
+        return expenseList.size
+    }
 
-        expenseList = expenses
+    fun setData(
+        expenses: List<ExpenseEntity>
+    ) {
 
-        this.expenseList = expenses.toList()
+        expenseList = expenses.toList()
+
         notifyDataSetChanged()
     }
 }

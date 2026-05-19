@@ -133,7 +133,7 @@
                         android:max="100"
                         android:progress="57"
                         android:progressBackgroundTint="#3B342F"
-                        android:progressTint="#E58A00"/>
+                        android:progressTint="@color/orange_color"/>
 
                     <!-- "57% of Rs. 120,000"  +  "Rs. 51,781 left" -->
                     <LinearLayout
@@ -456,7 +456,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="See all ›"
-                    android:fontFamily="serif"
                     android:textColor="#E58A00"
                     android:textSize="13sp"
                     android:textStyle="bold"/>

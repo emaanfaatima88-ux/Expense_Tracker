@@ -46,6 +46,7 @@
         android:background="#FFFFFF"
         android:elevation="12dp"
         app:itemIconSize="24dp"
+        app:itemActiveIndicatorStyle="@style/light_orange_indicator"
         app:itemIconTint="@color/orange_color"
         app:itemRippleColor="@color/background"
         app:itemTextColor="@color/black"

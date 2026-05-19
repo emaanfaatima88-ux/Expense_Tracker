@@ -107,6 +107,9 @@ class AddExpenseBottomSheet(
             "Transport",
             "Bills",
             "Health",
+            "Education",
+            "Entertainment",
+            "Coffee",
             "Others"
         )
 
