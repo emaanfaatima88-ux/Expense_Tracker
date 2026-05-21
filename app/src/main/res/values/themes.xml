@@ -47,4 +47,5 @@
 <style name="light_orange_indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
     <item name="android:color" value="@color/orange_color"/>
 </style>
+
 </resources>

@@ -1,25 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F2F2F7">
-
-    <!-- FIXED TITLE -->
-
-    <TextView
-        android:id="@+id/txtTitle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="18dp"
-        android:text="Statistics"
-        android:background="@drawable/bg_header_gradient"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+    android:background="#F5F1EB">
 
     <!-- EMPTY STATE -->
 
@@ -34,72 +20,202 @@
         <ImageView
             android:layout_width="90dp"
             android:layout_height="90dp"
-            android:src="@android:drawable/ic_menu_info_details"
-            android:alpha="0.5"/>
+            android:alpha="0.4"
+            android:src="@android:drawable/ic_menu_info_details"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="No Expenses Found"
-            android:textColor="#1C1C1E"
+            android:layout_marginTop="14dp"
+            android:text="No statistics yet"
+            android:textColor="#1A1612"
             android:textSize="22sp"
             android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Add expenses to view statistics"
-            android:textColor="#8E8E93"
+            android:layout_marginTop="6dp"
+            android:text="Add expenses to see analytics"
+            android:textColor="#7A6F62"
             android:textSize="14sp"/>
+
     </LinearLayout>
 
-    <!-- SCROLLABLE CONTENT -->
+    <!-- MAIN CONTENT -->
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/statisticsContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
         android:clipToPadding="false"
-        android:paddingBottom="100dp">
+        android:fillViewport="true"
+        android:paddingBottom="120dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:paddingBottom="20dp">
+            android:paddingTop="18dp"
+            android:paddingEnd="20dp">
 
-            <!-- PIE CHART CARD -->
+            <!-- HEADER -->
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="STATISTICS"
+                android:textAllCaps="true"
+                android:textColor="#7A6F62"
+                android:textSize="12sp"
+                android:letterSpacing="0.04"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:fontFamily="serif"
+                android:text="Where it went"
+                android:textColor="#1A1612"
+                android:textSize="34sp"
+                android:textStyle="bold"/>
+
+            <!-- FILTER -->
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="52dp"
+                android:layout_marginTop="18dp"
+                android:background="#ECE6DE"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="4dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:text="Last 7 days"
+                    android:textColor="#7A6F62"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_stats_selected"
+                    android:gravity="center"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp"
+                    android:text="This month"
+                    android:textColor="#FFFFFF"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+            <!-- PIE CARD -->
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:cardCornerRadius="24dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#FFFFFF">
+                android:layout_marginTop="22dp"
+                app:cardBackgroundColor="#FFFCF5"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp">
 
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/pieChart"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="340dp"/>
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:padding="22dp">
+
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:id="@+id/pieChart"
+                        android:layout_width="180dp"
+                        android:layout_height="180dp"/>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TOTAL"
+                            android:textAllCaps="true"
+                            android:textColor="#9D9186"
+                            android:textSize="12sp"/>
+
+                        <TextView
+                            android:id="@+id/txtTotalSpent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:fontFamily="serif"
+                            android:text="Rs. 0"
+                            android:textColor="#1A1612"
+                            android:textSize="34sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtTransactionCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="0 transactions"
+                            android:textColor="#7A6F62"
+                            android:textSize="14sp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- SUMMARY LIST -->
+            <!-- CATEGORY CARD -->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerCategorySummary"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:nestedScrollingEnabled="false"/>
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="30dp"
+                app:cardBackgroundColor="#FFFCF5"
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="22dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="By category"
+                        android:textColor="#1A1612"
+                        android:textSize="24sp"
+                        android:textStyle="bold"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerCategorySummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="18dp"
+                        android:nestedScrollingEnabled="false"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
-</LinearLayout>
+</FrameLayout>

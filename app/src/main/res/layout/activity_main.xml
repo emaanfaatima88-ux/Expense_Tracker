@@ -17,7 +17,6 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="72dp"
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
@@ -29,7 +28,7 @@
         android:layout_height="56dp"
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="24dp"
-        android:layout_marginBottom="90dp"
+        android:layout_marginBottom="110dp"
         android:src="@android:drawable/ic_input_add"
         app:shapeAppearance="@style/CircularFAB"
         app:backgroundTint="@color/orange_color"
@@ -41,16 +40,17 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="78dp"
         android:layout_gravity="bottom"
-        android:background="#FFFFFF"
-        android:elevation="12dp"
-        app:itemIconSize="24dp"
-        app:itemActiveIndicatorStyle="@style/light_orange_indicator"
-        app:itemIconTint="@color/orange_color"
-        app:itemRippleColor="@color/background"
-        app:itemTextColor="@color/black"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="14dp"
+        android:background="@drawable/bg_bottom_nav"
+        android:elevation="10dp"
+        app:itemIconSize="22dp"
+        app:itemIconTint="@color/bottom_nav_color"
+        app:itemTextColor="@color/bottom_nav_color"
         app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu" />
+        app:menu="@menu/bottom_nav_menu"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

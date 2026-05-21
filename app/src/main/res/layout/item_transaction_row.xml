@@ -68,8 +68,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="- Rs. 120"
+            android:fontFamily="serif"
             android:textColor="#D46A4F"
-            android:textSize="14sp"
+            android:textSize="18sp"
             android:textStyle="bold"/>
 
     </LinearLayout>
@@ -78,7 +79,6 @@
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="0.7dp"
-        android:layout_marginStart="72dp"
         android:background="#EFE7DC"/>
 
 </LinearLayout>

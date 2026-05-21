@@ -10,9 +10,10 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expensetracker.adapter.CategorySummaryAdapter
 import com.example.expensetracker.databinding.FragmentStatisticsBinding
+import com.example.expensetracker.utils.AmountFormatter
 import com.example.expensetracker.utils.CurrencyManager
 import com.example.expensetracker.viewmodel.ExpenseViewModel
-import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
@@ -35,12 +36,11 @@ class StatisticsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        _binding =
-            FragmentStatisticsBinding.inflate(
-                inflater,
-                container,
-                false
-            )
+        _binding = FragmentStatisticsBinding.inflate(
+            inflater,
+            container,
+            false
+        )
 
         setupPieChart()
 
@@ -56,74 +56,61 @@ class StatisticsFragment : Fragment() {
         binding.pieChart.apply {
 
             description.isEnabled = false
-                //Makes donut-style chart.
+
             isDrawHoleEnabled = true
 
-            setHoleColor(Color.WHITE)
+            setHoleColor(Color.TRANSPARENT)
 
             setTransparentCircleAlpha(0)
 
-            holeRadius = 60f
+            holeRadius = 72f
 
-            transparentCircleRadius = 65f
+            transparentCircleRadius = 76f
 
             setDrawEntryLabels(false)
 
-            centerText = "Expenses"
+            centerText = "CATS\n0"
 
             setCenterTextSize(18f)
 
-            setCenterTextColor(Color.BLACK)
+            setCenterTextColor(
+                Color.parseColor("#1A1612")
+            )
 
-            animateY(1000)
+            animateY(
+                1400,
+                Easing.EaseInOutQuad
+            )
 
             setUsePercentValues(false)
-            setMinAngleForSlices(5f)
+
+            rotationAngle = 0f
+
+            isRotationEnabled = false
+
             setExtraOffsets(
-                16f,
-                16f,
-                16f,
-                24f
+                0f,
+                0f,
+                0f,
+                0f
             )
-//Shows category labels/colors
-            legend.apply {
 
-                isEnabled = true
-
-                textSize = 12f
-
-                textColor = Color.DKGRAY
-//items arranged horizontally
-                orientation =
-                    Legend.LegendOrientation.HORIZONTAL
-
-                horizontalAlignment =
-                    Legend.LegendHorizontalAlignment.CENTER
-
-                verticalAlignment =
-                    Legend.LegendVerticalAlignment.BOTTOM
-
-                isWordWrapEnabled = true
-
-                xEntrySpace = 10f
-
-                yEntrySpace = 8f
-
-                form = Legend.LegendForm.CIRCLE
-            }
+            legend.isEnabled = false
         }
     }
 
     private fun setupRecyclerView() {
 
         categoryAdapter = CategorySummaryAdapter()
-        binding.recyclerCategorySummary.isNestedScrollingEnabled = false
+
         binding.recyclerCategorySummary.apply {
 
             adapter = categoryAdapter
 
             layoutManager =
                 LinearLayoutManager(requireContext())
+
+            isNestedScrollingEnabled = false
         }
     }
 
@@ -138,6 +125,7 @@ class StatisticsFragment : Fragment() {
         expenseViewModel.allExpenses.observe(
             viewLifecycleOwner
         ) { expenses ->
+
             if (expenses.isEmpty()) {
 
                 binding.layoutEmptyState.visibility =
@@ -155,8 +143,26 @@ class StatisticsFragment : Fragment() {
             binding.statisticsContent.visibility =
                 View.VISIBLE
 
+            // TOTAL SPENDING
+            val totalSpent =
+                expenses.sumOf { it.amount }
+
+            binding.txtTotalSpent.text =
+                "$currencySymbol ${
+                    AmountFormatter.formatAmount(totalSpent)
+                }"
+
+            // TRANSACTION COUNT
+            binding.txtTransactionCount.text =
+                "${expenses.size} transactions"
+
+            // GROUP BY CATEGORY
             val categoryMap =
                 expenses.groupBy { it.category }
+
+            // CENTER TEXT
+            binding.pieChart.centerText =
+                "CATS\n${categoryMap.size}"
 
             val entries =
                 ArrayList<PieEntry>()
@@ -164,32 +170,38 @@ class StatisticsFragment : Fragment() {
             val summaryList =
                 ArrayList<CategorySummary>()
 
-            categoryMap.forEach { (category, expenseList) ->
+            // PREMIUM COLORS
+            val predefinedColors = listOf(
+
+                "#4E5D78",
+                "#E4572E",
+                "#8E3FE8",
+                "#2E6BE6",
+                "#1FAA59",
+                "#E12D8A",
+                "#149ECA",
+                "#B7791F"
+            )
+
+            categoryMap.entries.forEachIndexed { index, entry ->
+
+                val category = entry.key
+
+                val expenseList = entry.value
 
                 val total =
-                    expenseList.sumOf { it.amount }
-
-                val predefinedColors = listOf(
-
-                    "#FF6384",
-                    "#36A2EB",
-                    "#FFCE56",
-                    "#4BC0C0",
-                    "#9966FF",
-                    "#FF9F40",
-                    "#8BC34A",
-                    "#E91E63",
-                    "#009688",
-                    "#673AB7"
-                )
+                    expenseList.sumOf { expense ->
+                        expense.amount
+                    }
 
                 val color =
                     Color.parseColor(
                         predefinedColors[
-                            summaryList.size % predefinedColors.size
+                            index % predefinedColors.size
                         ]
                     )
 
+                // PIE ENTRY
                 entries.add(
                     PieEntry(
                         total.toFloat(),
@@ -197,6 +209,7 @@ class StatisticsFragment : Fragment() {
                     )
                 )
 
+                // SUMMARY ITEM
                 summaryList.add(
                     CategorySummary(
                         category,
@@ -207,6 +220,7 @@ class StatisticsFragment : Fragment() {
                 )
             }
 
+            // DATASET
             val dataSet =
                 PieDataSet(entries, "")
 
@@ -215,10 +229,11 @@ class StatisticsFragment : Fragment() {
 
             dataSet.setDrawValues(false)
 
-            dataSet.sliceSpace = 3f
+            dataSet.sliceSpace = 2f
 
-            dataSet.selectionShift = 8f
+            dataSet.selectionShift = 6f
 
+            // PIE DATA
             val pieData =
                 PieData(dataSet)
 
@@ -227,6 +242,7 @@ class StatisticsFragment : Fragment() {
 
             binding.pieChart.invalidate()
 
+            // RECYCLER DATA
             categoryAdapter.setData(summaryList)
         }
     }

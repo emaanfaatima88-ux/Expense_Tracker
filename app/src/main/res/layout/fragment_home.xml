@@ -39,7 +39,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hi there,"
-                        android:fontFamily="serif"
                         android:textColor="#7A6F62"
                         android:textSize="13sp"/>
 
@@ -95,7 +94,6 @@
                             android:layout_weight="1"
                             android:text="SPENT THIS MONTH"
                             android:textColor="#A89D92"
-                            android:fontFamily="serif"
                             android:textSize="12sp"
                             android:letterSpacing="0.04"
                             android:textAllCaps="true"/>
@@ -105,7 +103,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="16 txns"
-                            android:fontFamily="serif"
                             android:textColor="#B9ADA2"
                             android:textSize="12sp"/>
 
@@ -149,7 +146,6 @@
                             android:layout_weight="1"
                             android:text="57% of Rs. 120,000"
                             android:textColor="#D8CFC7"
-                            android:fontFamily="serif"
                             android:textSize="12sp"/>
 
                         <TextView
@@ -157,7 +153,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Rs. 51,781 left"
-                            android:fontFamily="serif"
                             android:textColor="#D8CFC7"
                             android:textSize="12sp"/>
 
@@ -185,7 +180,6 @@
                                 android:layout_height="wrap_content"
                                 android:text="DAILY AVG"
                                 android:textColor="#9D9186"
-                                android:fontFamily="serif"
                                 android:textSize="11sp"
                                 android:letterSpacing="0.04"
                                 android:textAllCaps="true"/>
@@ -197,6 +191,7 @@
                                 android:layout_marginTop="4dp"
                                 android:text="Rs. 3,790"
                                 android:textColor="#FFFFFF"
+                                android:fontFamily="serif"
                                 android:textSize="15sp"
                                 android:textStyle="bold"/>
 
@@ -221,7 +216,6 @@
                                 android:text="TXNS"
                                 android:textColor="#9D9186"
                                 android:textSize="11sp"
-                                android:fontFamily="serif"
                                 android:letterSpacing="0.04"
                                 android:textAllCaps="true"/>
 
@@ -231,6 +225,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:text="16"
+                                android:fontFamily="serif"
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
                                 android:textStyle="bold"/>
@@ -255,7 +250,6 @@
                                 android:layout_height="wrap_content"
                                 android:text="CATEGORIES"
                                 android:textColor="#9D9186"
-                                android:fontFamily="serif"
                                 android:textSize="11sp"
                                 android:letterSpacing="0.04"
                                 android:textAllCaps="true"/>
@@ -266,6 +260,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:text="8"
+                                android:fontFamily="serif"
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
                                 android:textStyle="bold"/>
@@ -333,7 +328,6 @@
                                 android:layout_height="wrap_content"
                                 android:text="Budget"
                                 android:textColor="#1A1612"
-                                android:fontFamily="serif"
                                 android:textSize="15sp"
                                 android:textStyle="bold"/>
 
@@ -342,7 +336,6 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Rs. 120,000"
-                                android:fontFamily="serif"
                                 android:textColor="#7A6F62"
                                 android:textSize="12sp"/>
 
@@ -405,18 +398,16 @@
                                 android:layout_height="wrap_content"
                                 android:text="Statistics"
                                 android:textColor="#1A1612"
-                                android:fontFamily="serif"
                                 android:textSize="15sp"
                                 android:textStyle="bold"/>
 
                             <TextView
+                                android:id="@+id/txtWeeklyStats"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="This month"
                                 android:textColor="#7A6F62"
-                                android:fontFamily="serif"
                                 android:textSize="12sp"/>
-
                         </LinearLayout>
 
                         <TextView
@@ -457,8 +448,7 @@
                     android:layout_height="wrap_content"
                     android:text="See all ›"
                     android:textColor="#E58A00"
-                    android:textSize="13sp"
-                    android:textStyle="bold"/>
+                    android:textSize="13sp"/>
 
             </LinearLayout>
 
@@ -495,7 +485,6 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-
                 app:cardBackgroundColor="#FFFCF5"
                 app:strokeWidth="0dp">
 
@@ -503,8 +492,9 @@
                     android:id="@+id/recyclerViewExpenses"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:clipToPadding="false"
                     android:nestedScrollingEnabled="false"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             </com.google.android.material.card.MaterialCardView>

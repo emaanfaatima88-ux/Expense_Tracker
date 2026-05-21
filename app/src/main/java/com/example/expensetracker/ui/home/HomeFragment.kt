@@ -15,6 +15,7 @@ import com.example.expensetracker.utils.CurrencyManager
 import com.example.expensetracker.ui.addexpense.AddExpenseBottomSheet
 import com.example.expensetracker.viewmodel.ExpenseViewModel
 import com.example.expensetracker.utils.AmountFormatter
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +31,7 @@ class HomeFragment : Fragment() {
     private lateinit var expenseAdapter: ExpenseAdapter
 
     private val expenseViewModel: ExpenseViewModel by viewModels()
-
+    private val monthlyBudget = 120000.0
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -132,7 +133,8 @@ class HomeFragment : Fragment() {
         )
     }
     private fun observeExpenses() {
-//Gets selected currency settings
+
+        // Gets selected currency settings
         val currencyManager =
             CurrencyManager(requireContext())
 
@@ -144,64 +146,135 @@ class HomeFragment : Fragment() {
         ) { expenses ->
 
             // SHOW ONLY RECENT 10
-
             expenseAdapter.setData(
                 expenses.take(10).toMutableList()
             )
 
             if (expenses.isEmpty()) {
-//show empty state if no expenses
+
+                // show empty state if no expenses
                 binding.layoutEmptyState.visibility =
                     View.VISIBLE
-//hide recycler view if no expenses
+
+                // hide recycler view if no expenses
                 binding.recyclerViewExpenses.visibility =
                     View.GONE
-            }
+            } else {
 
-            else {
-//hide empty state if expenses exist
+                // hide empty state if expenses exist
                 binding.layoutEmptyState.visibility =
                     View.GONE
-//show recycler view if expenses exist
+
+                // show recycler view if expenses exist
                 binding.recyclerViewExpenses.visibility =
                     View.VISIBLE
             }
 
+            // Transaction Count
             binding.txtTransactionCount.text =
                 expenses.size.toString()
-//Get distinct categories and count them
+
+            // Category Count
             binding.txtCategoryCount.text =
                 expenses.map { it.category }
                     .distinct()
                     .size
                     .toString()
+
+            // Last 7 Transactions Total
+            val weeklyTotal =
+                expenses.takeLast(7).sumOf { it.amount }
+
+            binding.txtWeeklyStats.text =
+                "$currencySymbol ${
+                    AmountFormatter.formatAmount(weeklyTotal)
+                }"
         }
-//Observe total expense and update UI accordingly
+
+        // Observe total expense
         expenseViewModel.totalExpense.observe(
             viewLifecycleOwner
         ) { total ->
 
+            // Total Expense
             binding.txtTotalExpense.text =
                 "$currencySymbol ${
                     AmountFormatter.formatAmount(total)
                 }"
 
-            val dailyAverage =
-                total / 30
+            // Daily Average
+            val dailyAverage = total / 30
 
             binding.txtDailyAvg.text =
                 "$currencySymbol ${
                     AmountFormatter.formatAmount(dailyAverage)
                 }"
+
+            // Budget Calculation
+            val percentage =
+                ((total / monthlyBudget) * 100).toInt()
+
+            val safePercentage =
+                percentage.coerceIn(0, 100)
+
+            // Progress Bar
+            binding.progressMonthly.setProgress(
+                safePercentage,
+                true
+            )
+
+            // Remaining Amount
+            val remaining =
+                monthlyBudget - total
+
+            // Budget Text
+            binding.txtBudgetPercent.text =
+                "$safePercentage% of $currencySymbol ${
+                    AmountFormatter.formatAmount(monthlyBudget)
+                }"
+
+            // Remaining Text
+            binding.txtRemainingAmount.text =
+                "$currencySymbol ${
+                    AmountFormatter.formatAmount(remaining)
+                } left"
+
+            // Budget Mini Card
+            binding.txtBudgetMini.text =
+                "$currencySymbol ${
+                    AmountFormatter.formatAmount(monthlyBudget)
+                }"
         }
     }
 
     private fun setupClickListeners() {
+
+        // SEE ALL -> switch to History tab
         binding.txtSeeAll.setOnClickListener {
-//Navigate to transaction history
+
+            requireActivity()
+                .findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(
+                    R.id.bottomNavigationView
+                )
+                .selectedItemId = R.id.transactionHistoryFragment
+        }
+
+        // BUDGET -> normal navigation
+        binding.cardBudget.setOnClickListener {
+
             findNavController().navigate(
-                R.id.transactionHistoryFragment
+                R.id.budgetFragment
             )
+        }
+
+        // STATISTICS -> switch to Statistics tab
+        binding.cardStats.setOnClickListener {
+
+            requireActivity()
+                .findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(
+                    R.id.bottomNavigationView
+                )
+                .selectedItemId = R.id.statisticsFragment
         }
     }
 
