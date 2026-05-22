@@ -1,234 +1,321 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F5F5F7">
+    android:background="@color/background"
+    android:orientation="vertical">
 
-    <!-- FIXED HEADER -->
-
-    <TextView
-        android:id="@+id/txtTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="18dp"
-        android:text="Settings"
-        android:background="@drawable/bg_header_gradient"
-        android:textColor="#FFFFFF"
-        android:textSize="20sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:paddingHorizontal="24dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="12dp">
 
-    <!-- SCROLLABLE CONTENT -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SETTINGS"
+            android:textColor="#A49B86"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.05" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Preferences"
+            android:textColor="#1A1612"
+            android:textSize="28sp"
+            android:fontFamily="serif"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"/>
+    </LinearLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:clipToPadding="false"
-        android:paddingBottom="100dp">
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            android:paddingBottom="18dp">
-
-            <!-- EMPTY TOP CARD -->
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="2dp"
-                app:strokeWidth="0dp">
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- CURRENCY -->
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="40dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="CURRENCY"
-                android:textStyle="bold"
-                android:textSize="12sp"
-                android:textColor="#777777"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="10dp"/>
+                android:textColor="#A49B86"
+                android:textSize="11sp"
+                android:fontFamily="sans-serif-bold"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="4dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Select Currency"
+                app:hintEnabled="false"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
 
                 <com.google.android.material.textfield.MaterialAutoCompleteTextView
                     android:id="@+id/dropdownCurrency"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"/>
-
+                    android:inputType="none"
+                    android:background="@drawable/bg_input_field"
+                    android:backgroundTint="@color/card_color"
+                    android:padding="16dp"
+                    android:textColor="#1A1612"
+                    android:textSize="15sp"
+                    android:fontFamily="sans-serif"
+                    android:text="Pakistani Rupee (Rs)" />
             </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- DATA -->
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DATA"
-                android:textStyle="bold"
-                android:textSize="12sp"
-                android:textColor="#777777"
-                android:layout_marginTop="28dp"
-                android:layout_marginBottom="10dp"/>
-
-            <!-- DELETE CARD -->
+                android:text="BUDGET"
+                android:textColor="#A49B86"
+                android:textSize="11sp"
+                android:fontFamily="sans-serif-bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="4dp"/>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardDeleteAll"
+                android:id="@+id/btnSettingsBudget"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="18dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="2dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#EFEAD8"
+                app:cardBackgroundColor="@color/card_color"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="18dp">
-
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical"
-                       >
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Delete All Transactions"
-                            android:textStyle="bold"
-                            android:textSize="16sp"
-                            android:textColor="#111111"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Remove all saved expenses"
-                            android:textSize="12sp"
-                            android:textColor="#777777"/>
-
-                    </LinearLayout>
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:src="@drawable/ic_delete" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- EXPORT PDF -->
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardExportPdf"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardCornerRadius="18dp"
-                app:cardElevation="2dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="18dp"
+                    android:padding="16dp"
                     android:gravity="center_vertical">
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Export PDF Report"
-                        android:textSize="16sp"
-                        android:textColor="@color/black"
-                        android:textStyle="bold"/>
+                        android:text="Monthly budget"
+                        android:textColor="#1A1612"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/txtSettingsBudgetAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs 120,000"
+                        android:textColor="#A49B86"
+                        android:textSize="15sp"
+                        android:layout_marginEnd="8dp"/>
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-
-                        android:src="@drawable/ic_export"/>
-
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@android:drawable/ic_media_play"
+                        app:tint="#A49B86"/>
                 </LinearLayout>
-
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- ABOUT -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DATA"
+                android:textColor="#A49B86"
+                android:textSize="11sp"
+                android:fontFamily="sans-serif-bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="4dp"/>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#EFEAD8"
+                app:cardBackgroundColor="#FFFDF9">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/btnExportPDF"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@color/card_color">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_save"
+                            app:tint="#1A1612"
+                            android:layout_marginEnd="12dp"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Export PDF Report"
+                            android:textColor="#1A1612"
+                            android:textSize="15sp"/>
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@android:drawable/ic_media_play"
+                            app:tint="#A49B86"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#EFEAD8"/>
+
+                    <LinearLayout
+                        android:id="@+id/btnDeleteAllTransactions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="@color/card_color">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@android:drawable/ic_menu_delete"
+                            app:tint="#D47216"
+                            android:layout_marginEnd="12dp"/>
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Delete All Transactions"
+                            android:textColor="#D47216"
+                            android:textSize="15sp"/>
+
+                        <ImageView
+                            android:layout_width="16dp"
+                            android:layout_height="16dp"
+                            android:src="@android:drawable/ic_media_play"
+                            app:tint="#A49B86"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ABOUT"
-                android:textStyle="bold"
-                android:textSize="12sp"
-                android:textColor="#777777"
-                android:layout_marginTop="28dp"
-                android:layout_marginBottom="10dp"/>
+                android:textColor="#A49B86"
+                android:textSize="11sp"
+                android:fontFamily="sans-serif-bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginStart="4dp"/>
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="18dp"
-                app:cardBackgroundColor="@color/white"
-                app:cardElevation="2dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#EFEAD8"
+                app:cardBackgroundColor="@color/card_color">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="18dp">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Expense Tracker"
-                        android:textStyle="bold"
-                        android:textSize="18sp"
-                        android:textColor="#111111"/>
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Version"
+                            android:textColor="#1A1612"
+                            android:textSize="15sp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="1.0.0 - prototype"
+                            android:textColor="#A49B86"
+                            android:textSize="15sp"/>
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#EFEAD8"/>
+
+                    <LinearLayout
+                        android:id="@+id/btnLoadSampleData"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Version 1.0.0"
-                        android:textSize="12sp"
-                        android:textColor="#777777"
-                        android:layout_marginTop="4dp"/>
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center_vertical"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:background="?attr/selectableItemBackground">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Modern expense tracker app for students and personal finance management."
-                        android:textSize="13sp"
-                        android:textColor="#555555"
-                        android:layout_marginTop="12dp"/>
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Sample data"
+                            android:textColor="#1A1612"
+                            android:textSize="15sp"/>
 
+                        <TextView
+                            android:id="@+id/txtSampleDataCount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0 txns"
+                            android:textColor="#A49B86"
+                            android:textSize="15sp"/>
+                    </LinearLayout>
                 </LinearLayout>
-
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
-
 </LinearLayout>

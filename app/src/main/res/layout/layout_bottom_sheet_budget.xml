@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:background="#EFEAD8"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="16dp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:text="Update budget"
+            android:textColor="#1A1612"
+            android:textSize="20sp"
+            android:fontFamily="serif"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/btnClose"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignParentEnd="true"
+            android:background="@drawable/bg_close_circle"
+            android:padding="6dp"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            app:tint="#1A1612" />
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="AMOUNT"
+        android:textColor="#A49B86"
+        android:textSize="11sp"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.05"
+        android:layout_marginBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:background="@drawable/bg_input_field"
+        android:backgroundTint="#FFFDF9"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="16dp"
+        android:layout_marginBottom="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rs. "
+            android:textColor="#A49B86"
+            android:textSize="20sp"
+            android:fontFamily="serif"
+            android:textStyle="bold"
+            android:layout_marginEnd="4dp"/>
+
+        <EditText
+            android:id="@+id/edtBudgetInput"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"
+            android:hint="120,000"
+            android:textColor="#1A1612"
+            android:textSize="24sp"
+            android:fontFamily="serif"
+            android:textStyle="bold"
+            android:inputType="numberDecimal"
+            android:importantForAutofill="no"/>
+    </LinearLayout>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chipGroupQuickBudgets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:chipSpacingHorizontal="8dp"
+        app:chipSpacingVertical="8dp"
+        android:layout_marginBottom="28dp">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip50k"
+            style="@style/Widget.MaterialComponents.Chip.Action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rs. 50,000"
+            android:textColor="#1A1612"
+            app:chipBackgroundColor="#FFFDF9"
+            app:chipStrokeColor="#EFEAD8"
+            app:chipStrokeWidth="1dp"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip80k"
+            style="@style/Widget.MaterialComponents.Chip.Action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rs. 80,000"
+            android:textColor="#1A1612"
+            app:chipBackgroundColor="#FFFDF9"
+            app:chipStrokeColor="#EFEAD8"
+            app:chipStrokeWidth="1dp"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip120k"
+            style="@style/Widget.MaterialComponents.Chip.Action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rs. 120,000"
+            android:textColor="#1A1612"
+            app:chipBackgroundColor="#FFFDF9"
+            app:chipStrokeColor="#EFEAD8"
+            app:chipStrokeWidth="1dp"/>
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/chip200k"
+            style="@style/Widget.MaterialComponents.Chip.Action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rs. 200,000"
+            android:textColor="#1A1612"
+            app:chipBackgroundColor="#FFFDF9"
+            app:chipStrokeColor="#EFEAD8"
+            app:chipStrokeWidth="1dp"/>
+    </com.google.android.material.chip.ChipGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelSheet"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="Cancel"
+            android:textColor="#1A1612"
+            android:backgroundTint="#EAE4D3"
+            app:cornerRadius="14dp"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="15sp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveBudgetSheet"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:text="Save budget"
+            android:textColor="#FFFDF9"
+            app:backgroundTint="#1A1612"
+            app:cornerRadius="14dp"
+            android:textAllCaps="false"
+            android:fontFamily="sans-serif-medium"
+            android:textSize="15sp"/>
+    </LinearLayout>
+</LinearLayout>

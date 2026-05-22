@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F6F1E8">
+    android:background="@color/background">
 
     <!-- TOP SECTION -->
 
@@ -96,7 +96,7 @@
                 app:cardElevation="0dp"
                 app:strokeWidth="1dp"
                 app:strokeColor="#ECE5DA"
-                app:cardBackgroundColor="#FFFCF5">
+                app:cardBackgroundColor="@color/card_color">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -139,7 +139,7 @@
                 app:cardElevation="0dp"
                 app:strokeWidth="1dp"
                 app:strokeColor="#ECE5DA"
-                app:cardBackgroundColor="#FFFCF5">
+                app:cardBackgroundColor="@color/card_color">
 
                 <ImageView
                     android:layout_width="20dp"

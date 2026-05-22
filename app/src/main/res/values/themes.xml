@@ -47,5 +47,12 @@
 <style name="light_orange_indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
     <item name="android:color" value="@color/orange_color"/>
 </style>
+    <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
+    </style>
 
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="behavior_peekHeight">auto</item>
+    </style>
 </resources>

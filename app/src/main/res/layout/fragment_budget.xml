@@ -1,204 +1,306 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F2F7">
+    android:background="@color/background"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="20dp">
 
-        <!-- TITLE -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="18dp"
-            android:background="@drawable/bg_header_gradient"
-            android:gravity="center_vertical">
+            android:layout_marginBottom="20dp">
 
+            <ImageButton
+                android:id="@+id/btnBackNavigation"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:background="@drawable/bg_notification_circle"
+                android:src="@drawable/ic_back"
+                app:tint="#1A1612"
+
+                android:clickable="true"
+                android:focusable="true"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Monthly Budget"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#FFFFFF"
-                android:layout_marginStart="16dp"/>
-
-        </LinearLayout>
-        <!-- EMPTY STATE -->
-
-        <LinearLayout
-            android:id="@+id/layoutEmptyState"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:gravity="center"
-            android:layout_marginHorizontal="20dp"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="No Budget Set"
-                android:textColor="#1C1C1E"
-                android:textSize="22sp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignTop="@id/btnBackNavigation"
+                android:layout_alignBottom="@id/btnBackNavigation"
+                android:gravity="center_vertical"
+                android:text="Budget"
+                android:textColor="#1A1612"
+                android:textSize="18sp"
+                android:fontFamily="serif"
                 android:textStyle="bold"/>
+        </RelativeLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:gravity="center"
-                android:text="Set a monthly spending limit to track your budget"
-                android:textColor="#8E8E93"
-                android:textSize="14sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="MONTHLY BUDGET"
+            android:textColor="#A49B86"
+            android:textSize="11sp"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.05"/>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSetBudget"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Set Budget"/>
-        </LinearLayout>
-
-        <!-- BUDGET CONTENT -->
+        <TextView
+            android:id="@+id/txtCurrentMonthYear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="May 2026"
+            android:textColor="#1A1612"
+            android:textSize="28sp"
+            android:fontFamily="serif"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="20dp"/>
 
         <LinearLayout
-            android:id="@+id/layoutBudgetContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:background="@drawable/bg_input_field"
+            android:backgroundTint="#FFFDF9"
+            android:elevation="0dp"
+            android:padding="20dp">
 
-            <!-- SWIPE CARD -->
+            <FrameLayout
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="24dp">
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/recyclerSwipeBudget"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp">
+                <com.google.android.material.progressindicator.CircularProgressIndicator
+                    android:id="@+id/progressBudgetRing"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    app:indicatorSize="170dp"
+                    app:trackThickness="12dp"
+                    app:trackColor="#F5EFE4"
+                    app:indicatorColor="#D47216"
+                    android:max="100"
+                    android:progress="59"/>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:orientation="vertical"
-                    android:padding="20dp">
+                    android:gravity="center">
 
-                    <!-- MONTHLY BUDGET -->
+                    <TextView
+                        android:id="@+id/txtProgressPercentage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="59%"
+                        android:textColor="#1A1612"
+                        android:textSize="32sp"
+                        android:fontFamily="serif"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Monthly Budget"
-                        android:textColor="#8E8E93"
-                        android:textSize="13sp"/>
+                        android:text="OF BUDGET"
+                        android:textColor="#A49B86"
+                        android:textSize="10sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:letterSpacing="0.05"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+            </FrameLayout>
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:paddingHorizontal="4dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_alignParentStart="true">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SPENT"
+                        android:textColor="#A49B86"
+                        android:textSize="11sp"
+                        android:fontFamily="sans-serif-medium"/>
+                    <TextView
+                        android:id="@+id/txtSpent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs. 71,269"
+                        android:textColor="#B05C1D"
+                        android:textSize="18sp"
+                        android:fontFamily="serif"
+                        android:textStyle="bold"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="end">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="REMAINING"
+                        android:textColor="#A49B86"
+                        android:textSize="11sp"
+                        android:fontFamily="sans-serif-medium"/>
+                    <TextView
+                        android:id="@+id/txtRemaining"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs. 48,731"
+                        android:textColor="#D47216"
+                        android:textSize="18sp"
+                        android:fontFamily="serif"
+                        android:textStyle="bold"
+                        android:layout_marginTop="4dp"/>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_input_field"
+                android:backgroundTint="#F5EFE4"
+                android:padding="14dp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@android:drawable/ic_menu_my_calendar"
+                    app:tint="#1A1612"
+                    android:layout_marginEnd="10dp"/>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Monthly limit"
+                        android:textColor="#A49B86"
+                        android:textSize="12sp"/>
                     <TextView
                         android:id="@+id/txtMonthlyBudget"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:text="Rs. 0"
-                        android:textColor="#1C1C1E"
-                        android:textSize="32sp"
-                        android:textStyle="bold"/>
-
-                    <!-- PROGRESS -->
-
-                    <ProgressBar
-                        android:id="@+id/progressBudget"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="10dp"
-                        android:layout_marginTop="20dp"
-                        android:max="100"/>
-
-                    <!-- SPENT / REMAINING -->
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal">
-
-                        <!-- SPENT -->
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Spent"
-                                android:textColor="#8E8E93"
-                                android:textSize="12sp"/>
-
-                            <TextView
-                                android:id="@+id/txtSpent"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Rs. 0"
-                                android:textColor="#E03F4F"
-                                android:textSize="18sp"
-                                android:textStyle="bold"/>
-                        </LinearLayout>
-
-                        <!-- REMAINING -->
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="end"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Remaining"
-                                android:textColor="#8E8E93"
-                                android:textSize="12sp"/>
-
-                            <TextView
-                                android:id="@+id/txtRemaining"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Rs. 0"
-                                android:textColor="#5B7E3C"
-                                android:textSize="18sp"
-                                android:textStyle="bold"/>
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <!-- EDIT BUTTON -->
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnEditBudget"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
-                        android:text="Update Budget"/>
-
+                        android:text="Rs. 120,000"
+                        android:textColor="#1A1612"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:layout_marginTop="1dp"/>
                 </LinearLayout>
 
-            </com.google.android.material.card.MaterialCardView>
+                <TextView
+                    android:id="@+id/btnUpdateBudgetInline"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Update"
+                    android:textColor="#1A1612"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="14sp"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="4dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+            </LinearLayout>
+        </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/cardPacingStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/bg_input_field"
+            android:backgroundTint="#FFFDF9"
+            android:padding="20dp"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Pacing"
+                android:textColor="#1A1612"
+                android:textSize="15sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_marginBottom="12dp"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_alignParentStart="true">
+                    <TextView
+                        android:id="@+id/txtPacingExpectedTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="By day 22 of 31, expected"
+                        android:textColor="#A49B86"
+                        android:textSize="12sp"/>
+                    <TextView
+                        android:id="@+id/txtPacingExpectedAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rs. 85,161"
+                        android:textColor="#1A1612"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="end">
+                    <TextView
+                        android:id="@+id/txtPacingStatusLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Under pace"
+                        android:textColor="#A49B86"
+                        android:textSize="12sp"/>
+                    <TextView
+                        android:id="@+id/txtPacingDifference"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="-Rs. 13,892"
+                        android:textColor="#B05C1D"
+                        android:textStyle="bold"
+                        android:textSize="15sp"
+                        android:layout_marginTop="2dp"/>
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
 
     </LinearLayout>
-
 </ScrollView>

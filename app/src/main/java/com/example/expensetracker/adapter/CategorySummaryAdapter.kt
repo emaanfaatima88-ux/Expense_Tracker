@@ -1,70 +1,57 @@
 package com.example.expensetracker.adapter
 
 import android.content.res.ColorStateList
+import android.graphics.drawable.GradientDrawable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetracker.databinding.ItemCategorySummaryBinding
 import com.example.expensetracker.ui.statistics.CategorySummary
-import com.example.expensetracker.utils.CurrencyManager
+import com.example.expensetracker.utils.AmountFormatter
 
-class CategorySummaryAdapter :
-    RecyclerView.Adapter<CategorySummaryAdapter.ViewHolder>() {
+class CategorySummaryAdapter : RecyclerView.Adapter<CategorySummaryAdapter.ViewHolder>() {
 
-    private var summaryList = emptyList<CategorySummary>()
+    private val items = ArrayList<CategorySummary>()
+    private var totalAmountSum: Double = 1.0
 
-    inner class ViewHolder(
-        val binding: ItemCategorySummaryBinding
-    ) : RecyclerView.ViewHolder(binding.root)
+    fun setData(newItems: List<CategorySummary>) {
+        items.clear()
+        items.addAll(newItems.sortedByDescending { it.total })
+        totalAmountSum = items.sumOf { it.total }.coerceAtLeast(1.0)
+        notifyDataSetChanged()
+    }
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ViewHolder {
-
-        val binding =
-            ItemCategorySummaryBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = ItemCategorySummaryBinding.inflate(
+            LayoutInflater.from(parent.context), parent, false
+        )
         return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(
-        holder: ViewHolder,
-        position: Int
-    ) {
-
-        val item = summaryList[position]
-
-        holder.binding.txtCategory.text =
-            item.category
-
-        val currencyManager =
-            CurrencyManager(holder.itemView.context)
-
-        val currency =
-            currencyManager.getCurrencySymbol()
-
-        val formattedAmount =
-            String.format("%,.0f", item.total)
-
-        holder.binding.txtAmount.text =
-            "$currency $formattedAmount"
-
-        holder.binding.viewColor.backgroundTintList =
-            ColorStateList.valueOf(item.color)
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        holder.bind(items[position])
     }
 
-    override fun getItemCount() =
-        summaryList.size
+    override fun getItemCount(): Int = items.size
 
-    fun setData(list: List<CategorySummary>) {
+    inner class ViewHolder(private val binding: ItemCategorySummaryBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        summaryList = list
+        fun bind(item: CategorySummary) {
+            binding.txtCategoryName.text = item.category
+            binding.txtCategoryAmount.text = "${item.currencySymbol} ${AmountFormatter.formatAmount(item.total)}"
 
-        notifyDataSetChanged()
+            // Fixed double-to-int percentage formula calculation
+            val pct = ((item.total / totalAmountSum) * 100).toInt()
+            binding.txtCategoryPercentage.text = "$pct%"
+            binding.progressCategory.progress = pct
+
+            val dotBackground = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(item.color)
+            }
+            binding.viewColorDot.background = dotBackground
+            binding.progressCategory.progressTintList = ColorStateList.valueOf(item.color)
+        }
     }
 }

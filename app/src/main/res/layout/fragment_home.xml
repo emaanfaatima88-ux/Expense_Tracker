@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F1EB">
+    android:background="@color/background">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -290,7 +290,7 @@
                     android:layout_marginEnd="6dp"
                     app:cardCornerRadius="18dp"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="#FFFCF5"
+                    app:cardBackgroundColor="@color/card_color"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
@@ -361,7 +361,7 @@
                     android:layout_marginStart="6dp"
                     app:cardCornerRadius="18dp"
                     app:cardElevation="0dp"
-                    app:cardBackgroundColor="#FFFCF5"
+                    app:cardBackgroundColor="@color/card_color"
                     app:strokeWidth="0dp">
 
                     <LinearLayout
@@ -485,7 +485,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="#FFFCF5"
+                app:cardBackgroundColor="@color/card_color"
                 app:strokeWidth="0dp">
 
                 <androidx.recyclerview.widget.RecyclerView

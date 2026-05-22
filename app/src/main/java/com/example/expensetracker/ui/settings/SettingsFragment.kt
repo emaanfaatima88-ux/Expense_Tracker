@@ -21,7 +21,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class SettingsFragment : Fragment() {
 
     private var _binding: FragmentSettingsBinding? = null
-
     private val binding get() = _binding!!
 
     private val expenseViewModel: ExpenseViewModel by viewModels()
@@ -31,97 +30,54 @@ class SettingsFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        _binding =
-            FragmentSettingsBinding.inflate(
-                inflater,
-                container,
-                false
-            )
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
 
         setupClicks()
-
         setupCurrencyDropdown()
 
         return binding.root
     }
 
     private fun setupClicks() {
-
-        // DELETE ALL
-
-        binding.cardDeleteAll.setOnClickListener {
-
+        // DELETE ALL EXPENSES IMPLEMENTATION
+        binding.btnDeleteAllTransactions.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
-
                 .setTitle("Delete All Expenses")
-
-                .setMessage(
-                    "Are you sure you want to delete all expenses?"
-                )
-
+                .setMessage("Are you sure you want to delete all expenses?")
                 .setPositiveButton("Delete") { _, _ ->
-
                     expenseViewModel.deleteAllExpenses()
-
                     Toast.makeText(
                         requireContext(),
                         "All expenses deleted",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
                 .setNegativeButton("Cancel", null)
-
                 .show()
         }
 
-
-        // EXPORT PDF
-
-        binding.cardExportPdf.setOnClickListener {
-
-            expenseViewModel.allExpenses.observe(
-                viewLifecycleOwner
-            ) { expenses ->
-
-                if (expenses.isEmpty()) {
-
+        // EXPORT EXCEL/PDF REPORT DOCUMENT IMPLEMENTATION
+        binding.btnExportPDF.setOnClickListener {
+            expenseViewModel.allExpenses.observe(viewLifecycleOwner) { expenses ->
+                if (expenses == null || expenses.isEmpty()) {
                     Toast.makeText(
                         requireContext(),
-                        "No expenses found",
+                        "No expenses found to export",
                         Toast.LENGTH_SHORT
                     ).show()
-
                 } else {
-
-                    val pdfUri =
-                        PdfGenerator.generateExpensePdf(
-                            requireContext(),
-                            expenses
-                        )
+                    val pdfUri = PdfGenerator.generateExpensePdf(requireContext(), expenses)
 
                     if (pdfUri != null) {
-
                         MaterialAlertDialogBuilder(requireContext())
-
                             .setTitle("PDF Exported")
-
-                            .setMessage(
-                                "Expense report saved successfully.\n\nDo you want to open it?"
-                            )
-
+                            .setMessage("Expense report saved successfully.\n\nDo you want to open it?")
                             .setPositiveButton("Open") { _, _ ->
-
                                 openPdf(pdfUri)
                             }
-
                             .setNegativeButton("Cancel", null)
-
                             .show()
-
                     } else {
-
                         Toast.makeText(
                             requireContext(),
                             "Failed to export PDF",
@@ -134,63 +90,31 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupCurrencyDropdown() {
-
         val currencies = listOf(
-
             "Pakistani Rupee (Rs)",
-
             "US Dollar ($)",
-
             "Euro (€)",
-
             "British Pound (£)"
         )
 
-        val adapter =
-            ArrayAdapter(
-
-                requireContext(),
-
-                android.R.layout.simple_list_item_1,
-
-                currencies
-            )
-
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_list_item_1,
+            currencies
+        )
         binding.dropdownCurrency.setAdapter(adapter)
 
-        val currencyManager =
-            CurrencyManager(requireContext())
+        val currencyManager = CurrencyManager(requireContext())
 
-        // SHOW SAVED CURRENCY
+        // SHOW CURRENTLY SAVED PREFERENCE STATE
+        val savedCurrency = currencyManager.getCurrency()
+        binding.dropdownCurrency.setText(savedCurrency, false)
 
-        val savedCurrency =
-            currencyManager.getCurrency()
-
-        binding.dropdownCurrency.setText(
-            savedCurrency,
-            false
-        )
-
-        // SAVE NEW CURRENCY
-
-        binding.dropdownCurrency.setOnItemClickListener {
-
-                _,
-                _,
-                position,
-                _ ->
-
-            val selectedCurrency =
-                currencies[position]
-
-            binding.dropdownCurrency.setText(
-                selectedCurrency,
-                false
-            )
-
-            currencyManager.saveCurrency(
-                selectedCurrency
-            )
+        // MUTATE & WRITE NEW CURRENCY STATE TO STORAGE
+        binding.dropdownCurrency.setOnItemClickListener { _, _, position, _ ->
+            val selectedCurrency = currencies[position]
+            binding.dropdownCurrency.setText(selectedCurrency, false)
+            currencyManager.saveCurrency(selectedCurrency)
 
             Toast.makeText(
                 requireContext(),
@@ -201,25 +125,13 @@ class SettingsFragment : Fragment() {
     }
 
     private fun openPdf(uri: Uri) {
-
         try {
-
-            val intent =
-                Intent(Intent.ACTION_VIEW)
-
-            intent.setDataAndType(
-                uri,
-                "application/pdf"
-            )
-
-            intent.addFlags(
-                Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
-
+            val intent = Intent(Intent.ACTION_VIEW).apply {
+                setDataAndType(uri, "application/pdf")
+                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            }
             startActivity(intent)
-
         } catch (e: Exception) {
-
             Toast.makeText(
                 requireContext(),
                 "No PDF viewer app found",
@@ -229,9 +141,7 @@ class SettingsFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-
         super.onDestroyView()
-
         _binding = null
     }
 }

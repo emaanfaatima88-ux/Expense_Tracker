@@ -27,7 +27,9 @@ class TransactionHistoryFragment : Fragment() {
     private lateinit var expenseAdapter: GroupedExpenseAdapter
 
     private val expenseViewModel: ExpenseViewModel by viewModels()
-
+    private var activeFilterCategory = "All"
+    private var activeSortOrder = "newest"
+    private var activeDateRange = "all"
     private var allExpensesList = emptyList<ExpenseEntity>()
 
     private val categoryList = listOf(
@@ -372,48 +374,67 @@ class TransactionHistoryFragment : Fragment() {
         }
     }
 
+
+    // 2. Replace your setupFilter() implementation with this clean logical flow
     private fun setupFilter() {
-
         binding.btnFilter.setOnClickListener {
+            val filterSheet = FilterBottomSheet(
+                currentCategory = activeFilterCategory,
+                currentSortOrder = activeSortOrder,
+                currentDateRange = activeDateRange
+            ) { selectedCategory, sortOrder, dateRange ->
 
-            MaterialAlertDialogBuilder(requireContext())
+                activeFilterCategory = selectedCategory
+                activeSortOrder = sortOrder
+                activeDateRange = dateRange
 
-                .setTitle("Select Category")
+                val cleanCategory = if (selectedCategory.contains("&")) selectedCategory.split("&")[0].trim() else selectedCategory
 
-                .setItems(
-                    categoryList.toTypedArray()
-                ) { _, which ->
-
-                    val selectedCategory =
-                        categoryList[which]
-
-                    val filteredList =
-                        if (selectedCategory == "All") {
-
-                            allExpensesList
-
-                        } else {
-
-                            allExpensesList.filter {
-
-                                it.category.equals(
-                                    selectedCategory,
-                                    ignoreCase = true
-                                )
-                            }
-                        }
-
-                    expenseAdapter.setData(
-                        groupExpensesByDate(filteredList)
-                    )
-
-                    updateEmptyState(filteredList)
+                // A. Filter by Category
+                var filteredList = if (cleanCategory.equals("All", ignoreCase = true)) {
+                    allExpensesList
+                } else {
+                    allExpensesList.filter { it.category.contains(cleanCategory, ignoreCase = true) }
                 }
 
-                .show()
+                // B. Filter by Date Range
+                val currentTime = System.currentTimeMillis()
+                filteredList = when (dateRange) {
+                    "month" -> {
+                        val cal = java.util.Calendar.getInstance()
+                        cal.set(java.util.Calendar.DAY_OF_MONTH, 1)
+                        cal.set(java.util.Calendar.HOUR_OF_DAY, 0)
+                        val startOfMonth = cal.timeInMillis
+                        filteredList.filter { getDatePriority(it.date) >= startOfMonth }
+                    }
+                    "30days" -> {
+                        val thirtyDaysAgo = currentTime - (30L * 24 * 60 * 60 * 1000)
+                        filteredList.filter { getDatePriority(it.date) >= thirtyDaysAgo }
+                    }
+                    "7days" -> {
+                        val sevenDaysAgo = currentTime - (7L * 24 * 60 * 60 * 1000)
+                        filteredList.filter { getDatePriority(it.date) >= sevenDaysAgo }
+                    }
+                    else -> filteredList // All time
+                }
+
+                // C. Sort the data
+                filteredList = when (sortOrder) {
+                    "oldest" -> filteredList.sortedBy { getDatePriority(it.date) }
+                    "highest" -> filteredList.sortedByDescending { it.amount }
+                    "lowest" -> filteredList.sortedBy { it.amount }
+                    else -> filteredList.sortedByDescending { getDatePriority(it.date) } // Newest
+                }
+
+                // Push updates straight onto UI Layer
+                expenseAdapter.setData(groupExpensesByDate(filteredList))
+                updateTotal(filteredList)
+                updateEmptyState(filteredList)
+            }
+
+            filterSheet.show(parentFragmentManager, "FilterBottomSheet")
         }
     }
-
     private fun setupSearch() {
 
         binding.etSearch.addTextChangedListener(

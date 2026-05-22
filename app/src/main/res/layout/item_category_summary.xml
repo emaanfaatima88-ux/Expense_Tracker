@@ -1,48 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://tools.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="0dp"
-    app:cardBackgroundColor="#FFFFFF">
+    android:orientation="vertical"
+    android:paddingTop="12dp"
+    android:paddingBottom="12dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="16dp">
+        android:gravity="center_vertical">
 
         <View
-            android:id="@+id/viewColor"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:background="@drawable/bg_circle_color"/>
+            android:id="@+id/viewColorDot"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_centerVertical="true"
+            android:background="@android:color/holo_blue_dark" />
 
         <TextView
-            android:id="@+id/txtCategory"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="14dp"
-            android:text="Food"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#1C1C1E"/>
-
-        <TextView
-            android:id="@+id/txtAmount"
+            android:id="@+id/txtCategoryName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rs. 0"
-            android:textSize="15sp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/viewColorDot"
+            android:textColor="#1A1612"
+            android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="#683BB7"/>
+            tools:text="Bills" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/txtCategoryPercentage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:textColor="#9D9186"
+            android:textSize="13sp"
+            tools:text="28%" />
 
-</com.google.android.material.card.MaterialCardView>
+        <TextView
+            android:id="@+id/txtCategoryAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_toStartOf="@id/txtCategoryPercentage"
+            android:textColor="#1A1612"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            tools:text="Rs. 19,300" />
+    </RelativeLayout>
+
+    <ProgressBar
+        android:id="@+id/progressCategory"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:layout_marginTop="8dp"
+        android:progressDrawable="@drawable/custom_category_progress"
+        tools:progress="40" />
+</LinearLayout>
