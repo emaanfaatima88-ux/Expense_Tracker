@@ -47,6 +47,7 @@
             android:layout_toStartOf="@id/txtCategoryPercentage"
             android:textColor="#1A1612"
             android:textSize="14sp"
+            android:fontFamily="@font/fraunces"
             android:textStyle="bold"
             tools:text="Rs. 19,300" />
     </RelativeLayout>

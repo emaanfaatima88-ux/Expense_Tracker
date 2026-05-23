@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -12,7 +11,7 @@
         android:layout_height="match_parent"
         android:fillViewport="true"
         android:clipToPadding="false"
-        android:paddingBottom="100dp">
+        android:paddingBottom="120dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,7 +21,6 @@
             android:paddingEnd="22dp"
             android:paddingTop="14dp">
 
-            <!-- HEADER -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,6 +37,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Hi there,"
+                        android:fontFamily="sans-serif"
                         android:textColor="#7A6F62"
                         android:textSize="13sp"/>
 
@@ -46,11 +45,11 @@
                         android:id="@+id/txtMonth"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/fraunces"
                         android:text="May 2026"
-                        android:fontFamily="serif"
                         android:textColor="#1A1612"
                         android:textSize="22sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -65,24 +64,21 @@
 
             </LinearLayout>
 
-            <!-- HERO SUMMARY CARD -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
                 app:cardCornerRadius="26dp"
                 app:cardElevation="0dp"
-                app:cardBackgroundColor="@android:color/transparent">
+                app:cardBackgroundColor="#16100B">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_home_summary"
-
                     android:orientation="vertical"
                     android:padding="22dp">
 
-                    <!-- "SPENT THIS MONTH"  +  "16 txns" -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -94,6 +90,7 @@
                             android:layout_weight="1"
                             android:text="SPENT THIS MONTH"
                             android:textColor="#A89D92"
+                            android:fontFamily="sans-serif"
                             android:textSize="12sp"
                             android:letterSpacing="0.04"
                             android:textAllCaps="true"/>
@@ -108,19 +105,17 @@
 
                     </LinearLayout>
 
-                    <!-- Big amount -->
                     <TextView
                         android:id="@+id/txtTotalExpense"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
+                        android:fontFamily="@font/fraunces_bold"
                         android:text="Rs. 68,219"
-                        android:fontFamily="serif"
                         android:textColor="#FFFFFF"
                         android:textSize="46sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
-                    <!-- Orange progress bar -->
                     <ProgressBar
                         android:id="@+id/progressMonthly"
                         style="?android:attr/progressBarStyleHorizontal"
@@ -130,9 +125,8 @@
                         android:max="100"
                         android:progress="57"
                         android:progressBackgroundTint="#3B342F"
-                        android:progressTint="@color/orange_color"/>
+                        android:progressTint="#DC7805"/>
 
-                    <!-- "57% of Rs. 120,000"  +  "Rs. 51,781 left" -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -158,7 +152,6 @@
 
                     </LinearLayout>
 
-                    <!-- Stats row: DAILY AVG | TXNS | CATEGORIES -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -189,11 +182,11 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
+                                android:fontFamily="@font/fraunces"
                                 android:text="Rs. 3,790"
                                 android:textColor="#FFFFFF"
-                                android:fontFamily="serif"
                                 android:textSize="15sp"
-                                android:textStyle="bold"/>
+                                android:textStyle="bold" />
 
                         </LinearLayout>
 
@@ -225,7 +218,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:text="16"
-                                android:fontFamily="serif"
+                                android:fontFamily="@font/fraunces"
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
                                 android:textStyle="bold"/>
@@ -260,7 +253,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:text="8"
-                                android:fontFamily="serif"
+                                android:fontFamily="@font/fraunces"
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
                                 android:textStyle="bold"/>
@@ -273,7 +266,6 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- QUICK ACTION CARDS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -281,7 +273,6 @@
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
-                <!-- BUDGET -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardBudget"
                     android:layout_width="0dp"
@@ -301,7 +292,6 @@
                         android:padding="14dp"
                         android:minHeight="70dp">
 
-                        <!-- Soft orange icon container -->
                         <LinearLayout
                             android:layout_width="36dp"
                             android:layout_height="36dp"
@@ -352,7 +342,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <!-- STATISTICS -->
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/cardStats"
                     android:layout_width="0dp"
@@ -423,7 +412,6 @@
 
             </LinearLayout>
 
-            <!-- RECENT EXPENSES HEADER -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -438,7 +426,7 @@
                     android:layout_weight="1"
                     android:text="Recent expenses"
                     android:textColor="#1A1612"
-                    android:fontFamily="serif"
+                    android:fontFamily="@font/fraunces"
                     android:textSize="19sp"
                     android:textStyle="bold"/>
 
@@ -452,7 +440,6 @@
 
             </LinearLayout>
 
-            <!-- EMPTY STATE -->
             <LinearLayout
                 android:id="@+id/layoutEmptyState"
                 android:layout_width="match_parent"
@@ -502,7 +489,5 @@
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
-
-
 
 </FrameLayout>

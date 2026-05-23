@@ -73,7 +73,7 @@
             android:textColor="#D46A4F"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:fontFamily="serif"/>
+            android:fontFamily="@font/fraunces_bold"/>
 
     </LinearLayout>
 
