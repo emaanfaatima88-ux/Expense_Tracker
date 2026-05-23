@@ -207,7 +207,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.cardBudget.setOnClickListener {
-            findNavController().navigate(R.id.budgetFragment)
+            findNavController().navigate(R.id.action_home_to_budget)
         }
 
         binding.cardStats.setOnClickListener {

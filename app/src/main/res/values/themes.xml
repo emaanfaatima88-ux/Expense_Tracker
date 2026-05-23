@@ -1,135 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Base Theme -->
-    <style
-        name="Base.Theme.ExpenseTracker"
-        parent="Theme.Material3.DayNight.NoActionBar">
-
+    <style name="Base.Theme.ExpenseTracker" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimaryContainer">@color/white</item>
         <item name="colorOnPrimaryContainer">@color/white</item>
-
     </style>
 
-    <!-- Main App Theme -->
-    <style
-        name="Theme.ExpenseTracker"
-        parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.ExpenseTracker" parent="Theme.Material3.Light.NoActionBar">
 
-        <!-- Edge-to-edge safe colors -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
 
-        <!-- Light icons compatibility -->
+        <item name="bottomNavigationStyle">@style/BottomNavStyle</item>
+
         <item name="android:windowLightStatusBar">true</item>
-        <item
-            name="android:windowLightNavigationBar"
-            tools:targetApi="27">
-            true
-        </item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
 
-        <!-- Smooth Android 15/16 handling -->
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-
     </style>
 
-    <!-- Splash Theme -->
-    <style
-        name="Theme.ExpenseTracker.Splash"
-        parent="Theme.SplashScreen">
-
-        <item name="windowSplashScreenBackground">
-            #E58A00
-        </item>
-
-        <item name="windowSplashScreenAnimatedIcon">
-            @drawable/ic_splash
-        </item>
-
-        <item name="windowSplashScreenIconBackgroundColor">
-            @android:color/transparent
-        </item>
-
-        <item name="postSplashScreenTheme">
-            @style/Theme.ExpenseTracker
-        </item>
-
+    <style name="Theme.ExpenseTracker.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#E58A00</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+        <item name="windowSplashScreenIconBackgroundColor">@android:color/transparent</item>
+        <item name="postSplashScreenTheme">@style/Theme.ExpenseTracker</item>
     </style>
 
-    <!-- Rounded FAB -->
     <style name="CircularFAB" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">50%</item>
     </style>
 
-    <!-- Alternate Rounded FAB -->
     <style name="ShapeAppearance.RoundedFAB" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">18dp</item>
     </style>
 
-    <!-- Bottom Navigation -->
-    <style
-        name="BottomNavStyle"
-        parent="Widget.MaterialComponents.BottomNavigationView">
-
-        <item name="backgroundTint">#FFFFFF</item>
-
-        <item name="itemActiveIndicatorStyle">
-            @style/ActiveIndicatorStyle
-        </item>
-
+    <style name="BottomNavStyle" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemActiveIndicatorStyle">@style/ActiveIndicatorStyle</item>
     </style>
 
-    <!-- Active Indicator -->
-    <style
-        name="ActiveIndicatorStyle"
-        parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-
-        <item name="android:color">#1A7B5EA7</item>
-
-        <item name="shapeAppearance">
-            @style/ShapeAppearance.Material3.Corner.Full
-        </item>
-
+    <style name="ActiveIndicatorStyle" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
-    <!-- Orange Active Indicator -->
-    <style
-        name="light_orange_indicator"
-        parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
-
-        <item name="android:color">
-            @color/orange_color
-        </item>
-
+    <style name="light_orange_indicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/orange_color</item>
     </style>
 
-    <!-- Bottom Sheet Theme -->
-    <style
-        name="CustomBottomSheetDialogTheme"
-        parent="Theme.Design.Light.BottomSheetDialog">
-
-        <item name="bottomSheetStyle">
-            @style/CustomBottomSheetStyle
-        </item>
-
+    <style name="CustomBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/CustomBottomSheetStyle</item>
     </style>
 
-    <!-- Bottom Sheet Style -->
-    <style
-        name="CustomBottomSheetStyle"
-        parent="Widget.Design.BottomSheet.Modal">
-
-        <item name="android:background">
-            @android:color/transparent
-        </item>
-
-        <item name="behavior_peekHeight">
-            auto
-        </item>
-
+    <style name="CustomBottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="behavior_peekHeight">auto</item>
+    </style>
+    <style name="OrangeDatePickerTheme" parent="Theme.MaterialComponents.Light.Dialog">
+        <item name="colorPrimary">@color/orange_color</item>
+        <item name="colorAccent">@color/orange_color</item>
+        <item name="android:colorBackground">#FFFDF9</item>
+        <item name="colorControlActivated">@color/orange_color</item>
+        <item name="colorControlHighlight">#FFE0B2</item>
+        <item name="android:textColorPrimary">#1A1612</item>
+        <item name="android:textColorSecondary">#7A6F62</item>
+        <item name="buttonBarPositiveButtonStyle">@style/OrangeDatePickerButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/OrangeDatePickerButton</item>
     </style>
 
+    <style name="OrangeDatePickerButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/orange_color</item>
+    </style>
 </resources>

@@ -90,6 +90,9 @@
                     app:trackColor="#F5EFE4"
                     app:indicatorColor="#D47216"
                     android:max="100"
+                    app:showAnimationBehavior="inward"
+                    android:animationResolution="10"
+                    app:indicatorDirectionCircular="clockwise"
                     android:progress="59"/>
 
                 <LinearLayout

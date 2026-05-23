@@ -5,9 +5,11 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputFilter
+import android.text.TextWatcher
 import android.view.LayoutInflater
-import android.view.View // Added explicit view framework import for safety
+import android.view.View
 import android.view.ViewGroup
 import android.widget.GridLayout
 import android.widget.ImageView
@@ -35,11 +37,9 @@ class AddExpenseBottomSheet(
     private val binding get() = _binding!!
     private val expenseViewModel: ExpenseViewModel by viewModels()
 
-    // Tracking the currently selected category item
     private var selectedCategory: String = "Others"
     private val categoryViewsList = ArrayList<Pair<String, LinearLayout>>()
 
-    // Define categories
     private val categoriesData = listOf(
         "Food & Drink", "Transport", "Health", "Shopping",
         "Bills", "Entertainment", "Education", "Coffee", "Others"
@@ -61,6 +61,7 @@ class AddExpenseBottomSheet(
         setupDefaultValues()
         setupOldExpenseData()
         setupDatePicker()
+        setupFieldsTextWatcher() // Dynamic checking attached here!
 
         binding.etAmount.filters = arrayOf(InputFilter.LengthFilter(12))
         binding.btnClose.setOnClickListener { dismiss() }
@@ -71,126 +72,98 @@ class AddExpenseBottomSheet(
         return binding.root
     }
 
+    /**
+     * Watches input text fields dynamically and sets button styling based on input completeness.
+     */
+    private fun setupFieldsTextWatcher() {
+        val formWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                updateSaveButtonState()
+            }
+            override fun afterTextChanged(s: Editable?) {}
+        }
+
+        binding.etAmount.addTextChangedListener(formWatcher)
+        binding.etTitle.addTextChangedListener(formWatcher)
+
+        // Initial setup validation check pass
+        updateSaveButtonState()
+    }
+
+    /**
+     * Checks validation logic states and assigns matching hex styles dynamically.
+     */
+    private fun updateSaveButtonState() {
+        val amountInput = binding.etAmount.text.toString().trim()
+        val titleInput = binding.etTitle.text.toString().trim()
+
+        if (amountInput.isNotEmpty() && titleInput.isNotEmpty()) {
+            // Both items filled completely -> Dark active state tint background
+            binding.btnSaveExpense.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1A1612"))
+            binding.btnSaveExpense.setTextColor(Color.parseColor("#FFFFFF"))
+        } else {
+            // Unfinished form state input fields detected -> Reset to fallback beige color
+            binding.btnSaveExpense.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EAE4D3"))
+            binding.btnSaveExpense.setTextColor(Color.parseColor("#9C968A")) // Subdued readable text contrast color
+        }
+    }
+
     override fun onStart() {
         super.onStart()
-
         val dialog = dialog as? com.google.android.material.bottomsheet.BottomSheetDialog
-        val bottomSheet =
-            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
 
         bottomSheet?.let { sheet ->
-
             sheet.setBackgroundColor(Color.TRANSPARENT)
-
             val behavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(sheet)
-
-            // same as filter sheet behavior
             behavior.state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
             behavior.skipCollapsed = true
-
             sheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
     }
+
     private fun setupCategoryGrid() {
-
         binding.categoryGrid.removeAllViews()
-
         categoryViewsList.clear()
 
-        val displayMetrics =
-            resources.displayMetrics
-
-        val screenWidth =
-            displayMetrics.widthPixels
-
-        // TOTAL horizontal padding/margins
-        val totalMargin =
-            dpToPx(72f)
-
-        // PERFECT 3 COLUMN WIDTH
-        val itemWidth =
-            (screenWidth - totalMargin) / 3
+        val displayMetrics = resources.displayMetrics
+        val screenWidth = displayMetrics.widthPixels
+        val totalMargin = dpToPx(72f)
+        val itemWidth = (screenWidth - totalMargin) / 3
 
         categoriesData.forEach { catName ->
-
-            val cellView =
-                layoutInflater.inflate(
-                    R.layout.item_category_grid,
-                    binding.categoryGrid,
-                    false
-                ) as LinearLayout
-
-            val params =
-                GridLayout.LayoutParams().apply {
-
-                    width = itemWidth
-
-                    height = dpToPx(58f)
-
-                    setMargins(
-                        dpToPx(4f),
-                        dpToPx(4f),
-                        dpToPx(4f),
-                        dpToPx(4f)
-                    )
-                }
-
+            val cellView = layoutInflater.inflate(R.layout.item_category_grid, binding.categoryGrid, false) as LinearLayout
+            val params = GridLayout.LayoutParams().apply {
+                width = itemWidth
+                height = dpToPx(58f)
+                setMargins(dpToPx(4f), dpToPx(4f), dpToPx(4f), dpToPx(4f))
+            }
             cellView.layoutParams = params
 
-            val titleTxt =
-                cellView.findViewById<TextView>(
-                    R.id.txtCategoryName
-                )
-
-            val iconImg =
-                cellView.findViewById<ImageView>(
-                    R.id.imgCategoryIcon
-                )
-
+            val titleTxt = cellView.findViewById<TextView>(R.id.txtCategoryName)
+            val iconImg = cellView.findViewById<ImageView>(R.id.imgCategoryIcon)
             titleTxt.text = catName
 
             when (catName) {
-
-                "Food & Drink" ->
-                    iconImg.setImageResource(R.drawable.ic_food)
-
-                "Transport" ->
-                    iconImg.setImageResource(R.drawable.ic_transport)
-
-                "Health" ->
-                    iconImg.setImageResource(R.drawable.ic_health)
-
-                "Shopping" ->
-                    iconImg.setImageResource(R.drawable.ic_shopping)
-
-                "Bills" ->
-                    iconImg.setImageResource(R.drawable.ic_bills)
-
-                "Entertainment" ->
-                    iconImg.setImageResource(R.drawable.ic_entertainment)
-
-                "Education" ->
-                    iconImg.setImageResource(R.drawable.ic_education)
-
-                "Coffee" ->
-                    iconImg.setImageResource(R.drawable.ic_coffee)
-
-                else ->
-                    iconImg.setImageResource(R.drawable.ic_other)
+                "Food & Drink" -> iconImg.setImageResource(R.drawable.ic_food)
+                "Transport" -> iconImg.setImageResource(R.drawable.ic_transport)
+                "Health" -> iconImg.setImageResource(R.drawable.ic_health)
+                "Shopping" -> iconImg.setImageResource(R.drawable.ic_shopping)
+                "Bills" -> iconImg.setImageResource(R.drawable.ic_bills)
+                "Entertainment" -> iconImg.setImageResource(R.drawable.ic_entertainment)
+                "Education" -> iconImg.setImageResource(R.drawable.ic_education)
+                "Coffee" -> iconImg.setImageResource(R.drawable.ic_coffee)
+                else -> iconImg.setImageResource(R.drawable.ic_other)
             }
 
             cellView.setOnClickListener {
-
                 selectCategoryItem(catName)
             }
 
             binding.categoryGrid.addView(cellView)
-
-            categoryViewsList.add(
-                Pair(catName, cellView)
-            )
+            categoryViewsList.add(Pair(catName, cellView))
         }
-
         selectCategoryItem(selectedCategory)
     }
 
@@ -203,7 +176,6 @@ class AddExpenseBottomSheet(
             val titleTxt = catView.findViewById<TextView>(R.id.txtCategoryName)
             val iconImg = catView.findViewById<ImageView>(R.id.imgCategoryIcon)
 
-            // Normalize strings to match your helper's conditions (e.g. "Food & Drink" -> pass "food")
             val cleanKey = if (currentCatName.contains("&")) {
                 currentCatName.split("&")[0].trim()
             } else {
@@ -214,7 +186,6 @@ class AddExpenseBottomSheet(
             val baseColor = Color.parseColor(baseColorStr)
 
             if (currentCatName == selectedCategory) {
-                // 1. ACTIVE STATE: Generate custom background and stroke programmatically
                 val activeDrawable = GradientDrawable().apply {
                     shape = GradientDrawable.RECTANGLE
                     cornerRadius = getCornerRadiusPx()
@@ -224,7 +195,6 @@ class AddExpenseBottomSheet(
                     Color.colorToHSV(baseColor, hsv)
                     hsv[2] *= 0.7f
                     val strokeColor = Color.HSVToColor(hsv)
-
                     setStroke(dpToPx(1.5f), strokeColor)
                 }
                 catView.background = activeDrawable
@@ -236,9 +206,7 @@ class AddExpenseBottomSheet(
 
                 titleTxt.setTextColor(deepContrastColor)
                 iconImg.imageTintList = ColorStateList.valueOf(deepContrastColor)
-
             } else {
-                // 2. INACTIVE STATE: Clean background fallback
                 val inactiveDrawable = GradientDrawable().apply {
                     shape = GradientDrawable.RECTANGLE
                     cornerRadius = getCornerRadiusPx()
@@ -266,7 +234,6 @@ class AddExpenseBottomSheet(
     private fun setupDefaultValues() {
         if (expense == null) {
             selectCategoryItem("Others")
-
             val currentDate = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault()).format(Calendar.getInstance().time)
             binding.etDate.text = currentDate
         }
@@ -288,13 +255,15 @@ class AddExpenseBottomSheet(
             val calendar = Calendar.getInstance()
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
+                R.style.OrangeDatePickerTheme, // ✅ ADD THIS
                 { _, selectedYear, selectedMonth, selectedDay ->
                     val displayCalendar = Calendar.getInstance().apply {
                         set(Calendar.YEAR, selectedYear)
                         set(Calendar.MONTH, selectedMonth)
                         set(Calendar.DAY_OF_MONTH, selectedDay)
                     }
-                    val formattedDate = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault()).format(displayCalendar.time)
+                    val formattedDate = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault())
+                        .format(displayCalendar.time)
                     binding.etDate.text = formattedDate
                 },
                 calendar.get(Calendar.YEAR),
@@ -304,7 +273,6 @@ class AddExpenseBottomSheet(
             datePickerDialog.show()
         }
     }
-
     private fun saveExpense() {
         binding.btnSaveExpense.setOnClickListener {
             val title = binding.etTitle.text.toString().trim()

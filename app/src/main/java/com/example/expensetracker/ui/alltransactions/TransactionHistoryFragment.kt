@@ -15,7 +15,6 @@ import com.example.expensetracker.data.local.entity.ExpenseEntity
 import com.example.expensetracker.databinding.FragmentTransactionHistoryBinding
 import com.example.expensetracker.ui.addexpense.AddExpenseBottomSheet
 import com.example.expensetracker.viewmodel.ExpenseViewModel
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -33,16 +32,8 @@ class TransactionHistoryFragment : Fragment() {
     private var allExpensesList = emptyList<ExpenseEntity>()
 
     private val categoryList = listOf(
-        "All",
-        "Food",
-        "Bills",
-        "Shopping",
-        "Transport",
-        "Health",
-        "Education",
-        "Entertainment",
-        "Coffee",
-        "Others"
+        "All", "Food", "Bills", "Shopping", "Transport",
+        "Health", "Education", "Entertainment", "Coffee", "Others"
     )
 
     override fun onCreateView(
@@ -50,334 +41,168 @@ class TransactionHistoryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
-        _binding = FragmentTransactionHistoryBinding.inflate(
-            inflater,
-            container,
-            false
-        )
+        _binding = FragmentTransactionHistoryBinding.inflate(inflater, container, false)
 
         setupRecyclerView()
-
         observeExpenses()
-
         setupFilter()
-
         setupSearch()
 
         return binding.root
     }
 
     private fun setupRecyclerView() {
-
         expenseAdapter = GroupedExpenseAdapter(
-
             onItemClick = { expense ->
-
-                val bottomSheet =
-                    AddExpenseBottomSheet(expense)
-
-                bottomSheet.show(
-                    parentFragmentManager,
-                    "UpdateExpense"
-                )
+                if (parentFragmentManager.findFragmentByTag("UpdateExpense") == null) {
+                    val bottomSheet = AddExpenseBottomSheet(expense)
+                    bottomSheet.show(parentFragmentManager, "UpdateExpense")
+                }
             }
         )
 
         binding.recyclerViewAllTransactions.apply {
-
             adapter = expenseAdapter
-
-            layoutManager =
-                LinearLayoutManager(requireContext())
-
+            layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(false)
-
             itemAnimator = null
         }
     }
 
-
-
     private fun observeExpenses() {
-
-        expenseViewModel.allExpenses.observe(
-            viewLifecycleOwner
-        ) { expenses ->
-
+        expenseViewModel.allExpenses.observe(viewLifecycleOwner) { expenses ->
             allExpensesList = expenses
-
-            val groupedExpenses =
-                groupExpensesByDate(expenses)
-
+            val groupedExpenses = groupExpensesByDate(expenses)
             expenseAdapter.setData(groupedExpenses)
-
             updateTotal(expenses)
-
             updateEmptyState(expenses)
         }
     }
-    private fun groupExpensesByDate(
-        expenses: List<ExpenseEntity>
-    ): List<GroupedExpense> {
 
-        val sortedExpenses =
-            expenses.sortedByDescending {
+    /**
+     * Groups expenses and explicitly forces the headers to order from Newest -> Oldest
+     */
+    private fun groupExpensesByDate(expenses: List<ExpenseEntity>): List<GroupedExpense> {
+        if (expenses.isEmpty()) return emptyList()
 
-                getDatePriority(it.date)
-            }
+        // Group into a map structure first
+        val groupedMap = expenses.groupBy { formatDayTitle(it.date) }
 
-        val groupedMap =
-            sortedExpenses.groupBy {
-
-                formatDayTitle(it.date)
-            }
-
-        return groupedMap.map {
-
+        // Convert to our layout object list
+        val groupedList = groupedMap.map { entry ->
             GroupedExpense(
-                title = it.key,
-                expenses = it.value
+                title = entry.key,
+                // Inner list sorted newest first inside the row section item layout
+                expenses = entry.value.sortedByDescending { getDatePriority(it.date) }
             )
         }
+
+        // CRITICAL FIX: Sort the headers themselves chronologically top-to-bottom
+        return groupedList.sortedByDescending { groupedGroup ->
+            // Use the absolute highest timestamp found inside the group to sort the section header
+            groupedGroup.expenses.maxOfOrNull { getDatePriority(it.date) } ?: 0L
+        }
     }
-    private fun getDatePriority(
-        date: String
-    ): Long {
 
+    private fun getDatePriority(date: String): Long {
         return when (date.lowercase()) {
-
-            "today" ->
-                System.currentTimeMillis()
-
-            "yesterday" ->
-                System.currentTimeMillis() - 86400000L
-
+            "today" -> System.currentTimeMillis()
+            "yesterday" -> System.currentTimeMillis() - 86400000L
             else -> {
-
                 try {
-
-                    val parts =
-                        date.split("/")
-
+                    // Check standard date entry strings formatting "23/05/2026 12:23 pm"
+                    val cleanDate = date.split(" ")[0] // Pull out the raw date slice away from time string
+                    val parts = cleanDate.split("/")
                     if (parts.size == 3) {
+                        val day = parts[0].toInt()
+                        val month = parts[1].toInt() - 1
+                        val year = parts[2].toInt()
 
-                        val day =
-                            parts[0].toInt()
-
-                        val month =
-                            parts[1].toInt() - 1
-
-                        val year =
-                            parts[2].toInt()
-
-                        val calendar =
-                            java.util.Calendar.getInstance()
-
-                        calendar.set(
-                            year,
-                            month,
-                            day
-                        )
-
+                        val calendar = java.util.Calendar.getInstance()
+                        calendar.set(year, month, day, 0, 0, 0)
                         calendar.timeInMillis
-
                     } else {
-
                         0L
                     }
-
                 } catch (e: Exception) {
-
                     0L
                 }
             }
         }
     }
-    private fun formatDayTitle(
-        date: String
-    ): String {
 
+    private fun formatDayTitle(date: String): String {
         try {
+            val today = java.util.Calendar.getInstance()
+            val todayDay = today.get(java.util.Calendar.DAY_OF_YEAR)
+            val todayYear = today.get(java.util.Calendar.YEAR)
+            val calendar = java.util.Calendar.getInstance()
 
-            val today =
-                java.util.Calendar.getInstance()
+            if (date.lowercase().contains("today")) return "TODAY"
+            if (date.lowercase().contains("yesterday")) return "YESTERDAY"
 
-            val todayDay =
-                today.get(java.util.Calendar.DAY_OF_YEAR)
+            val cleanDate = date.split(" ")[0]
+            val parts = cleanDate.split("/")
+            if (parts.size != 3) return date.uppercase()
 
-            val todayYear =
-                today.get(java.util.Calendar.YEAR)
+            val day = parts[0].toIntOrNull() ?: return date.uppercase()
+            val month = parts[1].toIntOrNull() ?: return date.uppercase()
+            val year = parts[2].toIntOrNull() ?: return date.uppercase()
 
-            val calendar =
-                java.util.Calendar.getInstance()
+            calendar.set(year, month - 1, day)
 
-            if (date.lowercase() == "today") {
+            val expenseDay = calendar.get(java.util.Calendar.DAY_OF_YEAR)
+            val expenseYear = calendar.get(java.util.Calendar.YEAR)
 
-                return "TODAY"
-            }
-
-            if (date.lowercase() == "yesterday") {
-
-                return "YESTERDAY"
-            }
-
-            val parts =
-                date.split("/")
-
-            if (parts.size != 3) {
-
-                return date.uppercase()
-            }
-
-            val day =
-                parts[0].toIntOrNull()
-                    ?: return date.uppercase()
-
-            val month =
-                parts[1].toIntOrNull()
-                    ?: return date.uppercase()
-
-            val year =
-                parts[2].toIntOrNull()
-                    ?: return date.uppercase()
-
-            calendar.set(
-                year,
-                month - 1,
-                day
-            )
-
-            val expenseDay =
-                calendar.get(java.util.Calendar.DAY_OF_YEAR)
-
-            val expenseYear =
-                calendar.get(java.util.Calendar.YEAR)
-
-            val difference =
+            // Check cross-year calendar boundary bugs
+            val difference = if (todayYear == expenseYear) {
                 todayDay - expenseDay
-
-            /*
-                TODAY
-             */
-
-            if (
-                difference == 0 &&
-                todayYear == expenseYear
-            ) {
-
-                return "TODAY"
+            } else {
+                -1 // Fallback generic date layout parsing execution
             }
 
-            /*
-                YESTERDAY
-             */
+            if (difference == 0) return "TODAY"
+            if (difference == 1) return "YESTERDAY"
 
-            if (
-                difference == 1 &&
-                todayYear == expenseYear
-            ) {
-
-                return "YESTERDAY"
-            }
-
-            /*
-                LAST 7 DAYS
-             */
-
-            if (
-                difference in 2..7 &&
-                todayYear == expenseYear
-            ) {
-
-                return when (
-                    calendar.get(
-                        java.util.Calendar.DAY_OF_WEEK
-                    )
-                ) {
-
-                    java.util.Calendar.SUNDAY ->
-                        "SUNDAY"
-
-                    java.util.Calendar.MONDAY ->
-                        "MONDAY"
-
-                    java.util.Calendar.TUESDAY ->
-                        "TUESDAY"
-
-                    java.util.Calendar.WEDNESDAY ->
-                        "WEDNESDAY"
-
-                    java.util.Calendar.THURSDAY ->
-                        "THURSDAY"
-
-                    java.util.Calendar.FRIDAY ->
-                        "FRIDAY"
-
-                    else ->
-                        "SATURDAY"
+            if (difference in 2..7) {
+                return when (calendar.get(java.util.Calendar.DAY_OF_WEEK)) {
+                    java.util.Calendar.SUNDAY -> "SUNDAY"
+                    java.util.Calendar.MONDAY -> "MONDAY"
+                    java.util.Calendar.TUESDAY -> "TUESDAY"
+                    java.util.Calendar.WEDNESDAY -> "WEDNESDAY"
+                    java.util.Calendar.THURSDAY -> "THURSDAY"
+                    java.util.Calendar.FRIDAY -> "FRIDAY"
+                    else -> "SATURDAY"
                 }
             }
 
-            /*
-                OLDER DATES
-             */
-
-            val monthName =
-                java.text.SimpleDateFormat(
-                    "MMMM",
-                    java.util.Locale.getDefault()
-                ).format(calendar.time)
-
+            val monthName = java.text.SimpleDateFormat("MMMM", java.util.Locale.getDefault()).format(calendar.time)
             return "$monthName $day".uppercase()
 
         } catch (e: Exception) {
-
             return date.uppercase()
         }
     }
-    private fun updateTotal(
-        expenses: List<ExpenseEntity>
-    ) {
 
-        val total =
-            expenses.sumOf { it.amount }
-
-        binding.txtTotalAmount.text =
-            "Rs. ${
-                String.format(
-                    "%,.0f",
-                    total
-                )
-            }"
+    private fun updateTotal(expenses: List<ExpenseEntity>) {
+        val total = expenses.sumOf { it.amount }
+        binding.txtTotalAmount.text = "Rs. ${String.format("%,.0f", total)}"
     }
 
-    private fun updateEmptyState(
-        list: List<ExpenseEntity>
-    ) {
-
+    private fun updateEmptyState(list: List<ExpenseEntity>) {
         if (list.isEmpty()) {
-
-            binding.txtNoResult.visibility =
-                View.VISIBLE
-
-            binding.recyclerViewAllTransactions.visibility =
-                View.GONE
-
+            binding.txtNoResult.visibility = View.VISIBLE
+            binding.recyclerViewAllTransactions.visibility = View.GONE
         } else {
-
-            binding.txtNoResult.visibility =
-                View.GONE
-
-            binding.recyclerViewAllTransactions.visibility =
-                View.VISIBLE
+            binding.txtNoResult.visibility = View.GONE
+            binding.recyclerViewAllTransactions.visibility = View.VISIBLE
         }
     }
 
-
-    // 2. Replace your setupFilter() implementation with this clean logical flow
     private fun setupFilter() {
         binding.btnFilter.setOnClickListener {
+            if (parentFragmentManager.findFragmentByTag("FilterBottomSheet") != null) return@setOnClickListener
+
             val filterSheet = FilterBottomSheet(
                 currentCategory = activeFilterCategory,
                 currentSortOrder = activeSortOrder,
@@ -390,14 +215,12 @@ class TransactionHistoryFragment : Fragment() {
 
                 val cleanCategory = if (selectedCategory.contains("&")) selectedCategory.split("&")[0].trim() else selectedCategory
 
-                // A. Filter by Category
                 var filteredList = if (cleanCategory.equals("All", ignoreCase = true)) {
                     allExpensesList
                 } else {
                     allExpensesList.filter { it.category.contains(cleanCategory, ignoreCase = true) }
                 }
 
-                // B. Filter by Date Range
                 val currentTime = System.currentTimeMillis()
                 filteredList = when (dateRange) {
                     "month" -> {
@@ -415,10 +238,9 @@ class TransactionHistoryFragment : Fragment() {
                         val sevenDaysAgo = currentTime - (7L * 24 * 60 * 60 * 1000)
                         filteredList.filter { getDatePriority(it.date) >= sevenDaysAgo }
                     }
-                    else -> filteredList // All time
+                    else -> filteredList
                 }
 
-                // C. Sort the data
                 filteredList = when (sortOrder) {
                     "oldest" -> filteredList.sortedBy { getDatePriority(it.date) }
                     "highest" -> filteredList.sortedByDescending { it.amount }
@@ -426,7 +248,6 @@ class TransactionHistoryFragment : Fragment() {
                     else -> filteredList.sortedByDescending { getDatePriority(it.date) } // Newest
                 }
 
-                // Push updates straight onto UI Layer
                 expenseAdapter.setData(groupExpensesByDate(filteredList))
                 updateTotal(filteredList)
                 updateEmptyState(filteredList)
@@ -435,63 +256,30 @@ class TransactionHistoryFragment : Fragment() {
             filterSheet.show(parentFragmentManager, "FilterBottomSheet")
         }
     }
-    private fun setupSearch() {
 
+    private fun setupSearch() {
         binding.etSearch.addTextChangedListener(
             object : TextWatcher {
-
-                override fun beforeTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    count: Int,
-                    after: Int
-                ) {
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence?,
-                    start: Int,
-                    before: Int,
-                    count: Int
-                ) {
-
-                    val searchText =
-                        s.toString().trim()
-
-                    val filteredList =
-                        if (searchText.isEmpty()) {
-
-                            allExpensesList
-
-                        } else {
-
-                            allExpensesList.filter {
-
-                                it.title.contains(
-                                    searchText,
-                                    ignoreCase = true
-                                )
-                            }
+                override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                    val searchText = s.toString().trim()
+                    val filteredList = if (searchText.isEmpty()) {
+                        allExpensesList
+                    } else {
+                        allExpensesList.filter {
+                            it.title.contains(searchText, ignoreCase = true)
                         }
-
-                    expenseAdapter.setData(
-                        groupExpensesByDate(filteredList)
-                    )
-
+                    }
+                    expenseAdapter.setData(groupExpensesByDate(filteredList))
                     updateEmptyState(filteredList)
                 }
-
-                override fun afterTextChanged(
-                    s: Editable?
-                ) {
-                }
+                override fun afterTextChanged(s: Editable?) {}
             }
         )
     }
+
     override fun onDestroyView() {
-
         super.onDestroyView()
-
         _binding = null
     }
 }
