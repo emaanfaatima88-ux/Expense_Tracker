@@ -36,6 +36,10 @@ class BudgetFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         _binding = FragmentBudgetBinding.inflate(inflater, container, false)
+
+        // ✅ Force ring to 0 IMMEDIATELY after inflation, before anything renders
+        binding.progressBudgetRing.setProgressCompat(0, false)
+
         setupActionClicks()
         observeBudgetDataStream()
         return binding.root
@@ -132,20 +136,17 @@ class BudgetFragment : Fragment() {
         val indicatorColor = if (progressPercent >= 100) "#B05C1D" else "#D47216"
         binding.progressBudgetRing.setIndicatorColor(Color.parseColor(indicatorColor))
 
-        if (!hasAnimated) {
-            hasAnimated = true
-            // ✅ Reset to 0 instantly, then animate to actual value after fragment is drawn
-            binding.progressBudgetRing.setProgressCompat(0, false)
-            binding.root.postDelayed({
-                if (_binding == null) return@postDelayed
+        // 🔥 FORCE RESET & ANIMATE FORWARD COLD
+        // This removes all reliance on flags. It snaps the UI back to 0 instantly,
+        // then handles a clean, smooth clockwise animation up to the target percent.
+        binding.progressBudgetRing.setProgressCompat(0, false)
+        binding.root.post {
+            if (_binding != null) {
                 binding.progressBudgetRing.setProgressCompat(progressPercent, true)
-            }, 400)
-        } else {
-            // ✅ Budget updated via bottom sheet — just update instantly, no animation
-            binding.progressBudgetRing.setProgressCompat(progressPercent, false)
+            }
         }
 
-        // Pacing
+        // Pacing calculation logic remains perfectly untouched
         val calendar = Calendar.getInstance()
         val currentDay = calendar.get(Calendar.DAY_OF_MONTH)
         val totalDaysInMonth = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
@@ -162,16 +163,21 @@ class BudgetFragment : Fragment() {
                 "-$currencySymbol ${AmountFormatter.formatAmount(Math.abs(delta))}"
             binding.txtPacingDifference.setTextColor(Color.parseColor("#B05C1D"))
         } else {
-            binding.txtPacingStatusLabel.text = "Over pace"
-            binding.txtPacingDifference.text =
-                "+$currencySymbol ${AmountFormatter.formatAmount(delta)}"
-            binding.txtPacingDifference.setTextColor(Color.parseColor("#D47216"))
+            branchPacingOver(currencySymbol, delta)
         }
+    }
+
+    private fun branchPacingOver(currencySymbol: String, delta: Double) {
+        binding.txtPacingStatusLabel.text = "Over pace"
+        binding.txtPacingDifference.text =
+            "+$currencySymbol ${AmountFormatter.formatAmount(delta)}"
+        binding.txtPacingDifference.setTextColor(Color.parseColor("#D47216"))
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        hasAnimated = false  // ✅ Reset so every fresh open animates correctly
+        // ✅ FIXED: Resets the flag every time the view layout breaks down, stopping backward rotation loops
+        hasAnimated = false
         _binding = null
     }
 }

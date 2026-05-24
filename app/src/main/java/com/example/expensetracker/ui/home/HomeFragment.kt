@@ -1,28 +1,35 @@
 package com.example.expensetracker.ui.home
 
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetracker.R
 import com.example.expensetracker.adapter.ExpenseAdapter
 import com.example.expensetracker.databinding.FragmentHomeBinding
+import com.example.expensetracker.utils.AmountFormatter
 import com.example.expensetracker.utils.CurrencyManager
+import com.example.expensetracker.utils.FinancialTipsProvider
 import com.example.expensetracker.ui.addexpense.AddExpenseBottomSheet
 import com.example.expensetracker.viewmodel.ExpenseViewModel
-import com.example.expensetracker.utils.AmountFormatter
-import com.example.expensetracker.utils.FinancialTipsProvider
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -43,7 +50,6 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
         tipsProvider = FinancialTipsProvider(requireContext())
 
         setupRecyclerView()
@@ -55,9 +61,6 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    /**
-     * Pops up the dialog window box only if the user is launching the app for the first time today.
-     */
     private fun checkAndShowFirstOpenDialog() {
         if (tipsProvider.shouldShowDialogToday()) {
             val dailyTipMessage = tipsProvider.getDailyTip()
@@ -74,22 +77,16 @@ class HomeFragment : Fragment() {
         }
     }
 
-    /**
-     * Infills and pops up the custom styled Bottom Sheet layout cleanly.
-     */
     private fun showTipBottomSheet() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.dialog_tip_bottom_sheet, null)
 
         val txtTip = view.findViewById<TextView>(R.id.txtBottomSheetTip)
         val txtStat = view.findViewById<TextView>(R.id.txtNotificationStat)
-        // FIXED: Correctly matching the view definition type as ImageView to prevent class casting crash
         val btnClose = view.findViewById<ImageView>(R.id.btnCloseBottomSheet)
 
-        // Set the dynamic daily financial tip text smoothly
         txtTip.text = tipsProvider.getDailyTip()
 
-        // Dynamic Calculations: Grabbing your highest transaction for the "Biggest expense" card
         val currencyManager = CurrencyManager(requireContext())
         val currencySymbol = currencyManager.getCurrencySymbol()
 
@@ -131,10 +128,14 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSwipeToDelete() {
-        val swipeGesture = object : ItemTouchHelper.SimpleCallback(
-            0,
-            ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-        ) {
+        // Prepare colors and icon cache for rendering loop performance
+        val background = ColorDrawable()
+        val backgroundColor = Color.parseColor("#d97706") // Matches your theme's deep accent tone
+        val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
+        val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_sweep)
+
+        val swipeGesture = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
@@ -150,6 +151,61 @@ class HomeFragment : Fragment() {
                         expenseViewModel.deleteExpense(expense)
                     }
                 }
+            }
+
+            // 🔥 HIGH PROFILE VISUAL RENDERING FIX: Custom rendering engine for background canvas & bin graphics
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                val itemView = viewHolder.itemView
+                val itemHeight = itemView.bottom - itemView.top
+                val isCanceled = dX == 0f && !isCurrentlyActive
+
+                if (isCanceled) {
+                    c.drawRect(
+                        itemView.right + dX,
+                        itemView.top.toFloat(),
+                        itemView.right.toFloat(),
+                        itemView.bottom.toFloat(),
+                        clearPaint
+                    )
+                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    return
+                }
+
+                // Color background execution tracking the sliding margin limits
+                background.color = backgroundColor
+                background.setBounds(
+                    itemView.right + dX.toInt(),
+                    itemView.top,
+                    itemView.right,
+                    itemView.bottom
+                )
+                background.draw(c)
+
+                // Mathematically centers the delete bin drawable directly within the sliding gap space
+                if (deleteIcon != null) {
+                    val intrinsicWidth = deleteIcon.intrinsicWidth
+                    val intrinsicHeight = deleteIcon.intrinsicHeight
+
+                    val deleteIconTop = itemView.top + (itemHeight - intrinsicHeight) / 2
+                    val deleteIconMargin = (itemHeight - intrinsicHeight) / 2
+                    val deleteIconLeft = itemView.right - deleteIconMargin - intrinsicWidth
+                    val deleteIconRight = itemView.right - deleteIconMargin
+                    val deleteIconBottom = deleteIconTop + intrinsicHeight
+
+                    deleteIcon.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
+                    deleteIcon.setTint(Color.WHITE)
+                    deleteIcon.draw(c)
+                }
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
         }
 

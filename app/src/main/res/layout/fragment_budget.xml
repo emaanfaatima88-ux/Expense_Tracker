@@ -90,10 +90,8 @@
                     app:trackColor="#F5EFE4"
                     app:indicatorColor="#D47216"
                     android:max="100"
-                    app:showAnimationBehavior="inward"
-                    android:animationResolution="10"
                     app:indicatorDirectionCircular="clockwise"
-                    android:progress="59"/>
+                    android:progress="0"/>
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -106,7 +104,7 @@
                         android:id="@+id/txtProgressPercentage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="59%"
+                        android:text="0%"
                         android:textColor="#1A1612"
                         android:textSize="32sp"
                         android:fontFamily="serif"

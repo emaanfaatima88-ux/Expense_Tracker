@@ -19,32 +19,34 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
-    <!-- ✅ NAV BAR only — no FAB inside -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="84dp"
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_floating_cradle_nav"
         android:elevation="8dp"
-        android:paddingTop="6dp"
-        android:paddingBottom="6dp"
+
+        android:paddingBottom="14dp"
+        android:paddingTop="4dp"
+
+        app:itemPaddingTop="4dp"
+
         app:itemBackground="@android:color/transparent"
         app:itemActiveIndicatorStyle="@null"
-        app:itemIconSize="22dp"
+        app:itemIconSize="24dp"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu" />
 
-    <!-- ✅ FAB is a SIBLING of the nav bar, not a child -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddExpense"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="42dp"
+        android:layout_marginBottom="46dp"
         android:src="@android:drawable/ic_input_add"
         app:backgroundTint="@color/orange_color"
         app:borderWidth="0dp"
