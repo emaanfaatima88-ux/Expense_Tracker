@@ -1,63 +1,122 @@
 package com.example.expensetracker.utils
 
+import androidx.annotation.DrawableRes
 import com.example.expensetracker.R
 
 object ExpenseCategoryHelper {
 
-    fun getCategoryIcon(category: String): Int {
+    data class CategoryStyle(
+        @DrawableRes val icon: Int,
+        val homeColor: String,
+        val statisticsColor: String
+    )
 
-        return when (category.lowercase()) {
+    private val categoryStyles = mapOf(
 
-            "food" -> R.drawable.ic_food
-            "shopping" -> R.drawable.ic_shopping
-            "transport" -> R.drawable.ic_transport
-            "health" -> R.drawable.ic_health
-            "bills" -> R.drawable.ic_bills
-            "education" -> R.drawable.ic_education
-            "entertainment" -> R.drawable.ic_entertainment
-            "coffee" -> R.drawable.ic_coffee
+        // FOOD
+        "food" to CategoryStyle(
+            R.drawable.ic_food,
+            "#FCEBE2",
+            "#D47216"
+        ),
 
-            else -> R.drawable.ic_other
-        }
+        "food & drink" to CategoryStyle(
+            R.drawable.ic_food,
+            "#FCEBE2",
+            "#D47216"
+        ),
+
+        // SHOPPING
+        "shopping" to CategoryStyle(
+            R.drawable.ic_shopping,
+            "#F5E9F4",
+            "#8E44AD"
+        ),
+
+        // TRANSPORT
+        "transport" to CategoryStyle(
+            R.drawable.ic_transport,
+            "#EBEEF2",
+            "#2F6FE4"
+        ),
+
+        // HEALTH
+        "health" to CategoryStyle(
+            R.drawable.ic_health,
+            "#E9F3E8",
+            "#1FAA59"
+        ),
+
+        // BILLS
+        "bills" to CategoryStyle(
+            R.drawable.ic_bills,
+            "#EEECE8",
+            "#5D6678"
+        ),
+
+        // EDUCATION
+        "education" to CategoryStyle(
+            R.drawable.ic_education,
+            "#E8F2EF",
+            "#149ECA"
+        ),
+
+        // ENTERTAINMENT
+        "entertainment" to CategoryStyle(
+            R.drawable.ic_entertainment,
+            "#FCE8E9",
+            "#D63384"
+        ),
+
+        // COFFEE
+        "coffee" to CategoryStyle(
+            R.drawable.ic_coffee,
+            "#F6EDDF",
+            "#B7791F"
+        ),
+
+        // OTHERS
+        "other" to CategoryStyle(
+            R.drawable.ic_other,
+            "#EFECE6",
+            "#7A6F62"
+        ),
+
+        "others" to CategoryStyle(
+            R.drawable.ic_other,
+            "#EFECE6",
+            "#7A6F62"
+        )
+    )
+
+    private fun normalize(category: String): String {
+
+        return category
+            .trim()
+            .lowercase()
     }
 
-    // SOFT COLORS → HOME & HISTORY
+    fun getCategoryIcon(category: String): Int {
+
+        val normalized = normalize(category)
+
+        return categoryStyles[normalized]?.icon
+            ?: R.drawable.ic_other
+    }
 
     fun getCategoryColor(category: String): String {
 
-        return when (category.lowercase()) {
+        val normalized = normalize(category)
 
-            "food" -> "#FCEBE2"
-            "shopping" -> "#F5E9F4"
-            "transport" -> "#EBEEF2"
-            "health" -> "#E9F3E8"
-            "bills" -> "#EEECE8"
-            "coffee" -> "#F6EDDF"
-            "entertainment" -> "#FCE8E9"
-            "education" -> "#E8F2EF"
-            "others" -> "#EFECE6"
-
-            else -> "#EFECE6"
-        }
+        return categoryStyles[normalized]?.homeColor
+            ?: "#EFECE6"
     }
-
-    // DARK PREMIUM COLORS → STATISTICS
 
     fun getStatisticsColor(category: String): String {
 
-        return when (category.lowercase()) {
+        val normalized = normalize(category)
 
-            "food" -> "#D47216"
-            "shopping" -> "#8E44AD"
-            "transport" -> "#2F6FE4"
-            "health" -> "#1FAA59"
-            "bills" -> "#5D6678"
-            "coffee" -> "#B7791F"
-            "entertainment" -> "#D63384"
-            "education" -> "#149ECA"
-            "others" -> "#7A6F62"
-
-            else -> "#7A6F62"
-        }
+        return categoryStyles[normalized]?.statisticsColor
+            ?: "#7A6F62"
     }
 }

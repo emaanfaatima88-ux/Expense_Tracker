@@ -31,11 +31,13 @@ class GroupedExpenseAdapter(
         parent: ViewGroup,
         viewType: Int
     ): GroupViewHolder {
+
         val binding = ItemTransactionGroupBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
+
         return GroupViewHolder(binding)
     }
 
@@ -43,13 +45,16 @@ class GroupedExpenseAdapter(
         holder: GroupViewHolder,
         position: Int
     ) {
+
         val group = groupList[position]
 
-        holder.binding.txtDayTitle.text = group.title.uppercase()
+        holder.binding.txtDayTitle.text =
+            group.title.uppercase()
+
         holder.binding.layoutTransactions.removeAllViews()
 
         group.expenses.forEachIndexed { index, expense ->
-            // Inflates your customized item_transaction_row layout
+
             val view = LayoutInflater.from(holder.itemView.context)
                 .inflate(
                     R.layout.item_transaction_row,
@@ -57,48 +62,95 @@ class GroupedExpenseAdapter(
                     false
                 )
 
-            val txtTitle = view.findViewById<TextView>(R.id.txtTitle)
-            val txtSubtitle = view.findViewById<TextView>(R.id.txtSubtitle)
-            val txtTime = view.findViewById<TextView>(R.id.txtTime) // 🛠️ Binds to our newly added text field
-            val txtAmount = view.findViewById<TextView>(R.id.txtAmount)
-            val imgCategory = view.findViewById<ImageView>(R.id.imgCategory)
-            val iconContainer = view.findViewById<FrameLayout>(R.id.iconContainer)
-            val divider = view.findViewById<View>(R.id.divider)
+            val txtTitle =
+                view.findViewById<TextView>(R.id.txtTitle)
 
-            // Capitalize category name string
-            val displayCategory = expense.category.replaceFirstChar { it.uppercase() }
+            val txtSubtitle =
+                view.findViewById<TextView>(R.id.txtSubtitle)
 
-            // Safely split the date and time strings apart
-            val fullDateString = expense.date // Expects "dd/MM/yyyy hh:mm a"
+            val txtTime =
+                view.findViewById<TextView>(R.id.txtTime)
+
+            val txtAmount =
+                view.findViewById<TextView>(R.id.txtAmount)
+
+            val imgCategory =
+                view.findViewById<ImageView>(R.id.imgCategory)
+
+            val iconContainer =
+                view.findViewById<FrameLayout>(R.id.iconContainer)
+
+            val divider =
+                view.findViewById<View>(R.id.divider)
+
+            // NORMALIZED CATEGORY
+            val displayCategory = expense.category
+                .trim()
+                .replaceFirstChar { it.uppercase() }
+
+            // DATE & TIME SPLIT
+            val fullDateString = expense.date
+
             var datePart = fullDateString
             var timePart = ""
 
-            if (fullDateString.contains(" ")) {
-                val splitIndex = fullDateString.indexOf(" ")
-                datePart = fullDateString.substring(0, splitIndex).trim()
-                timePart = fullDateString.substring(splitIndex).trim()
+            try {
+
+                val parts = fullDateString.split(" ")
+
+                if (parts.size >= 3) {
+
+                    datePart = parts[0]
+                    timePart =
+                        parts.subList(1, parts.size)
+                            .joinToString(" ")
+                }
+
+            } catch (_: Exception) {
             }
 
-            // Assign clean layout variables to their respective destinations
+            // TEXTS
             txtTitle.text = expense.title
-            txtSubtitle.text = "$displayCategory  ·  $datePart"
-            txtTime.text = timePart // Populates the timestamp on line 3!
 
-            val currency = CurrencyManager(holder.itemView.context).getCurrencySymbol()
-            txtAmount.text = "- $currency ${AmountFormatter.formatAmount(expense.amount)}"
+            txtSubtitle.text =
+                "$displayCategory  ·  $datePart"
 
+            txtTime.text = timePart
+
+            val currency =
+                CurrencyManager(holder.itemView.context)
+                    .getCurrencySymbol()
+
+            txtAmount.text =
+                "- $currency ${
+                    AmountFormatter.formatAmount(expense.amount)
+                }"
+
+            // RESET ICON
             imgCategory.setImageResource(
-                ExpenseCategoryHelper.getCategoryIcon(expense.category)
+                ExpenseCategoryHelper.getCategoryIcon(
+                    expense.category
+                )
             )
 
-            val bgColor = ExpenseCategoryHelper.getCategoryColor(expense.category)
-            iconContainer.backgroundTintList = ColorStateList.valueOf(Color.parseColor(bgColor))
+            // RESET COLOR
+            val bgColor =
+                ExpenseCategoryHelper.getCategoryColor(
+                    expense.category
+                )
 
-            divider.visibility = if (index == group.expenses.lastIndex) {
-                View.GONE
-            } else {
-                View.VISIBLE
-            }
+            iconContainer.backgroundTintList =
+                ColorStateList.valueOf(
+                    Color.parseColor(bgColor)
+                )
+
+            // DIVIDER
+            divider.visibility =
+                if (index == group.expenses.lastIndex) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
 
             view.setOnClickListener {
                 onItemClick(expense)
@@ -113,7 +165,9 @@ class GroupedExpenseAdapter(
     }
 
     fun setData(data: List<GroupedExpense>) {
-        groupList = data
+
+        groupList = data.toList()
+
         notifyDataSetChanged()
     }
 }

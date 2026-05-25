@@ -30,11 +30,13 @@ class ExpenseAdapter(
         parent: ViewGroup,
         viewType: Int
     ): ExpenseViewHolder {
+
         val binding = ItemExpenseBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
+
         return ExpenseViewHolder(binding)
     }
 
@@ -42,55 +44,91 @@ class ExpenseAdapter(
         holder: ExpenseViewHolder,
         position: Int
     ) {
+
         val currentExpense = expenseList[position]
 
         val currencyManager = CurrencyManager(holder.itemView.context)
         val currencySymbol = currencyManager.getCurrencySymbol()
 
-        // 1. Clean up category text capitalization format rules
-        val displayCategory = currentExpense.category.replaceFirstChar { it.uppercase() }
+        // CATEGORY FORMAT
+        val displayCategory = currentExpense.category
+            .trim()
+            .replaceFirstChar {
+                it.uppercase()
+            }
 
-        // 2. Safely split the date and time strings apart
-        val fullDateString = currentExpense.date // Expects "dd/MM/yyyy hh:mm a"
+        // DATE & TIME SPLIT
+        val fullDateString = currentExpense.date
+
         var datePart = fullDateString
         var timePart = ""
 
-        if (fullDateString.contains(" ")) {
-            // Splits text dynamically at the first space barrier separation index
-            val splitIndex = fullDateString.indexOf(" ")
-            datePart = fullDateString.substring(0, splitIndex).trim()
-            timePart = fullDateString.substring(splitIndex).trim()
+        try {
+
+            val parts = fullDateString.split(" ")
+
+            if (parts.size >= 3) {
+
+                datePart = parts[0]
+
+                timePart = parts
+                    .subList(1, parts.size)
+                    .joinToString(" ")
+            }
+
+        } catch (_: Exception) {
         }
 
-        // 3. Assign text values cleanly into your modified layout IDs
-        holder.binding.txtTitle.text = currentExpense.title
-        holder.binding.txtCategory.text = "$displayCategory  ·  $datePart"
-        holder.binding.txtTime.text = timePart // Binds "10:32 am" explicitly onto row line 3
+        // TITLE
+        holder.binding.txtTitle.text =
+            currentExpense.title
 
-        // 4. Bind the amount centered vertically
+        // CATEGORY + DATE
+        holder.binding.txtCategory.text =
+            "$displayCategory  ·  $datePart"
+
+        // TIME
+        holder.binding.txtTime.text =
+            timePart
+
+        // AMOUNT
         holder.binding.txtAmount.text =
-            "- $currencySymbol ${AmountFormatter.formatAmount(currentExpense.amount)}"
+            "- $currencySymbol ${
+                AmountFormatter.formatAmount(currentExpense.amount)
+            }"
 
-        // 5. Handle category icon and background tints
+        // CATEGORY ICON
         holder.binding.imgCategory.setImageResource(
-            ExpenseCategoryHelper.getCategoryIcon(currentExpense.category)
+            ExpenseCategoryHelper.getCategoryIcon(
+                currentExpense.category
+            )
         )
 
-        val bgHex = ExpenseCategoryHelper.getCategoryColor(currentExpense.category)
-        val parentCard = holder.binding.imgCategory.parent as ViewGroup
-        parentCard.backgroundTintList = ColorStateList.valueOf(Color.parseColor(bgHex))
+        // CATEGORY BACKGROUND COLOR
+        val bgColor =
+            ExpenseCategoryHelper.getCategoryColor(
+                currentExpense.category
+            )
 
-        // ✅ Hide divider on last item
-        holder.binding.divider.visibility = if (position == expenseList.size - 1) {
-            View.GONE
-        } else {
-            View.VISIBLE
-        }
+        holder.binding.iconBackground.backgroundTintList =
+            ColorStateList.valueOf(
+                Color.parseColor(bgColor)
+            )
 
+        // DIVIDER
+        holder.binding.divider.visibility =
+            if (position == expenseList.lastIndex) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
+
+        // CLICK
         holder.itemView.setOnClickListener {
             onItemClick(currentExpense)
         }
 
+        // LONG CLICK
         holder.itemView.setOnLongClickListener {
             onLongClick(currentExpense)
             true
@@ -102,7 +140,9 @@ class ExpenseAdapter(
     }
 
     fun setData(expenses: List<ExpenseEntity>) {
+
         expenseList = expenses.toList()
+
         notifyDataSetChanged()
     }
 }

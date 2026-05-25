@@ -32,7 +32,9 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
+import kotlin.math.roundToInt
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -130,9 +132,8 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSwipeToDelete() {
-        // Prepare colors and icon cache for rendering loop performance
         val background = ColorDrawable()
-        val backgroundColor = Color.parseColor("#d97706") // Matches your theme's deep accent tone
+        val backgroundColor = Color.parseColor("#d97706")
         val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
         val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_sweep)
 
@@ -155,7 +156,6 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            // 🔥 HIGH PROFILE VISUAL RENDERING FIX: Custom rendering engine for background canvas & bin graphics
             override fun onChildDraw(
                 c: Canvas,
                 recyclerView: RecyclerView,
@@ -181,7 +181,6 @@ class HomeFragment : Fragment() {
                     return
                 }
 
-                // Color background execution tracking the sliding margin limits
                 background.color = backgroundColor
                 background.setBounds(
                     itemView.right + dX.toInt(),
@@ -191,7 +190,6 @@ class HomeFragment : Fragment() {
                 )
                 background.draw(c)
 
-                // Mathematically centers the delete bin drawable directly within the sliding gap space
                 if (deleteIcon != null) {
                     val intrinsicWidth = deleteIcon.intrinsicWidth
                     val intrinsicHeight = deleteIcon.intrinsicHeight
@@ -219,25 +217,25 @@ class HomeFragment : Fragment() {
         val currencySymbol = currencyManager.getCurrencySymbol()
 
         expenseViewModel.allExpenses.observe(viewLifecycleOwner) { expenses ->
+            val nonNullExpenses = expenses ?: emptyList()
 
             // 🛠️ DATE SORTING ENGINE (Newest to Oldest)
             val dateFormatter = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault())
 
-            val sortedExpenses = expenses.sortedWith { item1, item2 ->
+            val sortedExpenses = nonNullExpenses.sortedWith { item1, item2 ->
                 try {
                     val date1 = dateFormatter.parse(item1.date)
                     val date2 = dateFormatter.parse(item2.date)
-                    // Compare date2 to date1 to enforce descending chronological order (Latest -> Past)
                     date2?.compareTo(date1) ?: 0
                 } catch (e: Exception) {
-                    0 // Fallback rule if format parsing throws an error
+                    0
                 }
             }
 
-            // Take only the top 10 sorted entries for your recent transaction window
+            // Take top 10 for recent view container
             expenseAdapter.setData(sortedExpenses.take(10).toMutableList())
 
-            if (expenses.isEmpty()) {
+            if (nonNullExpenses.isEmpty()) {
                 binding.layoutEmptyState.visibility = View.VISIBLE
                 binding.recyclerViewExpenses.visibility = View.GONE
             } else {
@@ -245,14 +243,44 @@ class HomeFragment : Fragment() {
                 binding.recyclerViewExpenses.visibility = View.VISIBLE
             }
 
-            binding.txtTransactionCount.text = expenses.size.toString()
-            binding.txtCategoryCount.text = expenses.map { it.category }.distinct().size.toString()
+            // 🛠️ FIX: COMPUTE & INJECT REAL-TIME CALCULATIONS INTO THE SUMMARY CARD
 
-            val weeklyTotal = expenses.takeLast(7).sumOf { it.amount }
+            // 1. Calculations for total spent and counts
+            val totalSpentThisMonth = nonNullExpenses.sumOf { it.amount }
+            binding.txtTotalExpense.text = "$currencySymbol ${AmountFormatter.formatAmount(totalSpentThisMonth)}"
+
+            val totalTxnsCount = nonNullExpenses.size
+            binding.txtTransactionCount.text = "$totalTxnsCount txns"
+            binding.txtTxnCount.text = totalTxnsCount.toString()
+
+            val uniqueCategoriesCount = nonNullExpenses.map { it.category }.distinct().size
+            binding.txtCategoryCount.text = uniqueCategoriesCount.toString()
+
+            // 2. Budget and remaining parameters calculation
+            val budgetPercent = if (monthlyBudget > 0) ((totalSpentThisMonth / monthlyBudget) * 100).roundToInt() else 0
+            binding.progressMonthly.progress = budgetPercent.coerceAtMost(100)
+
+            val formattedBudget = AmountFormatter.formatAmount(monthlyBudget)
+            binding.txtBudgetPercent.text = "$budgetPercent% of $currencySymbol $formattedBudget"
+            binding.txtBudgetMini.text = "$currencySymbol $formattedBudget"
+
+            val remainingAmount = monthlyBudget - totalSpentThisMonth
+            if (remainingAmount >= 0) {
+                binding.txtRemainingAmount.text = "$currencySymbol ${AmountFormatter.formatAmount(remainingAmount)} left"
+            } else {
+                binding.txtRemainingAmount.text = "$currencySymbol ${AmountFormatter.formatAmount(Math.abs(remainingAmount))} over"
+            }
+
+            // 3. Dynamic Daily Average Calculation Based on Days Gone by in Current Month
+            val calendar = Calendar.getInstance()
+            val currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+            val dailyAvg = totalSpentThisMonth / currentDayOfMonth
+            binding.txtDailyAvg.text = "$currencySymbol ${AmountFormatter.formatAmount(dailyAvg)}"
+
+            // 4. Set weekly footer navigation status indicator preview balance text
+            val weeklyTotal = nonNullExpenses.takeLast(7).sumOf { it.amount }
             binding.txtWeeklyStats.text = "$currencySymbol ${AmountFormatter.formatAmount(weeklyTotal)}"
         }
-
-        // (Keep your expenseViewModel.totalExpense block here exactly unchanged...)
     }
 
     private fun setupClickListeners() {

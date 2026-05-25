@@ -37,12 +37,12 @@ class AddExpenseBottomSheet(
     private val binding get() = _binding!!
     private val expenseViewModel: ExpenseViewModel by viewModels()
 
-    private var selectedCategory: String = "Others"
+    private var selectedCategory: String = "Other"
     private val categoryViewsList = ArrayList<Pair<String, LinearLayout>>()
 
     private val categoriesData = listOf(
-        "Food & Drink", "Transport", "Health", "Shopping",
-        "Bills", "Entertainment", "Education", "Coffee", "Others"
+        "Food", "Transport", "Health", "Shopping",
+        "Bills", "Entertainment", "Education", "Coffee", "Other"
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -147,17 +147,25 @@ class AddExpenseBottomSheet(
             titleTxt.text = catName
 
             when (catName) {
-                "Food & Drink" -> iconImg.setImageResource(R.drawable.ic_food)
+
+                "Food" -> iconImg.setImageResource(R.drawable.ic_food)
+
                 "Transport" -> iconImg.setImageResource(R.drawable.ic_transport)
+
                 "Health" -> iconImg.setImageResource(R.drawable.ic_health)
+
                 "Shopping" -> iconImg.setImageResource(R.drawable.ic_shopping)
+
                 "Bills" -> iconImg.setImageResource(R.drawable.ic_bills)
+
                 "Entertainment" -> iconImg.setImageResource(R.drawable.ic_entertainment)
+
                 "Education" -> iconImg.setImageResource(R.drawable.ic_education)
+
                 "Coffee" -> iconImg.setImageResource(R.drawable.ic_coffee)
+
                 else -> iconImg.setImageResource(R.drawable.ic_other)
             }
-
             cellView.setOnClickListener {
                 selectCategoryItem(catName)
             }
@@ -234,7 +242,7 @@ class AddExpenseBottomSheet(
 
     private fun setupDefaultValues() {
         if (expense == null) {
-            selectCategoryItem("Others")
+            selectCategoryItem("Other")
             val currentDate = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault()).format(Calendar.getInstance().time)
             binding.etDate.text = currentDate
         }
@@ -302,7 +310,9 @@ class AddExpenseBottomSheet(
                 val expenseEntity = ExpenseEntity(
                     title = title,
                     amount = amount.toDouble(),
-                    category = selectedCategory,
+                    category = selectedCategory.trim().replaceFirstChar {
+                        it.uppercase()
+                    },
                     date = date,
                     note = ""
                 )
@@ -312,7 +322,9 @@ class AddExpenseBottomSheet(
                 val updatedExpense = expense.copy(
                     title = title,
                     amount = amount.toDouble(),
-                    category = selectedCategory,
+                    category = selectedCategory.trim().replaceFirstChar {
+                        it.uppercase()
+                    },
                     date = date
                 )
                 expenseViewModel.updateExpense(updatedExpense)

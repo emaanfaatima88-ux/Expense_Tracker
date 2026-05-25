@@ -83,28 +83,43 @@
                 android:layout_marginBottom="8dp"
                 android:layout_marginStart="4dp"/>
 
-            <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/btnCurrencySelector"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:hintEnabled="false"
-                app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="0dp"
-                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="#EFEAD8"
+                app:cardBackgroundColor="@color/card_color"
+                android:clickable="true"
+                android:focusable="true"
+                android:foreground="?attr/selectableItemBackground">
 
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/dropdownCurrency"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none"
-                    android:background="@drawable/bg_input_field"
-                    android:backgroundTint="@color/card_color"
-                    android:padding="16dp"
-                    android:textColor="#1A1612"
-                    android:textSize="15sp"
-                    android:fontFamily="sans-serif"
-                    android:text="Pakistani Rupee (Rs)" />
-            </com.google.android.material.textfield.TextInputLayout>
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
 
+                    <TextView
+                        android:id="@+id/txtSelectedCurrency"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Pakistani Rupee"
+                        android:textColor="#1A1612"
+                        android:textSize="15sp"/>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_forward"
+                        app:tint="#A49B86"/>
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -156,7 +171,7 @@
                     <ImageView
                         android:layout_width="16dp"
                         android:layout_height="16dp"
-                        android:src="@android:drawable/ic_media_play"
+                        android:src="@drawable/ic_forward"
                         app:tint="#A49B86"/>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
@@ -215,7 +230,7 @@
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@android:drawable/ic_media_play"
+                            android:src="@drawable/ic_forward"
                             app:tint="#A49B86"/>
                     </LinearLayout>
 
@@ -238,7 +253,7 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:src="@android:drawable/ic_menu_delete"
+                            android:src="@drawable/ic_delete"
                             app:tint="#D47216"
                             android:layout_marginEnd="12dp"/>
 
@@ -253,7 +268,7 @@
                         <ImageView
                             android:layout_width="16dp"
                             android:layout_height="16dp"
-                            android:src="@android:drawable/ic_media_play"
+                            android:src="@drawable/ic_forward"
                             app:tint="#A49B86"/>
                     </LinearLayout>
                 </LinearLayout>

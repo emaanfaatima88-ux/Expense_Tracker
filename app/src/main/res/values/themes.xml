@@ -56,19 +56,26 @@
         <item name="android:background">@android:color/transparent</item>
         <item name="behavior_peekHeight">auto</item>
     </style>
-    <style name="OrangeDatePickerTheme" parent="Theme.MaterialComponents.Light.Dialog">
-        <item name="colorPrimary">@color/orange_color</item>
-        <item name="colorAccent">@color/orange_color</item>
+    <style name="OrangeDatePickerTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+
+        <!-- Main Accent -->
+        <item name="colorPrimary">#D47216</item>
+        <item name="colorPrimaryVariant">#C56510</item>
+        <item name="colorAccent">#D47216</item>
+
+        <!-- Calendar header -->
         <item name="android:colorBackground">#FFFDF9</item>
-        <item name="colorControlActivated">@color/orange_color</item>
-        <item name="colorControlHighlight">#FFE0B2</item>
-        <item name="android:textColorPrimary">#1A1612</item>
-        <item name="android:textColorSecondary">#7A6F62</item>
-        <item name="buttonBarPositiveButtonStyle">@style/OrangeDatePickerButton</item>
-        <item name="buttonBarNegativeButtonStyle">@style/OrangeDatePickerButton</item>
+
+        <!-- OK / CANCEL button colors -->
+        <item name="buttonBarPositiveButtonStyle">@style/DatePickerButtonStyle</item>
+        <item name="buttonBarNegativeButtonStyle">@style/DatePickerButtonStyle</item>
+
     </style>
 
-    <style name="OrangeDatePickerButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
-        <item name="android:textColor">@color/orange_color</item>
+    <style name="DatePickerButtonStyle" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+
+        <item name="android:textColor">#D47216</item>
+
     </style>
+
 </resources>
