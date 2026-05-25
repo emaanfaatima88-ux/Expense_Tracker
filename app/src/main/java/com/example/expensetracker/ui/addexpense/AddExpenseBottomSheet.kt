@@ -137,7 +137,8 @@ class AddExpenseBottomSheet(
             val params = GridLayout.LayoutParams().apply {
                 width = itemWidth
                 height = dpToPx(58f)
-                setMargins(dpToPx(4f), dpToPx(4f), dpToPx(4f), dpToPx(4f))
+                // Set margins for each cell between each other
+                setMargins(dpToPx(2f), dpToPx(2f), dpToPx(2f), dpToPx(2f))
             }
             cellView.layoutParams = params
 
@@ -240,13 +241,26 @@ class AddExpenseBottomSheet(
     }
 
     private fun setupOldExpenseData() {
-        expense?.let {
+        expense?.let { oldExpense ->
+            // 1. UI adjustments for Edit Mode
             binding.txtSheetTitle.text = "Edit expense"
-            binding.etTitle.setText(it.title)
-            binding.etAmount.setText(it.amount.toString())
-            binding.etDate.text = it.date
-            binding.btnSaveExpense.text = "Update Expense"
-            selectCategoryItem(it.category)
+            binding.etTitle.setText(oldExpense.title)
+            binding.etAmount.setText(oldExpense.amount.toString())
+            binding.etDate.text = oldExpense.date
+            binding.btnSaveExpense.text = "Save" // Changes text from 'Add expense' to 'Save'
+
+            // 2. 🛠️ SHOW THE DELETE BUTTON
+            binding.btnDeleteExpense.visibility = View.VISIBLE
+
+            // 3. SET UP THE DELETE CLICK ACTION
+            binding.btnDeleteExpense.setOnClickListener {
+                // Call your ViewModel delete method passing the current item
+                expenseViewModel.deleteExpense(oldExpense)
+                Toast.makeText(requireContext(), "Expense Deleted", Toast.LENGTH_SHORT).show()
+                dismiss() // Close the bottom sheet
+            }
+
+            selectCategoryItem(oldExpense.category)
         }
     }
 

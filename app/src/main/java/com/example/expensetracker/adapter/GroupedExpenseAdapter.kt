@@ -21,8 +21,7 @@ class GroupedExpenseAdapter(
     private val onItemClick: (ExpenseEntity) -> Unit
 ) : RecyclerView.Adapter<GroupedExpenseAdapter.GroupViewHolder>() {
 
-    private var groupList =
-        emptyList<GroupedExpense>()
+    private var groupList = emptyList<GroupedExpense>()
 
     inner class GroupViewHolder(
         val binding: ItemTransactionGroupBinding
@@ -32,14 +31,11 @@ class GroupedExpenseAdapter(
         parent: ViewGroup,
         viewType: Int
     ): GroupViewHolder {
-
-        val binding =
-            ItemTransactionGroupBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false
-            )
-
+        val binding = ItemTransactionGroupBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return GroupViewHolder(binding)
     }
 
@@ -47,119 +43,77 @@ class GroupedExpenseAdapter(
         holder: GroupViewHolder,
         position: Int
     ) {
+        val group = groupList[position]
 
-        val group =
-            groupList[position]
-
-        holder.binding.txtDayTitle.text =
-            group.title.uppercase()
-
+        holder.binding.txtDayTitle.text = group.title.uppercase()
         holder.binding.layoutTransactions.removeAllViews()
 
         group.expenses.forEachIndexed { index, expense ->
-
-            val view =
-                LayoutInflater.from(holder.itemView.context)
-                    .inflate(
-                        R.layout.item_transaction_row,
-                        holder.binding.layoutTransactions,
-                        false
-                    )
-
-            val txtTitle =
-                view.findViewById<TextView>(
-                    R.id.txtTitle
+            // Inflates your customized item_transaction_row layout
+            val view = LayoutInflater.from(holder.itemView.context)
+                .inflate(
+                    R.layout.item_transaction_row,
+                    holder.binding.layoutTransactions,
+                    false
                 )
 
-            val txtSubtitle =
-                view.findViewById<TextView>(
-                    R.id.txtSubtitle
-                )
+            val txtTitle = view.findViewById<TextView>(R.id.txtTitle)
+            val txtSubtitle = view.findViewById<TextView>(R.id.txtSubtitle)
+            val txtTime = view.findViewById<TextView>(R.id.txtTime) // 🛠️ Binds to our newly added text field
+            val txtAmount = view.findViewById<TextView>(R.id.txtAmount)
+            val imgCategory = view.findViewById<ImageView>(R.id.imgCategory)
+            val iconContainer = view.findViewById<FrameLayout>(R.id.iconContainer)
+            val divider = view.findViewById<View>(R.id.divider)
 
-            val txtAmount =
-                view.findViewById<TextView>(
-                    R.id.txtAmount
-                )
+            // Capitalize category name string
+            val displayCategory = expense.category.replaceFirstChar { it.uppercase() }
 
-            val imgCategory =
-                view.findViewById<ImageView>(
-                    R.id.imgCategory
-                )
+            // Safely split the date and time strings apart
+            val fullDateString = expense.date // Expects "dd/MM/yyyy hh:mm a"
+            var datePart = fullDateString
+            var timePart = ""
 
-            val iconContainer =
-                view.findViewById<FrameLayout>(
-                    R.id.iconContainer
-                )
+            if (fullDateString.contains(" ")) {
+                val splitIndex = fullDateString.indexOf(" ")
+                datePart = fullDateString.substring(0, splitIndex).trim()
+                timePart = fullDateString.substring(splitIndex).trim()
+            }
 
-            val divider =
-                view.findViewById<View>(
-                    R.id.divider
-                )
+            // Assign clean layout variables to their respective destinations
+            txtTitle.text = expense.title
+            txtSubtitle.text = "$displayCategory  ·  $datePart"
+            txtTime.text = timePart // Populates the timestamp on line 3!
 
-            txtTitle.text =
-                expense.title
-
-            txtSubtitle.text =
-                "${expense.category} • ${expense.date}"
-
-            val currency =
-                CurrencyManager(
-                    holder.itemView.context
-                ).getCurrencySymbol()
-
-            txtAmount.text =
-                "- $currency ${
-                    AmountFormatter.formatAmount(
-                        expense.amount
-                    )
-                }"
+            val currency = CurrencyManager(holder.itemView.context).getCurrencySymbol()
+            txtAmount.text = "- $currency ${AmountFormatter.formatAmount(expense.amount)}"
 
             imgCategory.setImageResource(
-                ExpenseCategoryHelper.getCategoryIcon(
-                    expense.category
-                )
+                ExpenseCategoryHelper.getCategoryIcon(expense.category)
             )
 
-            val bgColor =
-                ExpenseCategoryHelper.getCategoryColor(
-                    expense.category
-                )
+            val bgColor = ExpenseCategoryHelper.getCategoryColor(expense.category)
+            iconContainer.backgroundTintList = ColorStateList.valueOf(Color.parseColor(bgColor))
 
-            iconContainer.backgroundTintList =
-                ColorStateList.valueOf(
-                    Color.parseColor(bgColor)
-                )
-
-            divider.visibility =
-                if (
-                    index == group.expenses.lastIndex
-                ) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
+            divider.visibility = if (index == group.expenses.lastIndex) {
+                View.GONE
+            } else {
+                View.VISIBLE
+            }
 
             view.setOnClickListener {
-
                 onItemClick(expense)
             }
 
-            holder.binding.layoutTransactions
-                .addView(view)
+            holder.binding.layoutTransactions.addView(view)
         }
     }
 
     override fun getItemCount(): Int {
-
         return groupList.size
     }
 
-    fun setData(
-        data: List<GroupedExpense>
-    ) {
-
+    fun setData(data: List<GroupedExpense>) {
         groupList = data
-
         notifyDataSetChanged()
     }
 }

@@ -1,77 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://tools.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
     android:fillViewport="true">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:paddingBottom="24dp">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp">
-
-            <ImageButton
-                android:id="@+id/btnBackNavigation"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentStart="true"
-                android:background="@drawable/bg_notification_circle"
-                android:src="@drawable/ic_back"
-                app:tint="#1A1612"
-
-                android:clickable="true"
-                android:focusable="true"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_alignTop="@id/btnBackNavigation"
-                android:layout_alignBottom="@id/btnBackNavigation"
-                android:gravity="center_vertical"
-                android:text="Budget"
-                android:textColor="#1A1612"
-                android:textSize="18sp"
-                android:fontFamily="serif"
-                android:textStyle="bold"/>
-        </RelativeLayout>
-
-        <TextView
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineTop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="14dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineStart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="22dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineEnd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="22dp" />
+
+        <ImageButton
+            android:id="@+id/btnBackNavigation"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/bg_notification_circle"
+            android:src="@drawable/ic_back"
+            android:clickable="true"
+            android:focusable="true"
+            app:tint="#1A1612"
+
+            android:scaleType="centerInside"
+            android:padding="8dp"
+
+            android:layout_marginStart="-8dp"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintTop_toTopOf="@id/guidelineTop" />
+
+        <TextView
+            android:id="@+id/txtToolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Budget"
+            android:textColor="#1A1612"
+            android:textSize="20sp"
+            android:fontFamily="serif"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/btnBackNavigation"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintTop_toTopOf="@id/guidelineTop" />
+
+        <TextView
+            android:id="@+id/lblMonthlyBudget"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
             android:text="MONTHLY BUDGET"
             android:textColor="#A49B86"
             android:textSize="11sp"
             android:fontFamily="sans-serif-medium"
-            android:letterSpacing="0.05"/>
+            android:letterSpacing="0.08"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintTop_toBottomOf="@id/btnBackNavigation" />
 
         <TextView
             android:id="@+id/txtCurrentMonthYear"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
             android:text="May 2026"
             android:textColor="#1A1612"
             android:textSize="28sp"
             android:fontFamily="serif"
             android:textStyle="bold"
-            android:layout_marginTop="2dp"
-            android:layout_marginBottom="20dp"/>
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintTop_toBottomOf="@id/lblMonthlyBudget" />
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/cardRingContainer"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:orientation="vertical"
             android:background="@drawable/bg_input_field"
             android:backgroundTint="#FFFDF9"
-            android:elevation="0dp"
-            android:padding="20dp">
+            android:padding="20dp"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintTop_toBottomOf="@id/txtCurrentMonthYear">
 
             <FrameLayout
                 android:layout_width="180dp"
@@ -233,13 +265,16 @@
 
         <LinearLayout
             android:id="@+id/cardPacingStatus"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@drawable/bg_input_field"
             android:backgroundTint="#FFFDF9"
             android:padding="20dp"
-            android:layout_marginTop="16dp">
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toStartOf="@id/guidelineStart"
+            app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+            app:layout_constraintTop_toBottomOf="@id/cardRingContainer">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -303,5 +338,5 @@
             </RelativeLayout>
         </LinearLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

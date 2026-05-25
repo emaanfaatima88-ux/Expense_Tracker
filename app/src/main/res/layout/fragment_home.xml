@@ -1,17 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://tools.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="14dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineStart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="22dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineEnd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="22dp" />
+
+    <TextView
+        android:id="@+id/lblGreeting"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Hi there,"
+        android:fontFamily="sans-serif"
+        android:textColor="#7A6F62"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+        app:layout_constraintEnd_toStartOf="@id/btnNotification"
+        app:layout_constraintTop_toTopOf="@id/guidelineTop" />
+
+    <TextView
+        android:id="@+id/txtMonth"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/fraunces"
+        android:text="May 2026"
+        android:textColor="#1A1612"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/guidelineStart"
+        app:layout_constraintEnd_toStartOf="@id/btnNotification"
+        app:layout_constraintTop_toBottomOf="@id/lblGreeting" />
+
+    <ImageView
+        android:id="@+id/btnNotification"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:padding="8dp"
+        android:background="@drawable/bg_notification_circle"
+        android:src="@drawable/ic_bell"
+        app:tint="#1A1612"
+        app:layout_constraintBottom_toBottomOf="@id/txtMonth"
+        app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
+        app:layout_constraintTop_toTopOf="@id/lblGreeting" />
+
     <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="14dp"
         android:fillViewport="true"
         android:clipToPadding="false"
-        android:paddingBottom="120dp">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtMonth"
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -19,55 +82,11 @@
             android:orientation="vertical"
             android:paddingStart="22dp"
             android:paddingEnd="22dp"
-            android:paddingTop="14dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Hi there,"
-                        android:fontFamily="sans-serif"
-                        android:textColor="#7A6F62"
-                        android:textSize="13sp"/>
-
-                    <TextView
-                        android:id="@+id/txtMonth"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/fraunces"
-                        android:text="May 2026"
-                        android:textColor="#1A1612"
-                        android:textSize="22sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/btnNotification"
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:padding="8dp"
-                    android:background="@drawable/bg_notification_circle"
-                    android:src="@drawable/ic_bell"
-                    app:tint="#1A1612"/>
-
-            </LinearLayout>
+            android:paddingBottom="120dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
                 app:cardCornerRadius="26dp"
                 app:cardElevation="0dp"
                 app:cardBackgroundColor="#16100B">
@@ -102,7 +121,6 @@
                             android:text="16 txns"
                             android:textColor="#B9ADA2"
                             android:textSize="12sp"/>
-
                     </LinearLayout>
 
                     <TextView
@@ -149,7 +167,6 @@
                             android:text="Rs. 51,781 left"
                             android:textColor="#D8CFC7"
                             android:textSize="12sp"/>
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -187,7 +204,6 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
-
                         </LinearLayout>
 
                         <View
@@ -222,7 +238,6 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
                                 android:textStyle="bold"/>
-
                         </LinearLayout>
 
                         <View
@@ -257,13 +272,9 @@
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
                                 android:textStyle="bold"/>
-
                         </LinearLayout>
-
                     </LinearLayout>
-
                 </LinearLayout>
-
             </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
@@ -281,7 +292,6 @@
                     android:layout_marginEnd="6dp"
                     app:cardCornerRadius="18dp"
                     app:cardElevation="0dp"
-                    app:strokeColor="@color/black"
                     app:cardBackgroundColor="@color/card_color"
                     app:strokeWidth="0dp">
 
@@ -305,7 +315,6 @@
                                 android:src="@drawable/ic_budget"
                                 app:tint="#E58A00"
                                 android:layout_gravity="center"/>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -330,7 +339,6 @@
                                 android:text="Rs. 120,000"
                                 android:textColor="#7A6F62"
                                 android:textSize="12sp"/>
-
                         </LinearLayout>
 
                         <TextView
@@ -339,9 +347,7 @@
                             android:text="›"
                             android:textColor="#7A6F62"
                             android:textSize="20sp"/>
-
                     </LinearLayout>
-
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
@@ -375,7 +381,6 @@
                                 android:src="@drawable/ic_stat"
                                 android:layout_gravity="center"
                                 app:tint="#E58A00"/>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -408,11 +413,8 @@
                             android:text="›"
                             android:textColor="#7A6F62"
                             android:textSize="20sp"/>
-
                     </LinearLayout>
-
                 </com.google.android.material.card.MaterialCardView>
-
             </LinearLayout>
 
             <LinearLayout
@@ -440,7 +442,6 @@
                     android:text="See all ›"
                     android:textColor="#E58A00"
                     android:textSize="13sp"/>
-
             </LinearLayout>
 
             <LinearLayout
@@ -467,7 +468,6 @@
                     android:textColor="#8E8E93"
                     android:textSize="16sp"
                     android:textStyle="bold"/>
-
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
@@ -486,11 +486,9 @@
                     android:paddingTop="2dp"
                     android:paddingBottom="2dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-
             </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
-
     </androidx.core.widget.NestedScrollView>
 
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

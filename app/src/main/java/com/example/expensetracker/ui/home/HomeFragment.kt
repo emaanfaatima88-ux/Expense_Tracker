@@ -31,6 +31,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @AndroidEntryPoint
 class HomeFragment : Fragment() {
@@ -217,7 +219,23 @@ class HomeFragment : Fragment() {
         val currencySymbol = currencyManager.getCurrencySymbol()
 
         expenseViewModel.allExpenses.observe(viewLifecycleOwner) { expenses ->
-            expenseAdapter.setData(expenses.take(10).toMutableList())
+
+            // 🛠️ DATE SORTING ENGINE (Newest to Oldest)
+            val dateFormatter = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault())
+
+            val sortedExpenses = expenses.sortedWith { item1, item2 ->
+                try {
+                    val date1 = dateFormatter.parse(item1.date)
+                    val date2 = dateFormatter.parse(item2.date)
+                    // Compare date2 to date1 to enforce descending chronological order (Latest -> Past)
+                    date2?.compareTo(date1) ?: 0
+                } catch (e: Exception) {
+                    0 // Fallback rule if format parsing throws an error
+                }
+            }
+
+            // Take only the top 10 sorted entries for your recent transaction window
+            expenseAdapter.setData(sortedExpenses.take(10).toMutableList())
 
             if (expenses.isEmpty()) {
                 binding.layoutEmptyState.visibility = View.VISIBLE
@@ -234,21 +252,7 @@ class HomeFragment : Fragment() {
             binding.txtWeeklyStats.text = "$currencySymbol ${AmountFormatter.formatAmount(weeklyTotal)}"
         }
 
-        expenseViewModel.totalExpense.observe(viewLifecycleOwner) { total ->
-            binding.txtTotalExpense.text = "$currencySymbol ${AmountFormatter.formatAmount(total)}"
-
-            val dailyAverage = total / 30
-            binding.txtDailyAvg.text = "$currencySymbol ${AmountFormatter.formatAmount(dailyAverage)}"
-
-            val percentage = ((total / monthlyBudget) * 100).toInt()
-            val safePercentage = percentage.coerceIn(0, 100)
-            binding.progressMonthly.setProgress(safePercentage, true)
-
-            val remaining = monthlyBudget - total
-            binding.txtBudgetPercent.text = "$safePercentage% of $currencySymbol ${AmountFormatter.formatAmount(monthlyBudget)}"
-            binding.txtRemainingAmount.text = "$currencySymbol ${AmountFormatter.formatAmount(remaining)} left"
-            binding.txtBudgetMini.text = "$currencySymbol ${AmountFormatter.formatAmount(monthlyBudget)}"
-        }
+        // (Keep your expenseViewModel.totalExpense block here exactly unchanged...)
     }
 
     private fun setupClickListeners() {
