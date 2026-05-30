@@ -6,9 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/bg_bottom_sheet"
-    android:paddingHorizontal="24dp"
-    android:paddingTop="12dp"
-    android:paddingBottom="24dp">
+    android:paddingTop="12dp">
 
     <View
         android:layout_width="36dp"
@@ -16,184 +14,207 @@
         android:layout_gravity="center_horizontal"
         android:background="#20000000" />
 
-    <RelativeLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:fillViewport="true">
 
-        <TextView
-            android:id="@+id/txtSheetTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="serif"
-            android:text="Add expense"
-            android:textColor="#1A1612"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/btnClose"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_alignParentEnd="true"
-            android:background="@drawable/bg_close_circle"
-            android:padding="6dp"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
-            app:tint="#1A1612" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="84dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_input_field"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingHorizontal="16dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="serif"
-            android:text="Rs. "
-            android:textColor="#1A1612"
-            android:textSize="36sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/etAmount"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:fontFamily="serif"
-            android:hint="0"
-            android:inputType="numberDecimal"
-            android:textColor="#1A1612"
-            android:textColorHint="#BCB6AB"
-            android:textSize="42sp" />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="24dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="NAME"
-        android:textColor="#7A6F62"
-        android:textSize="11sp"
-        android:textStyle="bold" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
 
-    <EditText
-        android:id="@+id/etTitle"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="6dp"
-        android:background="@drawable/bg_input_field"
-        android:hint="e.g. Coffee with Sara"
-        android:paddingHorizontal="16dp"
-        android:inputType="textCapWords"
-        android:maxLines="1"
-        android:textColor="#1A1612"
-        android:textColorHint="#9D9186"
-        android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/txtSheetTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="serif"
+                    android:text="Add expense"
+                    android:textColor="#1A1612"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="CATEGORY"
-        android:textColor="#7A6F62"
-        android:textSize="11sp"
-        android:textStyle="bold" />
+                <ImageView
+                    android:id="@+id/btnClose"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_alignParentEnd="true"
+                    android:background="@drawable/bg_close_circle"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_remove"
+                    app:tint="#1A1612" />
+            </RelativeLayout>
 
-    <GridLayout
-        android:id="@+id/categoryGrid"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:columnCount="3"
-        android:alignmentMode="alignMargins"
-        android:useDefaultMargins="false" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="84dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/bg_input_field"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="DATE"
-        android:textColor="#7A6F62"
-        android:textSize="11sp"
-        android:textStyle="bold" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="serif"
+                    android:text="Rs. "
+                    android:textColor="#1A1612"
+                    android:textSize="36sp"
+                    android:textStyle="bold" />
 
-    <RelativeLayout
-        android:id="@+id/btnDatePicker"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="6dp"
-        android:background="@drawable/bg_input_field"
-        android:paddingHorizontal="16dp">
+                <EditText
+                    android:id="@+id/etAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:fontFamily="serif"
+                    android:hint="0"
+                    android:inputType="numberDecimal"
+                    android:textColor="#1A1612"
+                    android:textColorHint="#BCB6AB"
+                    android:textSize="42sp" />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/etDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:textColor="#1A1612"
-            android:textSize="14sp"
-            tools:text="21/05/2026 12:23 pm" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="NAME"
+                android:textColor="#7A6F62"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:src="@android:drawable/ic_menu_my_calendar"
-            app:tint="#1A1612" />
-    </RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_input_field"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="54dp"
-        android:layout_marginTop="28dp"
-        android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/etTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/transparent"
+                    android:hint="e.g. Coffee with Sara"
+                    android:inputType="textCapWords"
+                    android:maxLines="1"
+                    android:textColor="#1A1612"
+                    android:textColorHint="#9D9186"
+                    android:textSize="14sp"
+                    android:padding="0dp" />
+            </LinearLayout>
 
-        <Button
-            android:id="@+id/btnDeleteExpense"
-            android:layout_width="54dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:backgroundTint="#FFE3D5"
-            android:padding="0dp"
-            app:icon="@drawable/ic_bin"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:iconTint="#D46A4F"
-            android:visibility="gone"
-            tools:visibility="visible"
-            app:cornerRadius="16dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="CATEGORY"
+                android:textColor="#7A6F62"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/btnCancel"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="6dp"
-            android:layout_weight="1"
-            android:backgroundTint="#EAE4D3"
-            android:text="Cancel"
-            android:textColor="#1A1612"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            app:cornerRadius="16dp" />
+            <GridLayout
+                android:id="@+id/categoryGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:columnCount="3"
+                android:alignmentMode="alignMargins"
+                android:useDefaultMargins="false" />
 
-        <Button
-            android:id="@+id/btnSaveExpense"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1"
-            android:backgroundTint="#9C968A"
-            android:text="Add expense"
-            android:textColor="#FFFFFF"
-            android:textAllCaps="false"
-            android:textStyle="bold"
-            app:cornerRadius="16dp" />
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="DATE"
+                android:textColor="#7A6F62"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:id="@+id/btnDatePicker"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="6dp"
+                android:background="@drawable/bg_input_field"
+                android:paddingHorizontal="16dp">
+
+                <TextView
+                    android:id="@+id/etDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:textColor="#1A1612"
+                    android:textSize="14sp"
+                    tools:text="21/05/2026 12:23 pm" />
+
+                <ImageView
+                    android:layout_width="13dp"
+                    android:layout_height="12dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="#1A1612" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="54dp"
+                android:layout_marginTop="28dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnDeleteExpense"
+                    android:layout_width="54dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="8dp"
+                    android:backgroundTint="#FFE3D5"
+                    android:padding="0dp"
+                    app:icon="@drawable/ic_bin"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp"
+                    app:iconTint="#D46A4F"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    app:cornerRadius="16dp" />
+
+                <Button
+                    android:id="@+id/btnCancel"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#EAE4D3"
+                    android:text="Cancel"
+                    android:textColor="#1A1612"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp" />
+
+                <Button
+                    android:id="@+id/btnSaveExpense"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1"
+                    android:backgroundTint="#9C968A"
+                    android:text="Add expense"
+                    android:textColor="#FFFFFF"
+                    android:textAllCaps="false"
+                    android:textStyle="bold"
+                    app:cornerRadius="16dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

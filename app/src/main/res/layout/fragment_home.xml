@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://tools.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
@@ -33,6 +32,7 @@
         android:layout_height="wrap_content"
         android:text="Hi there,"
         android:fontFamily="sans-serif"
+        android:textAllCaps="true"
         android:textColor="#7A6F62"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
@@ -44,10 +44,10 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:fontFamily="@font/fraunces"
+        android:fontFamily="@font/fraunces_bold"
         android:text="May 2026"
         android:textColor="#1A1612"
-        android:textSize="22sp"
+        android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toStartOf="@id/btnNotification"
@@ -66,6 +66,7 @@
         app:layout_constraintTop_toTopOf="@id/lblGreeting" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollViewHome"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="14dp"
@@ -82,8 +83,9 @@
             android:orientation="vertical"
             android:paddingStart="22dp"
             android:paddingEnd="22dp"
-            android:paddingBottom="120dp">
+            android:paddingBottom="110dp">
 
+            <!-- SUMMARY CARD -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -114,24 +116,17 @@
                             android:letterSpacing="0.04"
                             android:textAllCaps="true"/>
 
-                        <TextView
-                            android:id="@+id/txtTransactionCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="16 txns"
-                            android:textColor="#B9ADA2"
-                            android:textSize="12sp"/>
                     </LinearLayout>
 
                     <TextView
                         android:id="@+id/txtTotalExpense"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
+                        android:layout_marginTop="4dp"
                         android:fontFamily="@font/fraunces_bold"
                         android:text="Rs. 68,219"
                         android:textColor="#FFFFFF"
-                        android:textSize="46sp"
+                        android:textSize="44sp"
                         android:textStyle="bold" />
 
                     <ProgressBar
@@ -139,9 +134,9 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="8dp"
-                        android:layout_marginTop="18dp"
+                        android:layout_marginTop="8dp"
                         android:max="100"
-                        android:progress="57"
+                        android:progress="0"
                         android:progressBackgroundTint="#3B342F"
                         android:progressTint="#DC7805"/>
 
@@ -156,7 +151,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="57% of Rs. 120,000"
+                            android:text="0% of Rs. 120,000"
                             android:textColor="#D8CFC7"
                             android:textSize="12sp"/>
 
@@ -164,7 +159,7 @@
                             android:id="@+id/txtRemainingAmount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Rs. 51,781 left"
+                            android:text="Rs. 0 left"
                             android:textColor="#D8CFC7"
                             android:textSize="12sp"/>
                     </LinearLayout>
@@ -172,11 +167,11 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="18dp"
+                        android:layout_marginTop="8dp"
                         android:background="@drawable/bg_summary_stats"
                         android:orientation="horizontal"
-                        android:paddingTop="12dp"
-                        android:paddingBottom="12dp">
+                        android:paddingTop="8dp"
+                        android:paddingBottom="8dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -200,7 +195,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
                                 android:fontFamily="@font/fraunces"
-                                android:text="Rs. 3,790"
+                                android:text="Rs. 0"
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
@@ -222,7 +217,7 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="TXNS"
+                                android:text="Entries"
                                 android:textColor="#9D9186"
                                 android:textSize="11sp"
                                 android:letterSpacing="0.04"
@@ -233,7 +228,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="16"
+                                android:text="0"
                                 android:fontFamily="@font/fraunces"
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
@@ -267,7 +262,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="4dp"
-                                android:text="8"
+                                android:text="0"
                                 android:fontFamily="@font/fraunces"
                                 android:textColor="#FFFFFF"
                                 android:textSize="15sp"
@@ -277,6 +272,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- BUDGET + STATS QUICK CARDS -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -417,6 +413,7 @@
                 </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
+            <!-- RECENT EXPENSES HEADER -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -439,11 +436,13 @@
                     android:id="@+id/txtSeeAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="See all ›"
+                    android:text="See all"
+                    android:fontFamily="@font/fraunces"
                     android:textColor="#E58A00"
                     android:textSize="13sp"/>
             </LinearLayout>
 
+            <!-- EMPTY STATE -->
             <LinearLayout
                 android:id="@+id/layoutEmptyState"
                 android:layout_width="match_parent"
@@ -470,23 +469,24 @@
                     android:textStyle="bold"/>
             </LinearLayout>
 
-            <com.google.android.material.card.MaterialCardView
+            <!-- ✅ FIXED: LinearLayout with drawable instead of MaterialCardView -->
+            <!-- MaterialCardView does NOT clip swipe animations causing the white arc -->
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="20dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="@color/card_color"
-                app:strokeWidth="0dp">
+                android:background="@drawable/bg_recycler_card"
+                android:clipChildren="true"
+                android:clipToPadding="true"
+                android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewExpenses"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-            </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

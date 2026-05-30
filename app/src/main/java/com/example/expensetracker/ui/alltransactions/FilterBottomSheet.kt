@@ -5,7 +5,9 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import com.example.expensetracker.databinding.BottomSheetFilterBinding
 import com.example.expensetracker.utils.ExpenseCategoryHelper
@@ -43,6 +45,7 @@ class FilterBottomSheet(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // Kept clean styling
         setStyle(STYLE_NORMAL, com.google.android.material.R.style.ThemeOverlay_Material3_BottomSheetDialog)
     }
 
@@ -57,22 +60,15 @@ class FilterBottomSheet(
 
     override fun onStart() {
         super.onStart()
-
         val dialog = dialog as? BottomSheetDialog
-        val bottomSheet =
-            dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
 
-        bottomSheet?.let {
-
-            it.setBackgroundColor(Color.TRANSPARENT)
-
-            val behavior = BottomSheetBehavior.from(it)
+        bottomSheet?.let { sheet ->
+            sheet.setBackgroundColor(Color.TRANSPARENT)
+            val behavior = BottomSheetBehavior.from(sheet)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.skipCollapsed = true
-
-            val params = it.layoutParams
-            params.height = ViewGroup.LayoutParams.WRAP_CONTENT
-            it.layoutParams = params
+            sheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
     }
 
@@ -82,7 +78,7 @@ class FilterBottomSheet(
         setupSortUi()
         setupDateRangeUi()
         buildCategoryChips()
-        setupButtons()
+        setupButtons() // Configured safely for Material Buttons
 
         binding.btnCloseFilter.setOnClickListener {
             dismiss()
@@ -103,25 +99,16 @@ class FilterBottomSheet(
         }
     }
 
+    /**
+     * FIXED: Material Buttons modify properties via TintList and CornerRadius helper extensions
+     * to avoid Runtime Canvas exceptions.
+     */
     private fun setupButtons() {
-
-        val density = resources.displayMetrics.density
-
-        binding.btnApplyFilter.background = GradientDrawable().apply {
-            shape = GradientDrawable.RECTANGLE
-            cornerRadius = 18f * density
-            setColor(Color.parseColor("#17120F"))
-        }
-
-        binding.btnResetFilter.background = GradientDrawable().apply {
-            shape = GradientDrawable.RECTANGLE
-            cornerRadius = 18f * density
-            setColor(Color.parseColor("#EEE7DA"))
-        }
+        binding.btnApplyFilter.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#17120F"))
+        binding.btnResetFilter.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE7DA"))
     }
 
     private fun setupSortUi() {
-
         val sortMap = mapOf(
             "newest" to binding.chipSortNewest,
             "oldest" to binding.chipSortOldest,
@@ -130,13 +117,10 @@ class FilterBottomSheet(
         )
 
         sortMap.forEach { (order, view) ->
-
             updatePillState(view, selectedSortOrder == order)
 
             view.setOnClickListener {
-
                 selectedSortOrder = order
-
                 sortMap.forEach { (key, tv) ->
                     updatePillState(tv, selectedSortOrder == key)
                 }
@@ -145,7 +129,6 @@ class FilterBottomSheet(
     }
 
     private fun setupDateRangeUi() {
-
         val dateMap = mapOf(
             "all" to binding.chipDateAll,
             "month" to binding.chipDateMonth,
@@ -154,13 +137,10 @@ class FilterBottomSheet(
         )
 
         dateMap.forEach { (range, view) ->
-
             updatePillState(view, selectedDateRange == range)
 
             view.setOnClickListener {
-
                 selectedDateRange = range
-
                 dateMap.forEach { (key, tv) ->
                     updatePillState(tv, selectedDateRange == key)
                 }
@@ -168,141 +148,91 @@ class FilterBottomSheet(
         }
     }
 
-    private fun updatePillState(
-        textView: TextView,
-        isSelected: Boolean
-    ) {
-
+    private fun updatePillState(textView: TextView, isSelected: Boolean) {
         val density = resources.displayMetrics.density
 
         textView.background = GradientDrawable().apply {
-
             shape = GradientDrawable.RECTANGLE
             cornerRadius = 100f * density
 
             if (isSelected) {
-
                 setColor(Color.parseColor("#17120F"))
-
             } else {
-
                 setColor(Color.parseColor("#FFFDF9"))
-                setStroke(
-                    (1f * density).toInt(),
-                    Color.parseColor("#E9E1D5")
-                )
+                setStroke((1f * density).toInt(), Color.parseColor("#E9E1D5"))
             }
         }
 
         textView.setTextColor(
-            Color.parseColor(
-                if (isSelected) "#FFFDF9"
-                else "#1A1612"
-            )
+            Color.parseColor(if (isSelected) "#FFFDF9" else "#1A1612")
         )
     }
 
+    /**
+     * FIXED: Avoids deep infinite programmatic state execution recursive loops.
+     */
     private fun buildCategoryChips() {
-
         binding.filterCategoryChipGroup.removeAllViews()
 
         val context = requireContext()
         val density = resources.displayMetrics.density
 
         categories.forEach { rawCategory ->
-
             val chip = Chip(context).apply {
-
                 text = rawCategory
-
                 isCheckable = true
                 isCheckedIconVisible = false
                 isCloseIconVisible = false
-
                 textSize = 12f
-
-                typeface = Typeface.create(
-                    "sans-serif-medium",
-                    Typeface.NORMAL
-                )
-
+                typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
                 chipMinHeight = 36f * density
                 chipCornerRadius = 100f * density
-
                 setEnsureMinTouchTargetSize(false)
-
                 chipStrokeWidth = 1f * density
 
-                chipStrokeColor = ColorStateList.valueOf(
-                    Color.parseColor("#E9E1D5")
-                )
-
-                chipBackgroundColor = ColorStateList.valueOf(
-                    Color.parseColor("#FFFDF9")
-                )
-
+                // Set default unselected color states
+                chipStrokeColor = ColorStateList.valueOf(Color.parseColor("#E9E1D5"))
+                chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#FFFDF9"))
                 setTextColor(Color.parseColor("#1A1612"))
 
                 textStartPadding = 4f * density
                 textEndPadding = 10f * density
 
+                // Dynamic Category Color Dot handling logic
                 if (rawCategory != "All") {
-
-                    val cleanKey =
-                        if (rawCategory.contains("&"))
-                            rawCategory.split("&")[0].trim()
-                        else
-                            rawCategory
-
-                    val sharpColor = Color.parseColor(
-                        ExpenseCategoryHelper.getStatisticsColor(cleanKey)
-                    )
+                    val cleanKey = if (rawCategory.contains("&")) rawCategory.split("&")[0].trim() else rawCategory
+                    val sharpColor = Color.parseColor(ExpenseCategoryHelper.getStatisticsColor(cleanKey))
 
                     val dotDrawable = GradientDrawable().apply {
                         shape = GradientDrawable.OVAL
                         setColor(sharpColor)
-                        setSize(
-                            (7 * density).toInt(),
-                            (7 * density).toInt()
-                        )
+                        setSize((7 * density).toInt(), (7 * density).toInt())
                     }
 
                     chipIcon = dotDrawable
                     chipIconSize = 7f * density
-
                     iconStartPadding = 10f * density
                     textStartPadding = 6f * density
                 }
 
+                // Apply selected styles securely
                 if (rawCategory.equals(selectedCategory, true)) {
-
                     isChecked = true
-
-                    chipBackgroundColor = ColorStateList.valueOf(
-                        Color.parseColor("#17120F")
-                    )
-
-                    chipStrokeColor = ColorStateList.valueOf(
-                        Color.parseColor("#17120F")
-                    )
-
+                    chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#17120F"))
+                    chipStrokeColor = ColorStateList.valueOf(Color.parseColor("#17120F"))
                     setTextColor(Color.parseColor("#FFFDF9"))
 
-                    chipIconTint = ColorStateList.valueOf(
-                        Color.parseColor("#FFFDF9")
-                    )
+                    // FIXED: Removed the aggressive chipIconTint override to ensure dots preserve their native identity color circles!
                 }
 
-                setOnCheckedChangeListener { _, checked ->
-
-                    if (checked) {
-
+                // Handle click selections without locking up performance execution threads
+                setOnClickListener {
+                    if (selectedCategory != rawCategory) {
                         selectedCategory = rawCategory
-                        buildCategoryChips()
+                        buildCategoryChips() // Re-draws beautifully exactly once per click instance change
                     }
                 }
             }
-
             binding.filterCategoryChipGroup.addView(chip)
         }
     }

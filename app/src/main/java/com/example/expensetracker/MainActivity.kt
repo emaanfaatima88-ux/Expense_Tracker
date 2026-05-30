@@ -1,5 +1,6 @@
 package com.example.expensetracker
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -19,14 +20,46 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private var isNavigationHidden = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        window.navigationBarColor = android.graphics.Color.TRANSPARENT
-        window.statusBarColor = android.graphics.Color.TRANSPARENT
+
+        window.statusBarColor = Color.parseColor("#f6f1e8")
+        window.navigationBarColor = Color.TRANSPARENT
+
+        // Make status bar icons dark (readable on light #f6f1e8 background)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = window.decorView.systemUiVisibility or
+                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+
+        // Draw behind system bars
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false)
+            window.insetsController?.apply {
+                hide(WindowInsets.Type.navigationBars())
+                systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            }
+        } else {
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility =
+                (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
+        }
+
         setupNavigation()
         setupFab()
         setupInsets()
@@ -39,24 +72,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Requirement 2: Immersive Sticky Hide Mode for system navigation buttons
-     */
     private fun hideSystemNavigation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false)
-            window.insetsController?.let { controller ->
-                controller.hide(WindowInsets.Type.navigationBars())
-                controller.systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+            window.insetsController?.apply {
+                hide(WindowInsets.Type.navigationBars())
+                systemBarsBehavior = WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
             }
         } else {
             @Suppress("DEPRECATION")
-            window.decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                            or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                    )
+            window.decorView.systemUiVisibility =
+                (View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR)
         }
     }
 
@@ -64,18 +93,27 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager.findFragmentById(
             R.id.nav_host_fragment
         ) as NavHostFragment
+
         val navController = navHostFragment.navController
         binding.bottomNavigationView.setupWithNavController(navController)
 
-        // ✅ FIX: Pop back to home when home tab is tapped
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            // ✅ Using system built-in anims — hardware accelerated, no jank
+            val navOptions = androidx.navigation.NavOptions.Builder()
+                .setEnterAnim(R.anim.nav_enter)
+                .setExitAnim(R.anim.nav_exit)
+                .setPopEnterAnim(R.anim.nav_enter)
+                .setPopExitAnim(R.anim.nav_exit)
+                .setLaunchSingleTop(true)
+                .build()
+
             when (item.itemId) {
                 R.id.homeFragment -> {
                     navController.popBackStack(R.id.homeFragment, false)
                     true
                 }
                 else -> {
-                    navController.navigate(item.itemId)
+                    navController.navigate(item.itemId, null, navOptions)
                     true
                 }
             }
@@ -83,17 +121,30 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             val menu = binding.bottomNavigationView.menu
-
             menu.findItem(R.id.homeFragment).setIcon(R.drawable.ic_home)
             menu.findItem(R.id.transactionHistoryFragment).setIcon(R.drawable.ic_history)
             menu.findItem(R.id.statisticsFragment).setIcon(R.drawable.ic_stat)
             menu.findItem(R.id.settingsFragment).setIcon(R.drawable.ic_settings)
 
-            when (destination.id) {
-                R.id.homeFragment -> menu.findItem(R.id.homeFragment).setIcon(R.drawable.ic_home_filled)
-                R.id.transactionHistoryFragment -> menu.findItem(R.id.transactionHistoryFragment).setIcon(R.drawable.ic_history)
-                R.id.statisticsFragment -> menu.findItem(R.id.statisticsFragment).setIcon(R.drawable.ic_stat_filled)
-                R.id.settingsFragment -> menu.findItem(R.id.settingsFragment).setIcon(R.drawable.ic_settings_filled)
+            if (destination.id == R.id.budgetFragment) {
+                setNavigationAndFabVisibility(visible = false)
+            } else {
+                setNavigationAndFabVisibility(visible = true)
+
+                when (destination.id) {
+                    R.id.homeFragment -> {
+                        menu.findItem(R.id.homeFragment).setIcon(R.drawable.ic_home_filled)
+                    }
+                    R.id.transactionHistoryFragment -> {
+                        menu.findItem(R.id.transactionHistoryFragment).setIcon(R.drawable.ic_history)
+                    }
+                    R.id.statisticsFragment -> {
+                        menu.findItem(R.id.statisticsFragment).setIcon(R.drawable.ic_stat_filled)
+                    }
+                    R.id.settingsFragment -> {
+                        menu.findItem(R.id.settingsFragment).setIcon(R.drawable.ic_settings_filled)
+                    }
+                }
             }
         }
     }
@@ -101,31 +152,61 @@ class MainActivity : AppCompatActivity() {
     private fun setupFab() {
         binding.fabAddExpense.setOnClickListener {
             if (supportFragmentManager.findFragmentByTag("AddExpenseBottomSheet") == null) {
-                AddExpenseBottomSheet().show(
-                    supportFragmentManager,
-                    "AddExpenseBottomSheet"
-                )
+                AddExpenseBottomSheet().show(supportFragmentManager, "AddExpenseBottomSheet")
             }
         }
     }
 
     private fun setupInsets() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
-
             val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-
-            // TOP STATUS BAR FIX
-            val fragmentParams =
-                binding.navHostFragment.layoutParams as ViewGroup.MarginLayoutParams
-            fragmentParams.topMargin = statusBarInsets.top
-            binding.navHostFragment.layoutParams = fragmentParams
-
-            // ✅ REMOVED: binding.bottomNavigationContainer (no longer exists in XML)
-            // The nav bar handles its own padding now
-
+            val fragmentParams = binding.navHostFragment.layoutParams as ViewGroup.MarginLayoutParams
+            // ✅ Only update if value actually changed — avoids redundant layout passes
+            if (fragmentParams.topMargin != statusBarInsets.top) {
+                fragmentParams.topMargin = statusBarInsets.top
+                binding.navHostFragment.layoutParams = fragmentParams
+            }
             insets
         }
     }
+
+    fun setNavigationAndFabVisibility(visible: Boolean) {
+        if (isNavigationHidden == !visible) return
+        isNavigationHidden = !visible
+
+        val screenWidth = resources.displayMetrics.widthPixels
+        val fabTargetTranslationX = (screenWidth / 2f) - dpToPx(30) - dpToPx(24)
+        val fabTargetTranslationY = dpToPx(16).toFloat()
+
+        if (visible) {
+            binding.bottomNavigationView.animate()
+                .translationY(0f)
+                .setDuration(250)
+                .setInterpolator(android.view.animation.DecelerateInterpolator())
+                .start()
+
+            binding.fabAddExpense.animate()
+                .translationX(0f)
+                .translationY(0f)
+                .setDuration(250)
+                .setInterpolator(android.view.animation.DecelerateInterpolator())
+                .start()
+        } else {
+            binding.bottomNavigationView.animate()
+                .translationY(binding.bottomNavigationView.height.toFloat())
+                .setDuration(250)
+                .setInterpolator(android.view.animation.AccelerateInterpolator())
+                .start()
+
+            binding.fabAddExpense.animate()
+                .translationX(fabTargetTranslationX)
+                .translationY(fabTargetTranslationY)
+                .setDuration(250)
+                .setInterpolator(android.view.animation.AccelerateInterpolator())
+                .start()
+        }
+    }
+
     private fun dpToPx(dp: Int): Int {
         return (dp * resources.displayMetrics.density).toInt()
     }

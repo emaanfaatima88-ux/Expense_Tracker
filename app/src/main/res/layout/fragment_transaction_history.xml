@@ -168,7 +168,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         android:clipToPadding="false"
-        android:paddingBottom="140dp"
+        android:paddingBottom="110dp"
         tools:listitem="@layout/item_expense"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"

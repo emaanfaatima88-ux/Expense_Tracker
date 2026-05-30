@@ -3,9 +3,6 @@ package com.example.expensetracker.ui.home
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.expensetracker.MainActivity
 import com.example.expensetracker.R
 import com.example.expensetracker.adapter.ExpenseAdapter
 import com.example.expensetracker.databinding.FragmentHomeBinding
@@ -55,6 +53,10 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         tipsProvider = FinancialTipsProvider(requireContext())
+        return binding.root
+    }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
         setupSwipeToDelete()
@@ -62,7 +64,17 @@ class HomeFragment : Fragment() {
         setupClickListeners()
         checkAndShowFirstOpenDialog()
 
-        return binding.root
+        // ✅ FIXED: Listen to the parent NestedScrollView container instead of the nested list view
+        binding.nestedScrollViewHome.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            val dy = scrollY - oldScrollY
+            if (dy > 10) {
+                // User scrolls down -> Hide bottom nav and slide FAB to corner coordinates
+                (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = false)
+            } else if (dy < -10) {
+                // User scrolls up -> Show navigation controls smoothly
+                (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = true)
+            }
+        })
     }
 
     private fun checkAndShowFirstOpenDialog() {
@@ -132,9 +144,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupSwipeToDelete() {
-        val background = ColorDrawable()
-        val backgroundColor = Color.parseColor("#d97706")
-        val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
         val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_delete_sweep)
 
         val swipeGesture = object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
@@ -150,8 +159,7 @@ class HomeFragment : Fragment() {
                 if (position != RecyclerView.NO_POSITION) {
                     val currentList = expenseAdapter.currentList
                     if (position < currentList.size) {
-                        val expense = currentList[position]
-                        expenseViewModel.deleteExpense(expense)
+                        expenseViewModel.deleteExpense(currentList[position])
                     }
                 }
             }
@@ -165,45 +173,50 @@ class HomeFragment : Fragment() {
                 actionState: Int,
                 isCurrentlyActive: Boolean
             ) {
-                val itemView = viewHolder.itemView
-                val itemHeight = itemView.bottom - itemView.top
-                val isCanceled = dX == 0f && !isCurrentlyActive
-
-                if (isCanceled) {
-                    c.drawRect(
-                        itemView.right + dX,
-                        itemView.top.toFloat(),
-                        itemView.right.toFloat(),
-                        itemView.bottom.toFloat(),
-                        clearPaint
-                    )
+                if (actionState != ItemTouchHelper.ACTION_STATE_SWIPE) {
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
                     return
                 }
 
-                background.color = backgroundColor
-                background.setBounds(
-                    itemView.right + dX.toInt(),
-                    itemView.top,
-                    itemView.right,
-                    itemView.bottom
+                val itemView = viewHolder.itemView
+                val density = resources.displayMetrics.density
+                val cornerRadius = 20f * density
+
+                val cardLeft = itemView.left.toFloat()
+                val cardTop = itemView.top.toFloat()
+                val cardRight = itemView.right.toFloat()
+                val cardBottom = itemView.bottom.toFloat()
+
+                val cardPath = android.graphics.Path()
+                val cardRect = android.graphics.RectF(cardLeft, cardTop, cardRight, cardBottom)
+                cardPath.addRoundRect(cardRect, cornerRadius, cornerRadius, android.graphics.Path.Direction.CW)
+
+                c.save()
+                c.clipPath(cardPath)
+
+                val swipePaint = Paint().apply {
+                    color = Color.parseColor("#d97706")
+                    isAntiAlias = true
+                }
+                val swipeRect = android.graphics.RectF(
+                    cardRight + dX,
+                    cardTop,
+                    cardRight,
+                    cardBottom
                 )
-                background.draw(c)
+                c.drawRect(swipeRect, swipePaint)
 
-                if (deleteIcon != null) {
-                    val intrinsicWidth = deleteIcon.intrinsicWidth
-                    val intrinsicHeight = deleteIcon.intrinsicHeight
-
-                    val deleteIconTop = itemView.top + (itemHeight - intrinsicHeight) / 2
-                    val deleteIconMargin = (itemHeight - intrinsicHeight) / 2
-                    val deleteIconLeft = itemView.right - deleteIconMargin - intrinsicWidth
-                    val deleteIconRight = itemView.right - deleteIconMargin
-                    val deleteIconBottom = deleteIconTop + intrinsicHeight
-
-                    deleteIcon.setBounds(deleteIconLeft, deleteIconTop, deleteIconRight, deleteIconBottom)
+                if (deleteIcon != null && dX < -deleteIcon.intrinsicWidth) {
+                    val iconSize = (24 * density).toInt()
+                    val iconMargin = (20 * density).toInt()
+                    val iconTop = itemView.top + (itemView.height - iconSize) / 2
+                    val iconLeft = itemView.right - iconMargin - iconSize
+                    deleteIcon.setBounds(iconLeft, iconTop, iconLeft + iconSize, iconTop + iconSize)
                     deleteIcon.setTint(Color.WHITE)
                     deleteIcon.draw(c)
                 }
+
+                c.restore()
 
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
@@ -218,8 +231,6 @@ class HomeFragment : Fragment() {
 
         expenseViewModel.allExpenses.observe(viewLifecycleOwner) { expenses ->
             val nonNullExpenses = expenses ?: emptyList()
-
-            // 🛠️ DATE SORTING ENGINE (Newest to Oldest)
             val dateFormatter = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault())
 
             val sortedExpenses = nonNullExpenses.sortedWith { item1, item2 ->
@@ -232,7 +243,6 @@ class HomeFragment : Fragment() {
                 }
             }
 
-            // Take top 10 for recent view container
             expenseAdapter.setData(sortedExpenses.take(10).toMutableList())
 
             if (nonNullExpenses.isEmpty()) {
@@ -243,20 +253,15 @@ class HomeFragment : Fragment() {
                 binding.recyclerViewExpenses.visibility = View.VISIBLE
             }
 
-            // 🛠️ FIX: COMPUTE & INJECT REAL-TIME CALCULATIONS INTO THE SUMMARY CARD
-
-            // 1. Calculations for total spent and counts
             val totalSpentThisMonth = nonNullExpenses.sumOf { it.amount }
             binding.txtTotalExpense.text = "$currencySymbol ${AmountFormatter.formatAmount(totalSpentThisMonth)}"
 
             val totalTxnsCount = nonNullExpenses.size
-            binding.txtTransactionCount.text = "$totalTxnsCount txns"
             binding.txtTxnCount.text = totalTxnsCount.toString()
 
             val uniqueCategoriesCount = nonNullExpenses.map { it.category }.distinct().size
             binding.txtCategoryCount.text = uniqueCategoriesCount.toString()
 
-            // 2. Budget and remaining parameters calculation
             val budgetPercent = if (monthlyBudget > 0) ((totalSpentThisMonth / monthlyBudget) * 100).roundToInt() else 0
             binding.progressMonthly.progress = budgetPercent.coerceAtMost(100)
 
@@ -271,13 +276,11 @@ class HomeFragment : Fragment() {
                 binding.txtRemainingAmount.text = "$currencySymbol ${AmountFormatter.formatAmount(Math.abs(remainingAmount))} over"
             }
 
-            // 3. Dynamic Daily Average Calculation Based on Days Gone by in Current Month
             val calendar = Calendar.getInstance()
             val currentDayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
             val dailyAvg = totalSpentThisMonth / currentDayOfMonth
             binding.txtDailyAvg.text = "$currencySymbol ${AmountFormatter.formatAmount(dailyAvg)}"
 
-            // 4. Set weekly footer navigation status indicator preview balance text
             val weeklyTotal = nonNullExpenses.takeLast(7).sumOf { it.amount }
             binding.txtWeeklyStats.text = "$currencySymbol ${AmountFormatter.formatAmount(weeklyTotal)}"
         }

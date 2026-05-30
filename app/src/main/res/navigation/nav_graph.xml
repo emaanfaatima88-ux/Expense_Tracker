@@ -13,6 +13,10 @@
         <action
             android:id="@+id/action_home_to_budget"
             app:destination="@id/budgetFragment"
+            app:enterAnim="@anim/nav_enter"
+            app:exitAnim="@anim/nav_exit"
+            app:popEnterAnim="@anim/nav_enter"
+            app:popExitAnim="@anim/nav_exit"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="false" />
 

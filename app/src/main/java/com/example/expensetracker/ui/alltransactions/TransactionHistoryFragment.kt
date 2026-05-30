@@ -9,6 +9,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.expensetracker.MainActivity
 import com.example.expensetracker.adapter.GroupedExpenseAdapter
 import com.example.expensetracker.model.GroupedExpense
 import com.example.expensetracker.data.local.entity.ExpenseEntity
@@ -31,24 +33,34 @@ class TransactionHistoryFragment : Fragment() {
     private var activeDateRange = "all"
     private var allExpensesList = emptyList<ExpenseEntity>()
 
-    private val categoryList = listOf(
-        "All", "Food", "Bills", "Shopping", "Transport",
-        "Health", "Education", "Entertainment", "Coffee", "Others"
-    )
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTransactionHistoryBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setupRecyclerView()
         observeExpenses()
         setupFilter()
         setupSearch()
 
-        return binding.root
+        // ✅ ADDED: Smooth Scroll Animation Hook pointing directly to recyclerViewAllTransactions
+        binding.recyclerViewAllTransactions.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (dy > 10) {
+                    (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = false)
+                } else if (dy < -10) {
+                    (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = true)
+                }
+            }
+        })
     }
 
     private fun setupRecyclerView() {
@@ -79,27 +91,19 @@ class TransactionHistoryFragment : Fragment() {
         }
     }
 
-    /**
-     * Groups expenses and explicitly forces the headers to order from Newest -> Oldest
-     */
     private fun groupExpensesByDate(expenses: List<ExpenseEntity>): List<GroupedExpense> {
         if (expenses.isEmpty()) return emptyList()
 
-        // Group into a map structure first
         val groupedMap = expenses.groupBy { formatDayTitle(it.date) }
 
-        // Convert to our layout object list
         val groupedList = groupedMap.map { entry ->
             GroupedExpense(
                 title = entry.key,
-                // Inner list sorted newest first inside the row section item layout
                 expenses = entry.value.sortedByDescending { getDatePriority(it.date) }
             )
         }
 
-        // CRITICAL FIX: Sort the headers themselves chronologically top-to-bottom
         return groupedList.sortedByDescending { groupedGroup ->
-            // Use the absolute highest timestamp found inside the group to sort the section header
             groupedGroup.expenses.maxOfOrNull { getDatePriority(it.date) } ?: 0L
         }
     }
@@ -110,8 +114,7 @@ class TransactionHistoryFragment : Fragment() {
             "yesterday" -> System.currentTimeMillis() - 86400000L
             else -> {
                 try {
-                    // Check standard date entry strings formatting "23/05/2026 12:23 pm"
-                    val cleanDate = date.split(" ")[0] // Pull out the raw date slice away from time string
+                    val cleanDate = date.split(" ")[0]
                     val parts = cleanDate.split("/")
                     if (parts.size == 3) {
                         val day = parts[0].toInt()
@@ -154,11 +157,10 @@ class TransactionHistoryFragment : Fragment() {
             val expenseDay = calendar.get(java.util.Calendar.DAY_OF_YEAR)
             val expenseYear = calendar.get(java.util.Calendar.YEAR)
 
-            // Check cross-year calendar boundary bugs
             val difference = if (todayYear == expenseYear) {
                 todayDay - expenseDay
             } else {
-                -1 // Fallback generic date layout parsing execution
+                -1
             }
 
             if (difference == 0) return "TODAY"
@@ -245,7 +247,7 @@ class TransactionHistoryFragment : Fragment() {
                     "oldest" -> filteredList.sortedBy { getDatePriority(it.date) }
                     "highest" -> filteredList.sortedByDescending { it.amount }
                     "lowest" -> filteredList.sortedBy { it.amount }
-                    else -> filteredList.sortedByDescending { getDatePriority(it.date) } // Newest
+                    else -> filteredList.sortedByDescending { getDatePriority(it.date) }
                 }
 
                 expenseAdapter.setData(groupExpensesByDate(filteredList))

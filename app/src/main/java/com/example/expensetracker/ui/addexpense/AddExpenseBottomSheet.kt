@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.GridLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -22,6 +23,8 @@ import com.example.expensetracker.data.local.entity.ExpenseEntity
 import com.example.expensetracker.databinding.BottomSheetAddExpenseBinding
 import com.example.expensetracker.utils.ExpenseCategoryHelper
 import com.example.expensetracker.viewmodel.ExpenseViewModel
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -47,7 +50,7 @@ class AddExpenseBottomSheet(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStyle(STYLE_NORMAL, R.style.CustomBottomSheetDialogTheme)
+        setStyle(STYLE_NORMAL, R.style.BottomSheetDialogNoShadow)
     }
 
     override fun onCreateView(
@@ -61,7 +64,7 @@ class AddExpenseBottomSheet(
         setupDefaultValues()
         setupOldExpenseData()
         setupDatePicker()
-        setupFieldsTextWatcher() // Dynamic checking attached here!
+        setupFieldsTextWatcher()
 
         binding.etAmount.filters = arrayOf(InputFilter.LengthFilter(12))
         binding.btnClose.setOnClickListener { dismiss() }
@@ -105,19 +108,22 @@ class AddExpenseBottomSheet(
         } else {
             // Unfinished form state input fields detected -> Reset to fallback beige color
             binding.btnSaveExpense.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EAE4D3"))
-            binding.btnSaveExpense.setTextColor(Color.parseColor("#9C968A")) // Subdued readable text contrast color
+            binding.btnSaveExpense.setTextColor(Color.parseColor("#9C968A"))
         }
     }
 
     override fun onStart() {
         super.onStart()
-        val dialog = dialog as? com.google.android.material.bottomsheet.BottomSheetDialog
+        val dialog = dialog as? BottomSheetDialog
         val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+
+        // Soft input logic added to prevent UI components from distorting over the active keyboard
+        dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         bottomSheet?.let { sheet ->
             sheet.setBackgroundColor(Color.TRANSPARENT)
-            val behavior = com.google.android.material.bottomsheet.BottomSheetBehavior.from(sheet)
-            behavior.state = com.google.android.material.bottomsheet.BottomSheetBehavior.STATE_EXPANDED
+            val behavior = BottomSheetBehavior.from(sheet)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.skipCollapsed = true
             sheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
@@ -137,8 +143,7 @@ class AddExpenseBottomSheet(
             val params = GridLayout.LayoutParams().apply {
                 width = itemWidth
                 height = dpToPx(58f)
-                // Set margins for each cell between each other
-                setMargins(dpToPx(2f), dpToPx(2f), dpToPx(2f), dpToPx(2f))
+                setMargins(dpToPx(4f), dpToPx(4f), dpToPx(4f), dpToPx(4f))
             }
             cellView.layoutParams = params
 
@@ -147,23 +152,14 @@ class AddExpenseBottomSheet(
             titleTxt.text = catName
 
             when (catName) {
-
                 "Food" -> iconImg.setImageResource(R.drawable.ic_food)
-
                 "Transport" -> iconImg.setImageResource(R.drawable.ic_transport)
-
                 "Health" -> iconImg.setImageResource(R.drawable.ic_health)
-
                 "Shopping" -> iconImg.setImageResource(R.drawable.ic_shopping)
-
                 "Bills" -> iconImg.setImageResource(R.drawable.ic_bills)
-
                 "Entertainment" -> iconImg.setImageResource(R.drawable.ic_entertainment)
-
                 "Education" -> iconImg.setImageResource(R.drawable.ic_education)
-
                 "Coffee" -> iconImg.setImageResource(R.drawable.ic_coffee)
-
                 else -> iconImg.setImageResource(R.drawable.ic_other)
             }
             cellView.setOnClickListener {
@@ -236,8 +232,8 @@ class AddExpenseBottomSheet(
     }
 
     private fun getCornerRadiusPx(): Float {
-        val metrics = context?.resources?.displayMetrics ?: return 20f
-        return 20f * metrics.density
+        val metrics = context?.resources?.displayMetrics ?: return 12f
+        return 12f * metrics.density
     }
 
     private fun setupDefaultValues() {
@@ -250,22 +246,18 @@ class AddExpenseBottomSheet(
 
     private fun setupOldExpenseData() {
         expense?.let { oldExpense ->
-            // 1. UI adjustments for Edit Mode
             binding.txtSheetTitle.text = "Edit expense"
             binding.etTitle.setText(oldExpense.title)
             binding.etAmount.setText(oldExpense.amount.toString())
             binding.etDate.text = oldExpense.date
-            binding.btnSaveExpense.text = "Save" // Changes text from 'Add expense' to 'Save'
+            binding.btnSaveExpense.text = "Save"
 
-            // 2. 🛠️ SHOW THE DELETE BUTTON
             binding.btnDeleteExpense.visibility = View.VISIBLE
 
-            // 3. SET UP THE DELETE CLICK ACTION
             binding.btnDeleteExpense.setOnClickListener {
-                // Call your ViewModel delete method passing the current item
                 expenseViewModel.deleteExpense(oldExpense)
                 Toast.makeText(requireContext(), "Expense Deleted", Toast.LENGTH_SHORT).show()
-                dismiss() // Close the bottom sheet
+                dismiss()
             }
 
             selectCategoryItem(oldExpense.category)
@@ -277,7 +269,7 @@ class AddExpenseBottomSheet(
             val calendar = Calendar.getInstance()
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
-                R.style.OrangeDatePickerTheme, // ✅ ADD THIS
+                R.style.DarkSummaryDatePickerTheme, // ✅ Swapped style reference name here
                 { _, selectedYear, selectedMonth, selectedDay ->
                     val displayCalendar = Calendar.getInstance().apply {
                         set(Calendar.YEAR, selectedYear)
@@ -295,6 +287,7 @@ class AddExpenseBottomSheet(
             datePickerDialog.show()
         }
     }
+
     private fun saveExpense() {
         binding.btnSaveExpense.setOnClickListener {
             val title = binding.etTitle.text.toString().trim()
@@ -310,9 +303,7 @@ class AddExpenseBottomSheet(
                 val expenseEntity = ExpenseEntity(
                     title = title,
                     amount = amount.toDouble(),
-                    category = selectedCategory.trim().replaceFirstChar {
-                        it.uppercase()
-                    },
+                    category = selectedCategory.trim().replaceFirstChar { it.uppercase() },
                     date = date,
                     note = ""
                 )
@@ -322,9 +313,7 @@ class AddExpenseBottomSheet(
                 val updatedExpense = expense.copy(
                     title = title,
                     amount = amount.toDouble(),
-                    category = selectedCategory.trim().replaceFirstChar {
-                        it.uppercase()
-                    },
+                    category = selectedCategory.trim().replaceFirstChar { it.uppercase() },
                     date = date
                 )
                 expenseViewModel.updateExpense(updatedExpense)

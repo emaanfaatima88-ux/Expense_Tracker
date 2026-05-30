@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:background="@drawable/bg_filter_sheet"
-    android:paddingBottom="24dp">
+    android:paddingTop="12dp">
 
     <View
         android:id="@+id/sheetHandle"
@@ -42,13 +42,14 @@
             android:layout_centerVertical="true"
             android:background="@drawable/bg_close_circle"
             android:padding="7dp"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:src="@drawable/ic_remove"
             app:tint="#857B6F" />
     </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:paddingHorizontal="20dp"
         android:scrollbars="none">
 
@@ -200,40 +201,48 @@
                 app:chipSpacingHorizontal="8dp"
                 app:chipSpacingVertical="10dp"
                 app:singleSelection="true"
-                android:layout_marginBottom="30dp" />
+                android:layout_marginBottom="20dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="54dp"
         android:orientation="horizontal"
-        android:paddingHorizontal="20dp">
+        android:paddingHorizontal="20dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp">
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/btnResetFilter"
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_marginEnd="10dp"
             android:text="Reset"
             android:textAllCaps="false"
             android:textColor="#1A1612"
             android:textSize="14sp"
+            android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
-            android:background="@android:color/transparent" />
+            android:backgroundTint="#EAE4D3"
+            app:elevation="0dp"
+            app:cornerRadius="16dp" />
 
-        <androidx.appcompat.widget.AppCompatButton
+        <Button
             android:id="@+id/btnApplyFilter"
             android:layout_width="0dp"
-            android:layout_height="52dp"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="Apply"
             android:textAllCaps="false"
             android:textColor="#FFFDF9"
             android:textSize="14sp"
+            android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
-            android:background="@android:color/transparent" />
+            android:backgroundTint="#1A1612"
+            app:elevation="0dp"
+            app:cornerRadius="16dp" />
     </LinearLayout>
 
 </LinearLayout>
