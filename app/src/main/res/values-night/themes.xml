@@ -1,7 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.ExpenseTracker" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Kill purple tints in dark mode -->
+        <item name="colorPrimary">#E58A00</item>
+        <item name="colorSecondary">#E58A00</item>
+        <item name="colorTertiary">#E58A00</item>
+        <item name="colorTertiaryContainer">#16100B</item>
+        <item name="colorSecondaryContainer">@android:color/transparent</item>
+
+        <!-- Surface overrides -->
+        <item name="colorSurface">#16100B</item>
+        <item name="colorSurfaceVariant">#16100B</item>
+        <item name="colorSurfaceContainer">#16100B</item>
+        <item name="colorSurfaceContainerLow">#16100B</item>
+        <item name="colorSurfaceContainerHigh">#16100B</item>
+        <item name="colorSurfaceContainerLowest">#16100B</item>
+        <item name="colorSurfaceContainerHighest">#16100B</item>
+        <item name="android:colorBackground">#16100B</item>
+
+        <!-- Ripple -->
+        <item name="colorControlHighlight">#26FFFFFF</item>
     </style>
+
 </resources>

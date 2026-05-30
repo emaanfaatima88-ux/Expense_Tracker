@@ -72,13 +72,14 @@ class TransactionHistoryFragment : Fragment() {
                 }
             }
         )
-
         binding.recyclerViewAllTransactions.apply {
             adapter = expenseAdapter
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(false)
             itemAnimator = null
+            overScrollMode = View.OVER_SCROLL_NEVER
         }
+
     }
 
     private fun observeExpenses() {

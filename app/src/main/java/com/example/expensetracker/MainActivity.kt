@@ -98,12 +98,9 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
-            // ✅ Using system built-in anims — hardware accelerated, no jank
+            // ✅ FIXED: Removed custom .setEnterAnim / .setExitAnim parameters
+            // This leaves navigation instant and crisp, removing all redraw stuttering
             val navOptions = androidx.navigation.NavOptions.Builder()
-                .setEnterAnim(R.anim.nav_enter)
-                .setExitAnim(R.anim.nav_exit)
-                .setPopEnterAnim(R.anim.nav_enter)
-                .setPopExitAnim(R.anim.nav_exit)
                 .setLaunchSingleTop(true)
                 .build()
 
@@ -136,7 +133,7 @@ class MainActivity : AppCompatActivity() {
                         menu.findItem(R.id.homeFragment).setIcon(R.drawable.ic_home_filled)
                     }
                     R.id.transactionHistoryFragment -> {
-                        menu.findItem(R.id.transactionHistoryFragment).setIcon(R.drawable.ic_history)
+                        menu.findItem(R.id.transactionHistoryFragment).setIcon(R.drawable.ic_history_filled)
                     }
                     R.id.statisticsFragment -> {
                         menu.findItem(R.id.statisticsFragment).setIcon(R.drawable.ic_stat_filled)
@@ -161,7 +158,6 @@ class MainActivity : AppCompatActivity() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
             val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
             val fragmentParams = binding.navHostFragment.layoutParams as ViewGroup.MarginLayoutParams
-            // ✅ Only update if value actually changed — avoids redundant layout passes
             if (fragmentParams.topMargin != statusBarInsets.top) {
                 fragmentParams.topMargin = statusBarInsets.top
                 binding.navHostFragment.layoutParams = fragmentParams

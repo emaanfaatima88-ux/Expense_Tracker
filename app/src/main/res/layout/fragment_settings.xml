@@ -44,11 +44,11 @@
         android:id="@+id/txtHeaderTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
         android:text="Preferences"
         android:textColor="#1A1612"
         android:textSize="28sp"
         android:fontFamily="@font/fraunces_bold"
+        android:includeFontPadding="false"
         app:layout_constraintStart_toStartOf="@id/guidelineStart"
         app:layout_constraintEnd_toEndOf="@id/guidelineEnd"
         app:layout_constraintTop_toBottomOf="@id/lblSettings" />
@@ -253,7 +253,7 @@
                         <ImageView
                             android:layout_width="20dp"
                             android:layout_height="20dp"
-                            android:src="@drawable/ic_delete"
+                            android:src="@drawable/ic_bin"
                             app:tint="#D47216"
                             android:layout_marginEnd="12dp"/>
 
@@ -274,16 +274,6 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="ABOUT"
-                android:textColor="#A49B86"
-                android:textSize="11sp"
-                android:fontFamily="sans-serif-bold"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginStart="4dp"/>
 
 
         </LinearLayout>

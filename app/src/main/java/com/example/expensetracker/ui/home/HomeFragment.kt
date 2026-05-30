@@ -55,6 +55,7 @@ class HomeFragment : Fragment() {
         tipsProvider = FinancialTipsProvider(requireContext())
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -133,14 +134,15 @@ class HomeFragment : Fragment() {
             },
             onLongClick = { }
         )
-
         binding.recyclerViewExpenses.apply {
             adapter = expenseAdapter
             layoutManager = LinearLayoutManager(requireContext())
             setHasFixedSize(false)
-            isNestedScrollingEnabled = true
+            isNestedScrollingEnabled = false
+            overScrollMode = View.OVER_SCROLL_NEVER
             itemAnimator = null
         }
+
     }
 
     private fun setupSwipeToDelete() {
@@ -287,6 +289,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
+        // ✅ ADDED: Quick add expense from summary card header
+        binding.btnQuickAddExpense.setOnClickListener {
+            val bottomSheet = AddExpenseBottomSheet(null)
+            bottomSheet.show(parentFragmentManager, "AddExpenseFromSummary")
+        }
+
         binding.btnNotification.setOnClickListener {
             showTipBottomSheet()
         }

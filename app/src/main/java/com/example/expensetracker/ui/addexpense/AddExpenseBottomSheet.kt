@@ -18,6 +18,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import com.example.expensetracker.MainActivity
 import com.example.expensetracker.R
 import com.example.expensetracker.data.local.entity.ExpenseEntity
 import com.example.expensetracker.databinding.BottomSheetAddExpenseBinding
@@ -116,17 +117,23 @@ class AddExpenseBottomSheet(
         super.onStart()
         val dialog = dialog as? BottomSheetDialog
         val bottomSheet = dialog?.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-
-        // Soft input logic added to prevent UI components from distorting over the active keyboard
+        (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = false)
         dialog?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE)
 
         bottomSheet?.let { sheet ->
             sheet.setBackgroundColor(Color.TRANSPARENT)
+
             val behavior = BottomSheetBehavior.from(sheet)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.skipCollapsed = true
             sheet.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
         }
+    }
+
+    override fun onDismiss(dialog: android.content.DialogInterface) {
+        super.onDismiss(dialog)
+        // Smoothly restore navigation bar ONLY after the sheet has completely dropped out of view
+        (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = true)
     }
 
     private fun setupCategoryGrid() {
@@ -269,7 +276,7 @@ class AddExpenseBottomSheet(
             val calendar = Calendar.getInstance()
             val datePickerDialog = DatePickerDialog(
                 requireContext(),
-                R.style.DarkSummaryDatePickerTheme, // ✅ Swapped style reference name here
+                R.style.DarkSummaryDatePickerTheme,
                 { _, selectedYear, selectedMonth, selectedDay ->
                     val displayCalendar = Calendar.getInstance().apply {
                         set(Calendar.YEAR, selectedYear)

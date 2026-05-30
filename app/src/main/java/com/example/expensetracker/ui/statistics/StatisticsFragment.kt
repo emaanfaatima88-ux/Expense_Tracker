@@ -87,19 +87,37 @@ class StatisticsFragment : Fragment() {
     }
 
     private fun updateToggleUI() {
+        // Prepare the auto-transition pipeline
+        val transition = androidx.transition.AutoTransition().apply {
+            duration = 250
+            interpolator = android.view.animation.DecelerateInterpolator()
+        }
+
+        // Tells Android to animate the next layout constraint modification cleanly
+        androidx.transition.TransitionManager.beginDelayedTransition(binding.segmentContainer, transition)
+
+        val params = binding.backgroundIndicator.layoutParams as androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
+
         if (isShowingLast7Days) {
-            binding.btnToggleList.setBackgroundResource(R.drawable.bg_segmented_active)
+            // Snap background tracking constraints to the 7 days label
+            params.startToStart = binding.btnToggleList.id
+            params.endToEnd = binding.btnToggleList.id
+            binding.backgroundIndicator.layoutParams = params
+
+            // Transition text states colors instantly
             binding.btnToggleList.setTextColor(Color.parseColor("#FFFFFF"))
-            binding.btnToggleDial.setBackgroundResource(R.drawable.bg_segmented_inactive)
             binding.btnToggleDial.setTextColor(Color.parseColor("#7A6F62"))
         } else {
-            binding.btnToggleDial.setBackgroundResource(R.drawable.bg_segmented_active)
+            // Snap background tracking constraints to the this month label
+            params.startToStart = binding.btnToggleDial.id
+            params.endToEnd = binding.btnToggleDial.id
+            binding.backgroundIndicator.layoutParams = params
+
+            // Transition text states colors instantly
             binding.btnToggleDial.setTextColor(Color.parseColor("#FFFFFF"))
-            binding.btnToggleList.setBackgroundResource(R.drawable.bg_segmented_inactive)
             binding.btnToggleList.setTextColor(Color.parseColor("#7A6F62"))
         }
     }
-
     private fun observeExpenses() {
         val currencyManager = CurrencyManager(requireContext())
         val currencySymbol = currencyManager.getCurrencySymbol()

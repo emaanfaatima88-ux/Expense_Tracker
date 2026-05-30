@@ -26,11 +26,11 @@
         android:id="@+id/txtHeaderTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
         android:layout_marginStart="22dp"
         android:layout_marginEnd="22dp"
         android:fontFamily="@font/fraunces_bold"
         android:text="Where it went"
+        android:includeFontPadding="false"
         android:textColor="#1A1612"
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -50,36 +50,50 @@
         app:layout_constraintTop_toBottomOf="@id/txtHeaderTitle"
         app:strokeWidth="0dp">
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/segmentContainer"
             android:layout_width="wrap_content"
             android:layout_height="36dp"
-            android:orientation="horizontal"
             android:padding="3dp">
+
+            <View
+                android:id="@+id/backgroundIndicator"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_segmented_active"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="@id/btnToggleList"
+                app:layout_constraintEnd_toEndOf="@id/btnToggleList" />
 
             <TextView
                 android:id="@+id/btnToggleList"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_segmented_inactive"
                 android:gravity="center"
                 android:paddingHorizontal="14dp"
                 android:text="Last 7 days"
-                android:textColor="#7A6F62"
+                android:textColor="#FFFFFF"
                 android:textSize="13sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:elevation="2dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
                 android:id="@+id/btnToggleDial"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_segmented_active"
                 android:gravity="center"
                 android:paddingHorizontal="14dp"
                 android:text="This month"
-                android:textColor="#FFFFFF"
+                android:textColor="#7A6F62"
                 android:textSize="13sp"
-                android:textStyle="bold" />
-        </LinearLayout>
+                android:textStyle="bold"
+                android:elevation="2dp"
+                app:layout_constraintStart_toEndOf="@id/btnToggleList"
+                app:layout_constraintTop_toTopOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <androidx.core.widget.NestedScrollView

@@ -26,16 +26,18 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_floating_cradle_nav"
         android:elevation="8dp"
-        android:paddingBottom="14dp"
-        android:paddingTop="4dp"
-        app:itemPaddingTop="4dp"
-        app:itemBackground="@android:color/transparent"
-        app:itemActiveIndicatorStyle="@null"
-        app:itemIconSize="24dp"
-        app:itemIconTint="@color/bottom_nav_color"
-        app:itemTextColor="@color/bottom_nav_color"
-        app:labelVisibilityMode="labeled"
-        app:menu="@menu/bottom_nav_menu" />
+    android:paddingTop="16dp"
+    android:paddingBottom="0dp"
+    app:itemPaddingTop="0dp"
+    app:itemPaddingBottom="22dp"
+
+    app:itemBackground="@android:color/transparent"
+    app:itemActiveIndicatorStyle="@null"
+    app:itemIconSize="23dp"
+    app:itemIconTint="@color/bottom_nav_color"
+    app:itemTextColor="@color/bottom_nav_color"
+    app:labelVisibilityMode="labeled"
+    app:menu="@menu/bottom_nav_menu" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddExpense"
@@ -47,7 +49,7 @@
         android:src="@drawable/ic_add"
         app:backgroundTint="@color/orange_color"
         app:borderWidth="0dp"
-        app:elevation="12dp"
+        app:elevation="8dp"
         app:fabSize="normal"
         app:maxImageSize="28dp"
         app:shapeAppearance="@style/CircularFAB"
