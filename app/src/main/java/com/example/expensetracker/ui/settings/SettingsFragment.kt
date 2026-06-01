@@ -11,9 +11,11 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.widget.NestedScrollView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.example.expensetracker.MainActivity
 import com.example.expensetracker.R
 import com.example.expensetracker.databinding.FragmentSettingsBinding
 import com.example.expensetracker.utils.CurrencyManager
@@ -44,6 +46,25 @@ class SettingsFragment : Fragment() {
         updateBudgetCard() // Refresh the budget card display layout when the fragment loads
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 🛠️ VERIFIED: Connected to MainActivity's optimized side-glide animation structure
+        // Assuming your main layout wrapper inside fragment_settings.xml is nestedScrollViewSettings or similar
+        binding.root.findViewById<NestedScrollView>(R.id.nestedScrollViewSettings)?.setOnScrollChangeListener(
+            NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                val dy = scrollY - oldScrollY
+                if (dy > 10) {
+                    // User scrolls down -> Hide bottom nav and glide FAB to corner coordinates
+                    (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = false)
+                } else if (dy < -10) {
+                    // User scrolls up -> Pull Bottom Navigation UP and FAB back to center layout positions
+                    (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = true)
+                }
+            }
+        )
     }
 
     private fun setupClicks() {
@@ -158,7 +179,7 @@ class SettingsFragment : Fragment() {
                     currencyManager.saveCurrency(selected)
                     binding.txtSelectedCurrency.text = selected
 
-                    // 🛠️ FIX: Update the budget card currency prefix display instantly upon selection!
+                    // Update the budget card currency prefix display instantly upon selection!
                     updateBudgetCard()
 
                     Toast.makeText(
@@ -185,14 +206,13 @@ class SettingsFragment : Fragment() {
         // Extract symbol from string format "Pakistani Rupee (Rs)" -> "Rs"
         val symbol = savedCurrency.substringAfter("(").substringBefore(")")
 
-        // 🛠️ Get the current text already displayed in the budget card
+        // Get the current text already displayed in the budget card
         val currentText = binding.txtSettingsBudgetAmount.text.toString()
 
         // Strip out any existing symbols or characters to find just the raw numbers
-        // e.g., "Rs 120,000" or "$ 120,000" -> "120,000"
         val numericAmount = currentText.replace(Regex("[^0-9,]"), "").trim()
 
-        // If for some reason the field is blank, fallback to your default layout value
+        // If for some reason the field is blank, fallback to default layout value
         val finalAmount = if (numericAmount.isNotEmpty()) numericAmount else "120,000"
 
         // Combine the newly selected currency symbol with the existing formatted budget string

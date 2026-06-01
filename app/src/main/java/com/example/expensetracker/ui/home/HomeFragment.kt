@@ -46,6 +46,9 @@ class HomeFragment : Fragment() {
     private val expenseViewModel: ExpenseViewModel by viewModels()
     private val monthlyBudget = 120000.0
 
+    // ✅ Flag to prevent scroll listener from overriding hide when navigating to budget
+    private var isNavigatingAway = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,17 +68,22 @@ class HomeFragment : Fragment() {
         setupClickListeners()
         checkAndShowFirstOpenDialog()
 
-        // ✅ FIXED: Listen to the parent NestedScrollView container instead of the nested list view
         binding.nestedScrollViewHome.setOnScrollChangeListener(androidx.core.widget.NestedScrollView.OnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+            // ✅ Block scroll from overriding visibility when navigating away
+            if (isNavigatingAway) return@OnScrollChangeListener
             val dy = scrollY - oldScrollY
             if (dy > 10) {
-                // User scrolls down -> Hide bottom nav and slide FAB to corner coordinates
                 (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = false)
             } else if (dy < -10) {
-                // User scrolls up -> Show navigation controls smoothly
                 (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = true)
             }
         })
+    }
+
+    // ✅ Reset flag when user returns back to HomeFragment
+    override fun onResume() {
+        super.onResume()
+        isNavigatingAway = false
     }
 
     private fun checkAndShowFirstOpenDialog() {
@@ -142,7 +150,6 @@ class HomeFragment : Fragment() {
             overScrollMode = View.OVER_SCROLL_NEVER
             itemAnimator = null
         }
-
     }
 
     private fun setupSwipeToDelete() {
@@ -289,7 +296,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupClickListeners() {
-        // ✅ ADDED: Quick add expense from summary card header
         binding.btnQuickAddExpense.setOnClickListener {
             val bottomSheet = AddExpenseBottomSheet(null)
             bottomSheet.show(parentFragmentManager, "AddExpenseFromSummary")
@@ -305,7 +311,10 @@ class HomeFragment : Fragment() {
                 .selectedItemId = R.id.transactionHistoryFragment
         }
 
+        // ✅ Set flag + hide nav before navigating to budget
         binding.cardBudget.setOnClickListener {
+            isNavigatingAway = true
+            (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = false)
             findNavController().navigate(R.id.action_home_to_budget)
         }
 

@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = Color.parseColor("#f6f1e8")
         window.navigationBarColor = Color.TRANSPARENT
 
-        // Make status bar icons dark (readable on light #f6f1e8 background)
+        // Dark icons on light status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.setSystemBarsAppearance(
                 WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
                     View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
         }
 
-        // Draw behind system bars
+        // Draw behind system bars + hide only nav bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false)
             window.insetsController?.apply {
@@ -99,6 +99,10 @@ class MainActivity : AppCompatActivity() {
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             val navOptions = androidx.navigation.NavOptions.Builder()
+                .setEnterAnim(R.anim.nav_enter)
+                .setExitAnim(R.anim.nav_exit)
+                .setPopEnterAnim(R.anim.nav_enter)
+                .setPopExitAnim(R.anim.nav_exit)
                 .setLaunchSingleTop(true)
                 .build()
 
@@ -131,7 +135,7 @@ class MainActivity : AppCompatActivity() {
                         menu.findItem(R.id.homeFragment).setIcon(R.drawable.ic_home_filled)
                     }
                     R.id.transactionHistoryFragment -> {
-                        menu.findItem(R.id.transactionHistoryFragment).setIcon(R.drawable.ic_history_filled)
+                        menu.findItem(R.id.transactionHistoryFragment).setIcon(R.drawable.ic_history)
                     }
                     R.id.statisticsFragment -> {
                         menu.findItem(R.id.statisticsFragment).setIcon(R.drawable.ic_stat_filled)
@@ -168,42 +172,44 @@ class MainActivity : AppCompatActivity() {
         if (isNavigationHidden == !visible) return
         isNavigationHidden = !visible
 
+        val screenWidth = resources.displayMetrics.widthPixels
+        val fabTargetTranslationX = (screenWidth / 2f) - dpToPx(30) - dpToPx(24)
+        val fabTargetTranslationY = dpToPx(16).toFloat()
+
         if (visible) {
-            // Bring Bottom Nav back up smoothly
+            // Slide bottom nav back up
             binding.bottomNavigationView.animate()
                 .translationY(0f)
                 .setDuration(250)
                 .setInterpolator(android.view.animation.DecelerateInterpolator())
                 .start()
 
-            // 🛠️ FIX: Show FAB with clean scale-in animation
-            binding.fabAddExpense.visibility = View.VISIBLE
+            // Return FAB to center
             binding.fabAddExpense.animate()
-                .scaleX(1.0f)
-                .scaleY(1.0f)
-                .alpha(1.0f)
-                .setDuration(200)
+                .translationX(0f)
+                .translationY(0f)
+                .setDuration(250)
                 .setInterpolator(android.view.animation.DecelerateInterpolator())
                 .start()
         } else {
-            // Hide Bottom Nav down smoothly
+            // Slide bottom nav down off screen
             binding.bottomNavigationView.animate()
                 .translationY(binding.bottomNavigationView.height.toFloat())
                 .setDuration(250)
                 .setInterpolator(android.view.animation.AccelerateInterpolator())
                 .start()
 
-            // 🛠️ FIX: Completely hide FAB by scaling it down to 0 and setting visibility to GONE
+            // Translate FAB to bottom-right corner
             binding.fabAddExpense.animate()
-                .scaleX(0.0f)
-                .scaleY(0.0f)
-                .alpha(0.0f)
-                .setDuration(200)
+                .translationX(fabTargetTranslationX)
+                .translationY(fabTargetTranslationY)
+                .setDuration(250)
                 .setInterpolator(android.view.animation.AccelerateInterpolator())
-                .withEndAction {
-                    binding.fabAddExpense.visibility = View.GONE
-                }
                 .start()
         }
+    }
+
+    private fun dpToPx(dp: Int): Int {
+        return (dp * resources.displayMetrics.density).toInt()
     }
 }

@@ -232,35 +232,22 @@ class AddExpenseBottomSheet(
             binding.etDate.text = currentDate
 
         } else {
-            // ── EDIT MODE ──
-            binding.txtSheetTitle.text = "Edit expense"
-            binding.btnSaveExpense.text = "Save"
-            binding.etTitle.setText(expense.title)
-            binding.etAmount.setText(expense.amount.toString())
-            binding.etDate.text = expense.date
+        binding.txtSheetTitle.text = "Edit expense"
+        binding.btnSaveExpense.text = "Save"
+        binding.etTitle.setText(expense.title)
+        binding.etAmount.setText(expense.amount.toString())
+        binding.etDate.text = expense.date
 
-            // Show delete button with salmon background
-            binding.btnDeleteExpense.apply {
-                visibility = View.VISIBLE
+        binding.btnDeleteExpense.visibility = View.VISIBLE
 
-                setBackgroundResource(R.drawable.bg_delete_circle)
-
-                imageTintList =
-                    ColorStateList.valueOf(Color.parseColor("#D46A4F"))
-
-                setOnClickListener {
-                    expenseViewModel.deleteExpense(expense)
-                    Toast.makeText(
-                        requireContext(),
-                        "Expense Deleted",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    dismiss()
-                }
-            }
-
-            selectCategoryItem(expense.category)
+        binding.btnDeleteExpense.setOnClickListener {
+            expenseViewModel.deleteExpense(expense)
+            Toast.makeText(requireContext(), "Expense Deleted", Toast.LENGTH_SHORT).show()
+            dismiss()
         }
+
+        selectCategoryItem(expense.category)
+    }
     }
 
     private fun setupDatePicker() {
