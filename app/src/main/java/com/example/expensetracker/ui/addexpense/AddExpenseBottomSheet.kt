@@ -63,7 +63,6 @@ class AddExpenseBottomSheet(
 
         setupCategoryGrid()
         setupDefaultValues()
-        setupOldExpenseData()
         setupDatePicker()
         setupFieldsTextWatcher()
 
@@ -76,9 +75,6 @@ class AddExpenseBottomSheet(
         return binding.root
     }
 
-    /**
-     * Watches input text fields dynamically and sets button styling based on input completeness.
-     */
     private fun setupFieldsTextWatcher() {
         val formWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -87,27 +83,19 @@ class AddExpenseBottomSheet(
             }
             override fun afterTextChanged(s: Editable?) {}
         }
-
         binding.etAmount.addTextChangedListener(formWatcher)
         binding.etTitle.addTextChangedListener(formWatcher)
-
-        // Initial setup validation check pass
         updateSaveButtonState()
     }
 
-    /**
-     * Checks validation logic states and assigns matching hex styles dynamically.
-     */
     private fun updateSaveButtonState() {
         val amountInput = binding.etAmount.text.toString().trim()
         val titleInput = binding.etTitle.text.toString().trim()
 
         if (amountInput.isNotEmpty() && titleInput.isNotEmpty()) {
-            // Both items filled completely -> Dark active state tint background
             binding.btnSaveExpense.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1A1612"))
             binding.btnSaveExpense.setTextColor(Color.parseColor("#FFFFFF"))
         } else {
-            // Unfinished form state input fields detected -> Reset to fallback beige color
             binding.btnSaveExpense.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EAE4D3"))
             binding.btnSaveExpense.setTextColor(Color.parseColor("#9C968A"))
         }
@@ -122,7 +110,6 @@ class AddExpenseBottomSheet(
 
         bottomSheet?.let { sheet ->
             sheet.setBackgroundColor(Color.TRANSPARENT)
-
             val behavior = BottomSheetBehavior.from(sheet)
             behavior.state = BottomSheetBehavior.STATE_EXPANDED
             behavior.skipCollapsed = true
@@ -132,7 +119,6 @@ class AddExpenseBottomSheet(
 
     override fun onDismiss(dialog: android.content.DialogInterface) {
         super.onDismiss(dialog)
-        // Smoothly restore navigation bar ONLY after the sheet has completely dropped out of view
         (activity as? MainActivity)?.setNavigationAndFabVisibility(visible = true)
     }
 
@@ -169,9 +155,7 @@ class AddExpenseBottomSheet(
                 "Coffee" -> iconImg.setImageResource(R.drawable.ic_coffee)
                 else -> iconImg.setImageResource(R.drawable.ic_other)
             }
-            cellView.setOnClickListener {
-                selectCategoryItem(catName)
-            }
+            cellView.setOnClickListener { selectCategoryItem(catName) }
 
             binding.categoryGrid.addView(cellView)
             categoryViewsList.add(Pair(catName, cellView))
@@ -190,9 +174,7 @@ class AddExpenseBottomSheet(
 
             val cleanKey = if (currentCatName.contains("&")) {
                 currentCatName.split("&")[0].trim()
-            } else {
-                currentCatName
-            }
+            } else currentCatName
 
             val baseColorStr = ExpenseCategoryHelper.getCategoryColor(cleanKey)
             val baseColor = Color.parseColor(baseColorStr)
@@ -202,22 +184,18 @@ class AddExpenseBottomSheet(
                     shape = GradientDrawable.RECTANGLE
                     cornerRadius = getCornerRadiusPx()
                     setColor(baseColor)
-
                     val hsv = FloatArray(3)
                     Color.colorToHSV(baseColor, hsv)
                     hsv[2] *= 0.7f
-                    val strokeColor = Color.HSVToColor(hsv)
-                    setStroke(dpToPx(1.5f), strokeColor)
+                    setStroke(dpToPx(1.5f), Color.HSVToColor(hsv))
                 }
                 catView.background = activeDrawable
-
                 val hsv = FloatArray(3)
                 Color.colorToHSV(baseColor, hsv)
                 hsv[2] *= 0.5f
-                val deepContrastColor = Color.HSVToColor(hsv)
-
-                titleTxt.setTextColor(deepContrastColor)
-                iconImg.imageTintList = ColorStateList.valueOf(deepContrastColor)
+                val deepColor = Color.HSVToColor(hsv)
+                titleTxt.setTextColor(deepColor)
+                iconImg.imageTintList = ColorStateList.valueOf(deepColor)
             } else {
                 val inactiveDrawable = GradientDrawable().apply {
                     shape = GradientDrawable.RECTANGLE
@@ -225,10 +203,8 @@ class AddExpenseBottomSheet(
                     setColor(Color.parseColor("#FFFDF9"))
                 }
                 catView.background = inactiveDrawable
-
-                val defaultDarkColor = Color.parseColor("#1A1612")
-                titleTxt.setTextColor(defaultDarkColor)
-                iconImg.imageTintList = ColorStateList.valueOf(defaultDarkColor)
+                titleTxt.setTextColor(Color.parseColor("#1A1612"))
+                iconImg.imageTintList = ColorStateList.valueOf(Color.parseColor("#1A1612"))
             }
         }
     }
@@ -245,36 +221,52 @@ class AddExpenseBottomSheet(
 
     private fun setupDefaultValues() {
         if (expense == null) {
+            // ── ADD MODE ──
+            binding.txtSheetTitle.text = "Add expense"
+            binding.btnSaveExpense.text = "Add expense"
+            binding.btnDeleteExpense.visibility = View.GONE
+
             selectCategoryItem("Other")
-            val currentDate = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault()).format(Calendar.getInstance().time)
+            val currentDate = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault())
+                .format(Calendar.getInstance().time)
             binding.etDate.text = currentDate
-        }
-    }
 
-    private fun setupOldExpenseData() {
-        expense?.let { oldExpense ->
+        } else {
+            // ── EDIT MODE ──
             binding.txtSheetTitle.text = "Edit expense"
-            binding.etTitle.setText(oldExpense.title)
-            binding.etAmount.setText(oldExpense.amount.toString())
-            binding.etDate.text = oldExpense.date
             binding.btnSaveExpense.text = "Save"
+            binding.etTitle.setText(expense.title)
+            binding.etAmount.setText(expense.amount.toString())
+            binding.etDate.text = expense.date
 
-            binding.btnDeleteExpense.visibility = View.VISIBLE
+            // Show delete button with salmon background
+            binding.btnDeleteExpense.apply {
+                visibility = View.VISIBLE
 
-            binding.btnDeleteExpense.setOnClickListener {
-                expenseViewModel.deleteExpense(oldExpense)
-                Toast.makeText(requireContext(), "Expense Deleted", Toast.LENGTH_SHORT).show()
-                dismiss()
+                setBackgroundResource(R.drawable.bg_delete_circle)
+
+                imageTintList =
+                    ColorStateList.valueOf(Color.parseColor("#D46A4F"))
+
+                setOnClickListener {
+                    expenseViewModel.deleteExpense(expense)
+                    Toast.makeText(
+                        requireContext(),
+                        "Expense Deleted",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    dismiss()
+                }
             }
 
-            selectCategoryItem(oldExpense.category)
+            selectCategoryItem(expense.category)
         }
     }
 
     private fun setupDatePicker() {
         binding.btnDatePicker.setOnClickListener {
             val calendar = Calendar.getInstance()
-            val datePickerDialog = DatePickerDialog(
+            DatePickerDialog(
                 requireContext(),
                 R.style.DarkSummaryDatePickerTheme,
                 { _, selectedYear, selectedMonth, selectedDay ->
@@ -283,15 +275,13 @@ class AddExpenseBottomSheet(
                         set(Calendar.MONTH, selectedMonth)
                         set(Calendar.DAY_OF_MONTH, selectedDay)
                     }
-                    val formattedDate = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault())
+                    binding.etDate.text = SimpleDateFormat("dd/MM/yyyy hh:mm a", Locale.getDefault())
                         .format(displayCalendar.time)
-                    binding.etDate.text = formattedDate
                 },
                 calendar.get(Calendar.YEAR),
                 calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH)
-            )
-            datePickerDialog.show()
+            ).show()
         }
     }
 
@@ -307,23 +297,25 @@ class AddExpenseBottomSheet(
             }
 
             if (expense == null) {
-                val expenseEntity = ExpenseEntity(
-                    title = title,
-                    amount = amount.toDouble(),
-                    category = selectedCategory.trim().replaceFirstChar { it.uppercase() },
-                    date = date,
-                    note = ""
+                expenseViewModel.insertExpense(
+                    ExpenseEntity(
+                        title = title,
+                        amount = amount.toDouble(),
+                        category = selectedCategory.trim().replaceFirstChar { it.uppercase() },
+                        date = date,
+                        note = ""
+                    )
                 )
-                expenseViewModel.insertExpense(expenseEntity)
                 Toast.makeText(requireContext(), "Expense Saved", Toast.LENGTH_SHORT).show()
             } else {
-                val updatedExpense = expense.copy(
-                    title = title,
-                    amount = amount.toDouble(),
-                    category = selectedCategory.trim().replaceFirstChar { it.uppercase() },
-                    date = date
+                expenseViewModel.updateExpense(
+                    expense.copy(
+                        title = title,
+                        amount = amount.toDouble(),
+                        category = selectedCategory.trim().replaceFirstChar { it.uppercase() },
+                        date = date
+                    )
                 )
-                expenseViewModel.updateExpense(updatedExpense)
                 Toast.makeText(requireContext(), "Expense Updated", Toast.LENGTH_SHORT).show()
             }
             dismiss()

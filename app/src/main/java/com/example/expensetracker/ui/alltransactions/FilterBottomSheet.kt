@@ -45,7 +45,6 @@ class FilterBottomSheet(
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Kept clean styling
         setStyle(STYLE_NORMAL, com.google.android.material.R.style.ThemeOverlay_Material3_BottomSheetDialog)
     }
 
@@ -78,7 +77,7 @@ class FilterBottomSheet(
         setupSortUi()
         setupDateRangeUi()
         buildCategoryChips()
-        setupButtons() // Configured safely for Material Buttons
+        setupButtons()
 
         binding.btnCloseFilter.setOnClickListener {
             dismiss()
@@ -100,12 +99,15 @@ class FilterBottomSheet(
     }
 
     /**
-     * FIXED: Material Buttons modify properties via TintList and CornerRadius helper extensions
-     * to avoid Runtime Canvas exceptions.
+     * 🛠️ FIXED: Material Buttons modify properties safely to ensure
+     * the Reset button honors its transparent layout attributes.
      */
     private fun setupButtons() {
-        binding.btnApplyFilter.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#17120F"))
-        binding.btnResetFilter.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#EEE7DA"))
+        // Keeps the primary apply button matching your layout's core color profile
+        binding.btnApplyFilter.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#1A1612"))
+
+        // REMOVED the programmatic solid background initialization for btnResetFilter
+        // so it successfully preserves its transparent XML configuration!
     }
 
     private fun setupSortUi() {
@@ -168,9 +170,6 @@ class FilterBottomSheet(
         )
     }
 
-    /**
-     * FIXED: Avoids deep infinite programmatic state execution recursive loops.
-     */
     private fun buildCategoryChips() {
         binding.filterCategoryChipGroup.removeAllViews()
 
@@ -190,7 +189,6 @@ class FilterBottomSheet(
                 setEnsureMinTouchTargetSize(false)
                 chipStrokeWidth = 1f * density
 
-                // Set default unselected color states
                 chipStrokeColor = ColorStateList.valueOf(Color.parseColor("#E9E1D5"))
                 chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#FFFDF9"))
                 setTextColor(Color.parseColor("#1A1612"))
@@ -198,7 +196,6 @@ class FilterBottomSheet(
                 textStartPadding = 4f * density
                 textEndPadding = 10f * density
 
-                // Dynamic Category Color Dot handling logic
                 if (rawCategory != "All") {
                     val cleanKey = if (rawCategory.contains("&")) rawCategory.split("&")[0].trim() else rawCategory
                     val sharpColor = Color.parseColor(ExpenseCategoryHelper.getStatisticsColor(cleanKey))
@@ -215,21 +212,17 @@ class FilterBottomSheet(
                     textStartPadding = 6f * density
                 }
 
-                // Apply selected styles securely
                 if (rawCategory.equals(selectedCategory, true)) {
                     isChecked = true
                     chipBackgroundColor = ColorStateList.valueOf(Color.parseColor("#17120F"))
                     chipStrokeColor = ColorStateList.valueOf(Color.parseColor("#17120F"))
                     setTextColor(Color.parseColor("#FFFDF9"))
-
-                    // FIXED: Removed the aggressive chipIconTint override to ensure dots preserve their native identity color circles!
                 }
 
-                // Handle click selections without locking up performance execution threads
                 setOnClickListener {
                     if (selectedCategory != rawCategory) {
                         selectedCategory = rawCategory
-                        buildCategoryChips() // Re-draws beautifully exactly once per click instance change
+                        buildCategoryChips()
                     }
                 }
             }

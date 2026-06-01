@@ -13,7 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController // Import needed for Jetpack Navigation
+import androidx.navigation.fragment.findNavController
 import com.example.expensetracker.R
 import com.example.expensetracker.databinding.FragmentSettingsBinding
 import com.example.expensetracker.utils.CurrencyManager
@@ -29,6 +29,7 @@ class SettingsFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val expenseViewModel: ExpenseViewModel by viewModels()
+    private lateinit var currencyManager: CurrencyManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,16 +37,17 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        currencyManager = CurrencyManager(requireContext())
 
         setupClicks()
         setupCurrencyDropdown()
+        updateBudgetCard() // Refresh the budget card display layout when the fragment loads
 
         return binding.root
     }
 
     private fun setupClicks() {
-        // 🛠️ BUDGET CARD NAVIGATION
-        // Replace R.id.budgetFragment with your exact navigation destination action/ID if different
+        // BUDGET CARD NAVIGATION
         binding.btnSettingsBudget.setOnClickListener {
             findNavController().navigate(R.id.budgetFragment)
         }
@@ -101,7 +103,6 @@ class SettingsFragment : Fragment() {
     }
 
     private fun setupCurrencyDropdown() {
-        val currencyManager = CurrencyManager(requireContext())
         binding.txtSelectedCurrency.text = currencyManager.getCurrency()
 
         binding.btnCurrencySelector.setOnClickListener {
@@ -157,6 +158,9 @@ class SettingsFragment : Fragment() {
                     currencyManager.saveCurrency(selected)
                     binding.txtSelectedCurrency.text = selected
 
+                    // 🛠️ FIX: Update the budget card currency prefix display instantly upon selection!
+                    updateBudgetCard()
+
                     Toast.makeText(
                         requireContext(),
                         "Currency Updated",
@@ -170,6 +174,29 @@ class SettingsFragment : Fragment() {
             }
             bottomSheet.show()
         }
+    }
+
+    /**
+     * Updates the currency symbol displayed in the Settings Budget Card view safely
+     */
+    private fun updateBudgetCard() {
+        val savedCurrency = currencyManager.getCurrency()
+
+        // Extract symbol from string format "Pakistani Rupee (Rs)" -> "Rs"
+        val symbol = savedCurrency.substringAfter("(").substringBefore(")")
+
+        // 🛠️ Get the current text already displayed in the budget card
+        val currentText = binding.txtSettingsBudgetAmount.text.toString()
+
+        // Strip out any existing symbols or characters to find just the raw numbers
+        // e.g., "Rs 120,000" or "$ 120,000" -> "120,000"
+        val numericAmount = currentText.replace(Regex("[^0-9,]"), "").trim()
+
+        // If for some reason the field is blank, fallback to your default layout value
+        val finalAmount = if (numericAmount.isNotEmpty()) numericAmount else "120,000"
+
+        // Combine the newly selected currency symbol with the existing formatted budget string
+        binding.txtSettingsBudgetAmount.text = "$symbol $finalAmount"
     }
 
     private fun openPdf(uri: Uri) {

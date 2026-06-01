@@ -98,8 +98,6 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
 
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
-            // ✅ FIXED: Removed custom .setEnterAnim / .setExitAnim parameters
-            // This leaves navigation instant and crisp, removing all redraw stuttering
             val navOptions = androidx.navigation.NavOptions.Builder()
                 .setLaunchSingleTop(true)
                 .build()
@@ -170,40 +168,42 @@ class MainActivity : AppCompatActivity() {
         if (isNavigationHidden == !visible) return
         isNavigationHidden = !visible
 
-        val screenWidth = resources.displayMetrics.widthPixels
-        val fabTargetTranslationX = (screenWidth / 2f) - dpToPx(30) - dpToPx(24)
-        val fabTargetTranslationY = dpToPx(16).toFloat()
-
         if (visible) {
+            // Bring Bottom Nav back up smoothly
             binding.bottomNavigationView.animate()
                 .translationY(0f)
                 .setDuration(250)
                 .setInterpolator(android.view.animation.DecelerateInterpolator())
                 .start()
 
+            // 🛠️ FIX: Show FAB with clean scale-in animation
+            binding.fabAddExpense.visibility = View.VISIBLE
             binding.fabAddExpense.animate()
-                .translationX(0f)
-                .translationY(0f)
-                .setDuration(250)
+                .scaleX(1.0f)
+                .scaleY(1.0f)
+                .alpha(1.0f)
+                .setDuration(200)
                 .setInterpolator(android.view.animation.DecelerateInterpolator())
                 .start()
         } else {
+            // Hide Bottom Nav down smoothly
             binding.bottomNavigationView.animate()
                 .translationY(binding.bottomNavigationView.height.toFloat())
                 .setDuration(250)
                 .setInterpolator(android.view.animation.AccelerateInterpolator())
                 .start()
 
+            // 🛠️ FIX: Completely hide FAB by scaling it down to 0 and setting visibility to GONE
             binding.fabAddExpense.animate()
-                .translationX(fabTargetTranslationX)
-                .translationY(fabTargetTranslationY)
-                .setDuration(250)
+                .scaleX(0.0f)
+                .scaleY(0.0f)
+                .alpha(0.0f)
+                .setDuration(200)
                 .setInterpolator(android.view.animation.AccelerateInterpolator())
+                .withEndAction {
+                    binding.fabAddExpense.visibility = View.GONE
+                }
                 .start()
         }
-    }
-
-    private fun dpToPx(dp: Int): Int {
-        return (dp * resources.displayMetrics.density).toInt()
     }
 }

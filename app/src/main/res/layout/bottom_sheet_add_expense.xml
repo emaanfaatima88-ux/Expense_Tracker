@@ -26,7 +26,7 @@
             android:orientation="vertical"
             android:paddingHorizontal="24dp"
             android:paddingBottom="24dp">
-
+            <!-- TOP HEADER CONTAINER -->
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -36,21 +36,41 @@
                     android:id="@+id/txtSheetTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:fontFamily="serif"
-                    android:text="Add expense"
+                    android:text="Edit expense"
                     android:textColor="#1A1612"
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
+                <!-- RIGHT-ALIGNED CLOSE CROSS ICON -->
                 <ImageView
                     android:id="@+id/btnClose"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
                     android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
                     android:background="@drawable/bg_close_circle"
-                    android:padding="6dp"
+                    android:padding="10dp"
                     android:src="@drawable/ic_remove"
-                    app:tint="#1A1612" />
+                    app:tint="#5A4F42" />
+
+                <!-- 🛠️ FIXED DELETE ICON: Circular shape fixed, aligned, and matched perfectly -->
+                <ImageView
+                    android:id="@+id/btnDeleteExpense"
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="12dp"
+                    android:layout_toStartOf="@id/btnClose"
+                    android:background="@drawable/bg_delete_circle"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:padding="9dp"
+                    android:src="@drawable/ic_bin"
+                    app:tint="#D46A4F"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
             </RelativeLayout>
 
             <LinearLayout
@@ -175,45 +195,35 @@
                 android:layout_marginTop="28dp"
                 android:orientation="horizontal">
 
-                <Button
-                    android:id="@+id/btnDeleteExpense"
-                    android:layout_width="54dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="8dp"
-                    android:backgroundTint="#FFE3D5"
-                    android:padding="0dp"
-                    app:icon="@drawable/ic_bin"
-                    app:iconGravity="textStart"
-                    app:iconPadding="0dp"
-                    app:iconTint="#D46A4F"
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    app:cornerRadius="16dp" />
-
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCancel"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="6dp"
                     android:layout_weight="1"
-                    android:backgroundTint="#EAE4D3"
                     android:text="Cancel"
-                    android:textColor="#1A1612"
+                    android:textColor="#5A4F42"
                     android:textAllCaps="false"
-                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="14sp"
+                    app:backgroundTint="@android:color/transparent"
+                    app:rippleColor="#151A1612"
                     app:cornerRadius="16dp" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSaveExpense"
+                    style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_marginStart="6dp"
                     android:layout_weight="1"
-                    android:backgroundTint="#9C968A"
                     android:text="Add expense"
                     android:textColor="#FFFFFF"
                     android:textAllCaps="false"
-                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium"
+                    android:textSize="14sp"
+                    app:backgroundTint="#9C968A"
                     app:cornerRadius="16dp" />
             </LinearLayout>
         </LinearLayout>

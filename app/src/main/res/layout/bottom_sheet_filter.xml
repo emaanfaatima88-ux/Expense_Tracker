@@ -213,8 +213,9 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="24dp">
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnResetFilter"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -223,14 +224,14 @@
             android:textAllCaps="false"
             android:textColor="#1A1612"
             android:textSize="14sp"
-            android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
-            android:backgroundTint="#EAE4D3"
-            app:elevation="0dp"
+            app:backgroundTint="@android:color/transparent"
+            app:rippleColor="#151A1612"
             app:cornerRadius="16dp" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnApplyFilter"
+            style="@style/Widget.MaterialComponents.Button.UnelevatedButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -238,10 +239,8 @@
             android:textAllCaps="false"
             android:textColor="#FFFDF9"
             android:textSize="14sp"
-            android:textStyle="bold"
             android:fontFamily="sans-serif-medium"
-            android:backgroundTint="#1A1612"
-            app:elevation="0dp"
+            app:backgroundTint="#1A1612"
             app:cornerRadius="16dp" />
     </LinearLayout>
 

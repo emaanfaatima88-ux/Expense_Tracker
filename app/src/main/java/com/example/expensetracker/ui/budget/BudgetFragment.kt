@@ -55,12 +55,19 @@ class BudgetFragment : Fragment() {
     }
 
     private fun showBudgetBottomSheet() {
+        // 1. Pass your custom style that sets backgroundTint and windowBackground to transparent
         val dialog = BottomSheetDialog(
             requireContext(),
-            com.google.android.material.R.style.Theme_Design_Light_BottomSheetDialog
+            R.style.BottomSheetDialogNoShadow
         )
         val dialogView = layoutInflater.inflate(R.layout.layout_bottom_sheet_budget, null)
         dialog.setContentView(dialogView)
+
+        // 2. Clear the default container background colors directly via the window layer to kill the square corners
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+        }
 
         val edtBudgetInput = dialogView.findViewById<android.widget.EditText>(R.id.edtBudgetInput)
         val btnCloseSheet = dialogView.findViewById<android.widget.ImageView>(R.id.btnClose)

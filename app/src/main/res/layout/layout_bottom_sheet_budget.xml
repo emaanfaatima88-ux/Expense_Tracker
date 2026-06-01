@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/background"
+    android:background="@drawable/bg_bottom_sheet"
     android:orientation="vertical"
     android:padding="24dp">
 
     <View
-        android:layout_width="40dp"
+        android:layout_width="50dp"
         android:layout_height="4dp"
-        android:background="#EFEAD8"
+        android:background="#DBD3C5"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="16dp"/>
 
@@ -102,7 +102,9 @@
             android:textColor="#1A1612"
             app:chipBackgroundColor="#FFFDF9"
             app:chipStrokeColor="#EFEAD8"
-            app:chipStrokeWidth="1dp"/>
+            app:chipStrokeWidth="1dp"
+            app:ensureMinTouchTargetSize="false"
+            app:chipMinHeight="0dp" android:paddingVertical="6dp"/>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip80k"
@@ -113,7 +115,9 @@
             android:textColor="#1A1612"
             app:chipBackgroundColor="#FFFDF9"
             app:chipStrokeColor="#EFEAD8"
-            app:chipStrokeWidth="1dp"/>
+            app:chipStrokeWidth="1dp"
+            app:ensureMinTouchTargetSize="false"
+            app:chipMinHeight="0dp" android:paddingVertical="6dp"/>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip120k"
@@ -124,7 +128,9 @@
             android:textColor="#1A1612"
             app:chipBackgroundColor="#FFFDF9"
             app:chipStrokeColor="#EFEAD8"
-            app:chipStrokeWidth="1dp"/>
+            app:chipStrokeWidth="1dp"
+            app:ensureMinTouchTargetSize="false"
+            app:chipMinHeight="0dp" android:paddingVertical="6dp"/>
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chip200k"
@@ -135,7 +141,9 @@
             android:textColor="#1A1612"
             app:chipBackgroundColor="#FFFDF9"
             app:chipStrokeColor="#EFEAD8"
-            app:chipStrokeWidth="1dp"/>
+            app:chipStrokeWidth="1dp"
+            app:ensureMinTouchTargetSize="false"
+            app:chipMinHeight="0dp" android:paddingVertical="6dp"/>
     </com.google.android.material.chip.ChipGroup>
 
     <LinearLayout
@@ -152,8 +160,9 @@
             android:layout_weight="1"
             android:layout_marginEnd="8dp"
             android:text="Cancel"
-            android:textColor="#1A1612"
-            android:backgroundTint="#EAE4D3"
+            android:textColor="#5A4F42"
+            app:backgroundTint="@android:color/transparent"
+            app:rippleColor="#151A1612"
             app:cornerRadius="14dp"
             android:textAllCaps="false"
             android:fontFamily="sans-serif-medium"
