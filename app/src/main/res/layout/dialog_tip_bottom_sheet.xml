@@ -38,11 +38,11 @@
         <ImageView
             android:id="@+id/btnCloseBottomSheet"
             android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_height="match_parent"
             android:background="@drawable/bg_notification_circle"
-          android:padding="4dp"
+            android:padding="4dp"
             android:src="@drawable/ic_remove"
-            app:tint="#1A1612"/>
+            app:tint="#1A1612" />
 
     </LinearLayout>
 
@@ -52,12 +52,12 @@
         android:layout_marginBottom="12dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/background"
         app:strokeWidth="0dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/card_color"
             android:orientation="horizontal"
             android:padding="16dp"
             android:gravity="top">
@@ -102,7 +102,6 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        app:cardBackgroundColor="@color/background"
         app:strokeWidth="0dp">
 
         <LinearLayout
@@ -110,6 +109,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="16dp"
+            android:background="@color/card_color"
             android:gravity="top">
 
             <ImageView

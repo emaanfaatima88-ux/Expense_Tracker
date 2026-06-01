@@ -126,9 +126,32 @@ class MainActivity : AppCompatActivity() {
             menu.findItem(R.id.settingsFragment).setIcon(R.drawable.ic_settings)
 
             if (destination.id == R.id.budgetFragment) {
-                setNavigationAndFabVisibility(visible = false)
+
+                // Hide bottom navigation
+                binding.bottomNavigationView.animate()
+                    .translationY(binding.bottomNavigationView.height.toFloat())
+                    .setDuration(250)
+                    .setInterpolator(android.view.animation.AccelerateInterpolator())
+                    .start()
+
+                // Completely hide FAB
+                binding.fabAddExpense.hide()
+
             } else {
-                setNavigationAndFabVisibility(visible = true)
+
+                // Show bottom navigation
+                binding.bottomNavigationView.animate()
+                    .translationY(0f)
+                    .setDuration(250)
+                    .setInterpolator(android.view.animation.DecelerateInterpolator())
+                    .start()
+
+                // Show FAB in its normal center position
+                binding.fabAddExpense.show()
+
+                // Reset any previous translations
+                binding.fabAddExpense.translationX = 0f
+                binding.fabAddExpense.translationY = 0f
 
                 when (destination.id) {
                     R.id.homeFragment -> {
